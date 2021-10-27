@@ -34,6 +34,15 @@ This example plugin comes with:
 
 These examples show how to add to Foreman in various ways.
 
+## Foreman plugin labeling
+
+With the following line in the ruby gemspec file the gem is marked, that it's a foreman plugin. 
+This is especially necessary if you are using React / JS stuff in webpack directory.
+
+```ruby
+    s.metadata    = { "is_foreman_plugin" => "true" }
+```
+
 ### Further examples
 
 The [How to create a plugin](https://github.com/theforeman/foreman/blob/develop/developer_docs/how_to_create_a_plugin.asciidoc)
