@@ -1,0 +1,33 @@
+<%#
+kind: job_template
+name: Install CVE scanners
+description_format: 'Install CVE scanners on a host'
+model: JobTemplate
+job_category: Security
+provider_type: script
+template_inputs:
+- name: trivy_version
+  required: true
+  input_type: user
+  advanced: false
+  value_type: plain
+  default: 0.48.1
+  hidden_value: false
+- name: grype_version
+  required: true
+  input_type: user
+  advanced: false
+  value_type: plain
+  default: 0.73.5
+  hidden_value: false
+%>
+# Install CVE scanners from github
+<%
+trivy_version = input('trivy_version')
+grype_version = input('grype_version')
+
+trivy_url = "https://github.com/aquasecurity/trivy/releases/download/v#{trivy_version}/trivy_#{trivy_version}_Linux-64bit.rpm"
+grype_url = "https://github.com/anchore/grype/releases/download/v#{grype_version}/grype_#{grype_version}_linux_amd64.rpm"
+-%>
+
+yum install --assumeyes <%= trivy_url %> <%= grype_url %>

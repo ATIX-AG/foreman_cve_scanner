@@ -1,0 +1,71 @@
+<%#
+kind: job_template
+name: Run CVE scanner
+job_category: Security
+description_format: 'Run CVE scanner on a host'
+provider_type: script
+feature: run_cve_scan
+model: JobTemplate
+template_inputs:
+- name: target
+  required: true
+  input_type: user
+  options: "filesystem\r\ndocker"
+  advanced: false
+  value_type: plain
+  hidden_value: false
+- name: options
+  required: false
+  input_type: user
+  advanced: false
+  value_type: plain
+  hidden_value: false
+- name: path
+  required: true
+  input_type: user
+  advanced: false
+  value_type: plain
+  hidden_value: false
+- name: scanner
+  required: true
+  input_type: user
+  options: "trivy\r\ngrype"
+  advanced: false
+  value_type: plain
+  default: trivy
+  hidden_value: false
+%>
+<%
+scanner = input('scanner')
+target = input('target').to_sym
+path = input('path')
+options = input('options')
+
+scanners = {
+    trivy: {
+        docker: 'image',
+        filesystem: 'filesystem'
+    },
+    grype: {
+        docker: 'docker',
+        filesystem: 'dir'
+    }
+}
+
+if scanner == 'trivy'
+    cmd = "#{scanners[:trivy][target]} #{path}"
+    options += " --scanners vuln --quiet --format json"
+elsif scanner == 'grype'
+    cmd = "#{scanners[:grype][target]}:#{path}"
+    options += " --quiet --quiet --output json"
+end
+exec_command = "#{scanner} #{cmd} #{options}"
+-%>
+<% if cmd.nil? -%>
+echo "Unsupported security scanner #{scanner}"
+exit 1
+<% else -%>
+echo "===START"
+<%= exec_command %>
+echo "===END"
+<% end -%>
