@@ -1,3 +1,5 @@
+require 'foreman_remote_execution'
+
 module ForemanCveScanner
   class Engine < ::Rails::Engine
     engine_name 'foreman_cve_scanner'
