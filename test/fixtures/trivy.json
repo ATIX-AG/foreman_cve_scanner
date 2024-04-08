@@ -1,0 +1,1765 @@
+{
+  "SchemaVersion": 2,
+  "CreatedAt": "2023-12-29T14:32:02.721647769Z",
+  "ArtifactName": "van-holbach.sandbox.dev.atix",
+  "ArtifactType": "filesystem",
+  "Metadata": {
+    "OS": {
+      "Family": "alma",
+      "Name": "8.9"
+    },
+    "ImageConfig": {
+      "architecture": "",
+      "created": "0001-01-01T00:00:00Z",
+      "os": "",
+      "rootfs": {
+        "type": "",
+        "diff_ids": null
+      },
+      "config": {}
+    }
+  },
+  "Results": [
+    {
+      "Target": "van-holbach.sandbox.dev.atix (alma 8.9)",
+      "Class": "os-pkgs",
+      "Type": "alma",
+      "Vulnerabilities": [
+        {
+          "VulnerabilityID": "CVE-2020-12762",
+          "PkgID": "libfastjson@0.99.8-2.el8.x86_64",
+          "PkgName": "libfastjson",
+          "InstalledVersion": "0.99.8-2.el8",
+          "FixedVersion": "0.99.9-2.el8",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "alma",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2020-12762",
+          "DataSource": {
+            "ID": "alma",
+            "Name": "AlmaLinux Product Errata",
+            "URL": "https://errata.almalinux.org/"
+          },
+          "Title": "json-c, libfastjson: integer overflow and out-of-bounds write via a large JSON file",
+          "Description": "json-c through 0.14 has an integer overflow and out-of-bounds write via a large JSON file, as demonstrated by printbuf_memappend.",
+          "Severity": "MEDIUM",
+          "CweIDs": [
+            "CWE-190",
+            "CWE-787"
+          ],
+          "VendorSeverity": {
+            "alma": 2,
+            "amazon": 3,
+            "cbl-mariner": 3,
+            "nvd": 3,
+            "oracle-oval": 2,
+            "photon": 3,
+            "redhat": 2,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "nvd": {
+              "V2Vector": "AV:N/AC:M/Au:N/C:P/I:P/A:P",
+              "V3Vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+              "V2Score": 6.8,
+              "V3Score": 7.8
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+              "V3Score": 7.8
+            }
+          },
+          "References": [
+            "https://access.redhat.com/errata/RHSA-2023:6431",
+            "https://access.redhat.com/security/cve/CVE-2020-12762",
+            "https://bugzilla.redhat.com/1835253",
+            "https://cert-portal.siemens.com/productcert/pdf/ssa-637483.pdf",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-12762",
+            "https://errata.almalinux.org/9/ALSA-2023-6431.html",
+            "https://github.com/json-c/json-c/pull/592",
+            "https://github.com/rsyslog/libfastjson/issues/161",
+            "https://linux.oracle.com/cve/CVE-2020-12762.html",
+            "https://linux.oracle.com/errata/ELSA-2023-6976.html",
+            "https://lists.debian.org/debian-lts-announce/2020/05/msg00032.html",
+            "https://lists.debian.org/debian-lts-announce/2020/05/msg00034.html",
+            "https://lists.debian.org/debian-lts-announce/2020/07/msg00031.html",
+            "https://lists.debian.org/debian-lts-announce/2023/06/msg00023.html",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/CBR36IXYBHITAZFB5PFBJTED22WO5ONB/",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/CQQRRGBQCAWNCCJ2HN3W5SSCZ4QGMXQI/",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/W226TSCJBEOXDUFVKNWNH7ETG7AR6MCS/",
+            "https://nvd.nist.gov/vuln/detail/CVE-2020-12762",
+            "https://security.gentoo.org/glsa/202006-13",
+            "https://security.netapp.com/advisory/ntap-20210521-0001/",
+            "https://ubuntu.com/security/notices/USN-4360-1",
+            "https://ubuntu.com/security/notices/USN-4360-4",
+            "https://usn.ubuntu.com/4360-1/",
+            "https://usn.ubuntu.com/4360-4/",
+            "https://www.cve.org/CVERecord?id=CVE-2020-12762",
+            "https://www.debian.org/security/2020/dsa-4741"
+          ],
+          "PublishedDate": "2020-05-09T18:15:11.283Z",
+          "LastModifiedDate": "2023-11-07T03:15:44.277Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2022-31676",
+          "PkgID": "open-vm-tools@11.1.0-2.el8.x86_64",
+          "PkgName": "open-vm-tools",
+          "InstalledVersion": "11.1.0-2.el8",
+          "FixedVersion": "11.3.5-1.el8_6.1",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "alma",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2022-31676",
+          "DataSource": {
+            "ID": "alma",
+            "Name": "AlmaLinux Product Errata",
+            "URL": "https://errata.almalinux.org/"
+          },
+          "Title": "local root privilege escalation in the virtual machine",
+          "Description": "VMware Tools (12.0.0, 11.x.y and 10.x.y) contains a local privilege escalation vulnerability. A malicious actor with local non-administrative access to the Guest OS can escalate privileges as a root user in the virtual machine.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-269"
+          ],
+          "VendorSeverity": {
+            "alma": 3,
+            "amazon": 3,
+            "nvd": 3,
+            "oracle-oval": 3,
+            "photon": 3,
+            "redhat": 3,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 7.8
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 7
+            }
+          },
+          "References": [
+            "http://www.openwall.com/lists/oss-security/2022/08/23/3",
+            "https://access.redhat.com/errata/RHSA-2022:6358",
+            "https://access.redhat.com/security/cve/CVE-2022-31676",
+            "https://bugzilla.redhat.com/2118714",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-31676",
+            "https://errata.almalinux.org/9/ALSA-2022-6358.html",
+            "https://linux.oracle.com/cve/CVE-2022-31676.html",
+            "https://linux.oracle.com/errata/ELSA-2022-6381.html",
+            "https://lists.debian.org/debian-lts-announce/2022/08/msg00013.html",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/C5VV2R4LV4T3SNQJYRLFD4C75HBDVV76/",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/O4TZF6QRJIDECGMEGBPXJCHZ6YC3VZ6Z/",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZA63DWRW7HROTVBNRIPBJQWBYIYAQMEW/",
+            "https://nvd.nist.gov/vuln/detail/CVE-2022-31676",
+            "https://security.gentoo.org/glsa/202210-27",
+            "https://security.netapp.com/advisory/ntap-20221017-0003/",
+            "https://ubuntu.com/security/notices/USN-5578-1",
+            "https://ubuntu.com/security/notices/USN-5578-2",
+            "https://www.cve.org/CVERecord?id=CVE-2022-31676",
+            "https://www.debian.org/security/2022/dsa-5215",
+            "https://www.openwall.com/lists/oss-security/2022/08/23/3",
+            "https://www.vmware.com/security/advisories/VMSA-2022-0024.html"
+          ],
+          "PublishedDate": "2022-08-23T20:15:08.903Z",
+          "LastModifiedDate": "2023-11-07T03:47:40.553Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2023-20900",
+          "PkgID": "open-vm-tools@11.1.0-2.el8.x86_64",
+          "PkgName": "open-vm-tools",
+          "InstalledVersion": "11.1.0-2.el8",
+          "FixedVersion": "12.1.5-2.el8_8.3.alma.1",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "alma",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-20900",
+          "DataSource": {
+            "ID": "alma",
+            "Name": "AlmaLinux Product Errata",
+            "URL": "https://errata.almalinux.org/"
+          },
+          "Title": "open-vm-tools: SAML token signature bypass",
+          "Description": "A malicious actor that has been granted  Guest Operation Privileges https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-security/GUID-6A952214-0E5E-4CCF-9D2A-90948FF643EC.html  in a target virtual machine may be able to elevate their privileges if that target virtual machine has been assigned a more privileged  Guest Alias https://vdc-download.vmware.com/vmwb-repository/dcr-public/d1902b0e-d479-46bf-8ac9-cee0e31e8ec0/07ce8dbd-db48-4261-9b8f-c6d3ad8ba472/vim.vm.guest.AliasManager.html .",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-294"
+          ],
+          "VendorSeverity": {
+            "alma": 3,
+            "amazon": 3,
+            "nvd": 3,
+            "oracle-oval": 3,
+            "photon": 3,
+            "redhat": 3,
+            "rocky": 3,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:A/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 7.1
+            }
+          },
+          "References": [
+            "http://www.openwall.com/lists/oss-security/2023/08/31/1",
+            "http://www.openwall.com/lists/oss-security/2023/10/27/1",
+            "https://access.redhat.com/errata/RHSA-2023:5313",
+            "https://access.redhat.com/security/cve/CVE-2023-20900",
+            "https://bugzilla.redhat.com/2236542",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2236542",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-20900",
+            "https://errata.almalinux.org/9/ALSA-2023-5313.html",
+            "https://errata.rockylinux.org/RLSA-2023:5312",
+            "https://github.com/vmware/open-vm-tools/blob/CVE-2023-20900.patch/CVE-2023-20900.patch",
+            "https://github.com/vmware/open-vm-tools/tree/CVE-2023-20900.patch",
+            "https://linux.oracle.com/cve/CVE-2023-20900.html",
+            "https://linux.oracle.com/errata/ELSA-2023-5313.html",
+            "https://lists.debian.org/debian-lts-announce/2023/10/msg00000.html",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/NVKQ6Y2JFJRWPFOZUOTFO3H27BK5GGOG/",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/TJNJMD67QIT6LXLKWSHFM47DCLRSMT6W/",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/ZJM6HDRQYS74JA7YNKQBFH2XSZ52HEWH/",
+            "https://nvd.nist.gov/vuln/detail/CVE-2023-20900",
+            "https://security.netapp.com/advisory/ntap-20231013-0002/",
+            "https://ubuntu.com/security/notices/USN-6365-1",
+            "https://ubuntu.com/security/notices/USN-6365-2",
+            "https://www.cve.org/CVERecord?id=CVE-2023-20900",
+            "https://www.debian.org/security/2023/dsa-5493",
+            "https://www.vmware.com/security/advisories/VMSA-2023-0019",
+            "https://www.vmware.com/security/advisories/VMSA-2023-0019.html"
+          ],
+          "PublishedDate": "2023-08-31T10:15:08.247Z",
+          "LastModifiedDate": "2023-11-17T05:15:11.647Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2023-34058",
+          "PkgID": "open-vm-tools@11.1.0-2.el8.x86_64",
+          "PkgName": "open-vm-tools",
+          "InstalledVersion": "11.1.0-2.el8",
+          "FixedVersion": "12.2.5-3.el8_9.1.alma.1",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "alma",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-34058",
+          "DataSource": {
+            "ID": "alma",
+            "Name": "AlmaLinux Product Errata",
+            "URL": "https://errata.almalinux.org/"
+          },
+          "Title": "open-vm-tools: SAML token signature bypass",
+          "Description": "VMware Tools contains a SAML token signature bypass vulnerability. A malicious actor that has been granted  Guest Operation Privileges https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-security/GUID-6A952214-0E5E-4CCF-9D2A-90948FF643EC.html  in a target virtual machine may be able to elevate their privileges if that target virtual machine has been assigned a more privileged  Guest Alias https://vdc-download.vmware.com/vmwb-repository/dcr-public/d1902b0e-d479-46bf-8ac9-cee0e31e8ec0/07ce8dbd-db48-4261-9b8f-c6d3ad8ba472/vim.vm.guest.AliasManager.html .",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-347"
+          ],
+          "VendorSeverity": {
+            "alma": 3,
+            "amazon": 3,
+            "nvd": 3,
+            "oracle-oval": 3,
+            "photon": 3,
+            "redhat": 3,
+            "rocky": 3,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "http://www.openwall.com/lists/oss-security/2023/10/27/1",
+            "https://access.redhat.com/errata/RHSA-2023:7277",
+            "https://access.redhat.com/security/cve/CVE-2023-34058",
+            "https://bugzilla.redhat.com/2246080",
+            "https://bugzilla.redhat.com/2246096",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2246080",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2246096",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-34058",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-34059",
+            "https://errata.almalinux.org/9/ALSA-2023-7277.html",
+            "https://errata.rockylinux.org/RLSA-2023:7265",
+            "https://linux.oracle.com/cve/CVE-2023-34058.html",
+            "https://linux.oracle.com/errata/ELSA-2023-7279.html",
+            "https://lists.debian.org/debian-lts-announce/2023/11/msg00002.html",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/G7G77Z76CQPGUF7VHRA6O3UFCMPPR4O2/",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/MQUOFQL2SNNNMKROQ3TZQY4HEYMNOIBW/",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/WLTKVTRKQW2GD2274H3UOW6XU4E62GSK/",
+            "https://nvd.nist.gov/vuln/detail/CVE-2023-34058",
+            "https://ubuntu.com/security/notices/USN-6463-1",
+            "https://ubuntu.com/security/notices/USN-6463-2",
+            "https://www.cve.org/CVERecord?id=CVE-2023-34058",
+            "https://www.debian.org/security/2023/dsa-5543",
+            "https://www.vmware.com/security/advisories/VMSA-2023-0024",
+            "https://www.vmware.com/security/advisories/VMSA-2023-0024.html"
+          ],
+          "PublishedDate": "2023-10-27T05:15:38.957Z",
+          "LastModifiedDate": "2023-11-17T05:15:12.043Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2023-34059",
+          "PkgID": "open-vm-tools@11.1.0-2.el8.x86_64",
+          "PkgName": "open-vm-tools",
+          "InstalledVersion": "11.1.0-2.el8",
+          "FixedVersion": "12.2.5-3.el8_9.1.alma.1",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "alma",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-34059",
+          "DataSource": {
+            "ID": "alma",
+            "Name": "AlmaLinux Product Errata",
+            "URL": "https://errata.almalinux.org/"
+          },
+          "Title": "open-vm-tools: file descriptor hijack vulnerability in the vmware-user-suid-wrapper",
+          "Description": "open-vm-tools contains a file descriptor hijack vulnerability in the vmware-user-suid-wrapper. A malicious actor with non-root privileges may be able to hijack the \n/dev/uinput file descriptor allowing them to simulate user inputs.",
+          "Severity": "HIGH",
+          "VendorSeverity": {
+            "alma": 3,
+            "amazon": 3,
+            "nvd": 3,
+            "oracle-oval": 3,
+            "photon": 3,
+            "redhat": 3,
+            "rocky": 3,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 7
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 7.4
+            }
+          },
+          "References": [
+            "http://www.openwall.com/lists/oss-security/2023/10/27/2",
+            "http://www.openwall.com/lists/oss-security/2023/10/27/3",
+            "http://www.openwall.com/lists/oss-security/2023/11/26/1",
+            "http://www.openwall.com/lists/oss-security/2023/11/27/1",
+            "https://access.redhat.com/errata/RHSA-2023:7277",
+            "https://access.redhat.com/security/cve/CVE-2023-34059",
+            "https://bugzilla.redhat.com/2246080",
+            "https://bugzilla.redhat.com/2246096",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2246080",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2246096",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-34058",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-34059",
+            "https://errata.almalinux.org/9/ALSA-2023-7277.html",
+            "https://errata.rockylinux.org/RLSA-2023:7265",
+            "https://linux.oracle.com/cve/CVE-2023-34059.html",
+            "https://linux.oracle.com/errata/ELSA-2023-7279.html",
+            "https://lists.debian.org/debian-lts-announce/2023/11/msg00002.html",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/G7G77Z76CQPGUF7VHRA6O3UFCMPPR4O2/",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/MQUOFQL2SNNNMKROQ3TZQY4HEYMNOIBW/",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/WLTKVTRKQW2GD2274H3UOW6XU4E62GSK/",
+            "https://nvd.nist.gov/vuln/detail/CVE-2023-34059",
+            "https://ubuntu.com/security/notices/USN-6463-1",
+            "https://ubuntu.com/security/notices/USN-6463-2",
+            "https://www.cve.org/CVERecord?id=CVE-2023-34059",
+            "https://www.debian.org/security/2023/dsa-5543",
+            "https://www.vmware.com/security/advisories/VMSA-2023-0024.html"
+          ],
+          "PublishedDate": "2023-10-27T05:15:39.013Z",
+          "LastModifiedDate": "2023-11-27T12:15:07.59Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2023-20867",
+          "PkgID": "open-vm-tools@11.1.0-2.el8.x86_64",
+          "PkgName": "open-vm-tools",
+          "InstalledVersion": "11.1.0-2.el8",
+          "FixedVersion": "12.1.5-2.el8_8.alma",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "alma",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-20867",
+          "DataSource": {
+            "ID": "alma",
+            "Name": "AlmaLinux Product Errata",
+            "URL": "https://errata.almalinux.org/"
+          },
+          "Title": "open-vm-tools: authentication bypass vulnerability in the vgauth module",
+          "Description": "A fully compromised ESXi host can force VMware Tools to fail to authenticate host-to-guest operations, impacting the confidentiality and integrity of the guest virtual machine.",
+          "Severity": "LOW",
+          "CweIDs": [
+            "CWE-287"
+          ],
+          "VendorSeverity": {
+            "alma": 1,
+            "amazon": 1,
+            "nvd": 1,
+            "oracle-oval": 1,
+            "photon": 2,
+            "redhat": 1,
+            "rocky": 1,
+            "ubuntu": 1
+          },
+          "CVSS": {
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:C/C:L/I:L/A:N",
+              "V3Score": 3.9
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:C/C:L/I:L/A:N",
+              "V3Score": 3.9
+            }
+          },
+          "References": [
+            "http://www.openwall.com/lists/oss-security/2023/10/16/11",
+            "http://www.openwall.com/lists/oss-security/2023/10/16/2",
+            "https://access.redhat.com/errata/RHSA-2023:3948",
+            "https://access.redhat.com/security/cve/CVE-2023-20867",
+            "https://bugzilla.redhat.com/2213087",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2213087",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-20867",
+            "https://errata.almalinux.org/9/ALSA-2023-3948.html",
+            "https://errata.rockylinux.org/RLSA-2023:3949",
+            "https://linux.oracle.com/cve/CVE-2023-20867.html",
+            "https://linux.oracle.com/errata/ELSA-2023-3949.html",
+            "https://lists.debian.org/debian-lts-announce/2023/08/msg00020.html",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/NVKQ6Y2JFJRWPFOZUOTFO3H27BK5GGOG/",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/TJNJMD67QIT6LXLKWSHFM47DCLRSMT6W/",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/ZJM6HDRQYS74JA7YNKQBFH2XSZ52HEWH/",
+            "https://nvd.nist.gov/vuln/detail/CVE-2023-20867",
+            "https://security.netapp.com/advisory/ntap-20230725-0001/",
+            "https://ubuntu.com/security/notices/USN-6257-1",
+            "https://www.cve.org/CVERecord?id=CVE-2023-20867",
+            "https://www.debian.org/security/2023/dsa-5493",
+            "https://www.vmware.com/security/advisories/VMSA-2023-0013",
+            "https://www.vmware.com/security/advisories/VMSA-2023-0013.html"
+          ],
+          "PublishedDate": "2023-06-13T17:15:14.07Z",
+          "LastModifiedDate": "2023-10-16T18:15:15.577Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2022-30698",
+          "PkgID": "python3-unbound@1.7.3-14.el8.x86_64",
+          "PkgName": "python3-unbound",
+          "InstalledVersion": "1.7.3-14.el8",
+          "FixedVersion": "1.16.2-2.el8",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "alma",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2022-30698",
+          "DataSource": {
+            "ID": "alma",
+            "Name": "AlmaLinux Product Errata",
+            "URL": "https://errata.almalinux.org/"
+          },
+          "Title": "unbound: novel ghost domain attack that allows attackers to trigger continued resolvability of malicious domain names",
+          "Description": "NLnet Labs Unbound, up to and including version 1.16.1 is vulnerable to a novel type of the \"ghost domain names\" attack. The vulnerability works by targeting an Unbound instance. Unbound is queried for a subdomain of a rogue domain name. The rogue nameserver returns delegation information for the subdomain that updates Unbound's delegation cache. This action can be repeated before expiry of the delegation information by querying Unbound for a second level subdomain which the rogue nameserver provides new delegation information. Since Unbound is a child-centric resolver, the ever-updating child delegation information can keep a rogue domain name resolvable long after revocation. From version 1.16.2 on, Unbound checks the validity of parent delegation records before using cached delegation information.",
+          "Severity": "MEDIUM",
+          "CweIDs": [
+            "CWE-613"
+          ],
+          "VendorSeverity": {
+            "alma": 2,
+            "amazon": 2,
+            "cbl-mariner": 2,
+            "nvd": 2,
+            "oracle-oval": 2,
+            "photon": 2,
+            "redhat": 2,
+            "rocky": 2,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N",
+              "V3Score": 6.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N",
+              "V3Score": 6.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/errata/RHSA-2022:8062",
+            "https://access.redhat.com/security/cve/CVE-2022-30698",
+            "https://bugzilla.redhat.com/2116725",
+            "https://bugzilla.redhat.com/2116729",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=1959468",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2018806",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2023549",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2027735",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2038251",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2081958",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2116725",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2116729",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-30698",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-30699",
+            "https://errata.almalinux.org/9/ALSA-2022-8062.html",
+            "https://errata.rockylinux.org/RLSA-2022:7622",
+            "https://linux.oracle.com/cve/CVE-2022-30698.html",
+            "https://linux.oracle.com/errata/ELSA-2022-8062.html",
+            "https://lists.debian.org/debian-lts-announce/2023/03/msg00024.html",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/5L3ZFWZZFPBIL654BG75RWXUMPFQJ5EC/",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/D35CX4SCZVNKZTWJXPDFTHWZHINMGEZD/",
+            "https://nvd.nist.gov/vuln/detail/CVE-2022-30698",
+            "https://security.gentoo.org/glsa/202212-02",
+            "https://ubuntu.com/security/notices/USN-5569-1",
+            "https://www.cve.org/CVERecord?id=CVE-2022-30698",
+            "https://www.nlnetlabs.nl/downloads/unbound/CVE-2022-30698_CVE-2022-30699.txt"
+          ],
+          "PublishedDate": "2022-08-01T15:15:09.84Z",
+          "LastModifiedDate": "2023-11-07T03:47:23.907Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2022-30699",
+          "PkgID": "python3-unbound@1.7.3-14.el8.x86_64",
+          "PkgName": "python3-unbound",
+          "InstalledVersion": "1.7.3-14.el8",
+          "FixedVersion": "1.16.2-2.el8",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "alma",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2022-30699",
+          "DataSource": {
+            "ID": "alma",
+            "Name": "AlmaLinux Product Errata",
+            "URL": "https://errata.almalinux.org/"
+          },
+          "Title": "unbound: novel ghost domain attack that allows attackers to trigger continued resolvability of malicious domain names",
+          "Description": "NLnet Labs Unbound, up to and including version 1.16.1, is vulnerable to a novel type of the \"ghost domain names\" attack. The vulnerability works by targeting an Unbound instance. Unbound is queried for a rogue domain name when the cached delegation information is about to expire. The rogue nameserver delays the response so that the cached delegation information is expired. Upon receiving the delayed answer containing the delegation information, Unbound overwrites the now expired entries. This action can be repeated when the delegation information is about to expire making the rogue delegation information ever-updating. From version 1.16.2 on, Unbound stores the start time for a query and uses that to decide if the cached delegation information can be overwritten.",
+          "Severity": "MEDIUM",
+          "CweIDs": [
+            "CWE-613"
+          ],
+          "VendorSeverity": {
+            "alma": 2,
+            "amazon": 2,
+            "cbl-mariner": 2,
+            "nvd": 2,
+            "oracle-oval": 2,
+            "photon": 2,
+            "redhat": 2,
+            "rocky": 2,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N",
+              "V3Score": 6.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N",
+              "V3Score": 6.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/errata/RHSA-2022:8062",
+            "https://access.redhat.com/security/cve/CVE-2022-30699",
+            "https://bugzilla.redhat.com/2116725",
+            "https://bugzilla.redhat.com/2116729",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=1959468",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2018806",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2023549",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2027735",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2038251",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2081958",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2116725",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2116729",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-30698",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-30699",
+            "https://errata.almalinux.org/9/ALSA-2022-8062.html",
+            "https://errata.rockylinux.org/RLSA-2022:7622",
+            "https://linux.oracle.com/cve/CVE-2022-30699.html",
+            "https://linux.oracle.com/errata/ELSA-2022-8062.html",
+            "https://lists.debian.org/debian-lts-announce/2023/03/msg00024.html",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/5L3ZFWZZFPBIL654BG75RWXUMPFQJ5EC/",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/D35CX4SCZVNKZTWJXPDFTHWZHINMGEZD/",
+            "https://nvd.nist.gov/vuln/detail/CVE-2022-30699",
+            "https://security.gentoo.org/glsa/202212-02",
+            "https://ubuntu.com/security/notices/USN-5569-1",
+            "https://www.cve.org/CVERecord?id=CVE-2022-30699",
+            "https://www.nlnetlabs.nl/downloads/unbound/CVE-2022-30698_CVE-2022-30699.txt"
+          ],
+          "PublishedDate": "2022-08-01T15:15:09.89Z",
+          "LastModifiedDate": "2023-11-07T03:47:23.97Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2022-3204",
+          "PkgID": "python3-unbound@1.7.3-14.el8.x86_64",
+          "PkgName": "python3-unbound",
+          "InstalledVersion": "1.7.3-14.el8",
+          "FixedVersion": "1.16.2-5.el8",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "alma",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2022-3204",
+          "DataSource": {
+            "ID": "alma",
+            "Name": "AlmaLinux Product Errata",
+            "URL": "https://errata.almalinux.org/"
+          },
+          "Title": "unbound: NRDelegation attack leads to uncontrolled resource consumption (Non-Responsive Delegation Attack)",
+          "Description": "A vulnerability named 'Non-Responsive Delegation Attack' (NRDelegation Attack) has been discovered in various DNS resolving software. The NRDelegation Attack works by having a malicious delegation with a considerable number of non responsive nameservers. The attack starts by querying a resolver for a record that relies on those unresponsive nameservers. The attack can cause a resolver to spend a lot of time/resources resolving records under a malicious delegation point where a considerable number of unresponsive NS records reside. It can trigger high CPU usage in some resolver implementations that continually look in the cache for resolved NS records in that delegation. This can lead to degraded performance and eventually denial of service in orchestrated attacks. Unbound does not suffer from high CPU usage, but resources are still needed for resolving the malicious delegation. Unbound will keep trying to resolve the record until hard limits are reached. Based on the nature of the attack and the replies, different limits could be reached. From version 1.16.3 on, Unbound introduces fixes for better performance when under load, by cutting opportunistic queries for nameserver discovery and DNSKEY prefetching and limiting the number of times a delegation point can issue a cache lookup for missing records.",
+          "Severity": "MEDIUM",
+          "CweIDs": [
+            "CWE-400"
+          ],
+          "VendorSeverity": {
+            "alma": 2,
+            "amazon": 2,
+            "cbl-mariner": 3,
+            "nvd": 3,
+            "oracle-oval": 2,
+            "photon": 3,
+            "redhat": 2,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/errata/RHSA-2023:2370",
+            "https://access.redhat.com/security/cve/CVE-2022-3204",
+            "https://bugzilla.redhat.com/2128947",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-3204",
+            "https://errata.almalinux.org/9/ALSA-2023-2370.html",
+            "https://linux.oracle.com/cve/CVE-2022-3204.html",
+            "https://linux.oracle.com/errata/ELSA-2023-2771.html",
+            "https://lists.debian.org/debian-lts-announce/2023/03/msg00024.html",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/35QGS5FBQTG3DBSK7QV67PA64P24ABHY/",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/3G2HS6CYPSIGAKO6QLEZPG3RD6AMPB7B/",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/4S4EU6DMJXQFMAIE6SLAH4H5RNRU6VQL/",
+            "https://nlnetlabs.nl/downloads/unbound/CVE-2022-3204.txt",
+            "https://nvd.nist.gov/vuln/detail/CVE-2022-3204",
+            "https://security.gentoo.org/glsa/202212-02",
+            "https://ubuntu.com/security/notices/USN-5732-1",
+            "https://www.cve.org/CVERecord?id=CVE-2022-3204",
+            "https://www.nlnetlabs.nl/downloads/unbound/CVE-2022-3204.txt"
+          ],
+          "PublishedDate": "2022-09-26T14:15:11.007Z",
+          "LastModifiedDate": "2023-11-07T03:50:58.52Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2022-24903",
+          "PkgID": "rsyslog@8.1911.0-6.el8.x86_64",
+          "PkgName": "rsyslog",
+          "InstalledVersion": "8.1911.0-6.el8",
+          "FixedVersion": "8.2102.0-7.el8",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "alma",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2022-24903",
+          "DataSource": {
+            "ID": "alma",
+            "Name": "AlmaLinux Product Errata",
+            "URL": "https://errata.almalinux.org/"
+          },
+          "Title": "rsyslog: Heap-based overflow in TCP syslog server",
+          "Description": "Rsyslog is a rocket-fast system for log processing. Modules for TCP syslog reception have a potential heap buffer overflow when octet-counted framing is used. This can result in a segfault or some other malfunction. As of our understanding, this vulnerability can not be used for remote code execution. But there may still be a slight chance for experts to do that. The bug occurs when the octet count is read. While there is a check for the maximum number of octets, digits are written to a heap buffer even when the octet count is over the maximum, This can be used to overrun the memory buffer. However, once the sequence of digits stop, no additional characters can be added to the buffer. In our opinion, this makes remote exploits impossible or at least highly complex. Octet-counted framing is one of two potential framing modes. It is relatively uncommon, but enabled by default on receivers. Modules `imtcp`, `imptcp`, `imgssapi`, and `imhttp` are used for regular syslog message reception. It is best practice not to directly expose them to the public. When this practice is followed, the risk is considerably lower. Module `imdiag` is a diagnostics module primarily intended for testbench runs. We do not expect it to be present on any production installation. Octet-counted framing is not very common. Usually, it needs to be specifically enabled at senders. If users do not need it, they can turn it off for the most important modules. This will mitigate the vulnerability.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-1284",
+            "CWE-120"
+          ],
+          "VendorSeverity": {
+            "alma": 3,
+            "amazon": 3,
+            "cbl-mariner": 3,
+            "nvd": 3,
+            "oracle-oval": 3,
+            "redhat": 3,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "nvd": {
+              "V2Vector": "AV:N/AC:M/Au:N/C:P/I:P/A:P",
+              "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V2Score": 6.8,
+              "V3Score": 8.1
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 8.1
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2022-24903",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-24903",
+            "https://errata.almalinux.org/8/ALSA-2022-4799.html",
+            "https://github.com/rsyslog/rsyslog/commit/f211042ecbb472f9d8beb4678a65d272b6f07705",
+            "https://github.com/rsyslog/rsyslog/security/advisories/GHSA-ggw7-xr6h-mmr8",
+            "https://linux.oracle.com/cve/CVE-2022-24903.html",
+            "https://linux.oracle.com/errata/ELSA-2022-9783.html",
+            "https://lists.debian.org/debian-lts-announce/2022/05/msg00028.html",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/GMNNXLCU2UORRVSZO24HL4KMVPK5PHVW/",
+            "https://nvd.nist.gov/vuln/detail/CVE-2022-24903",
+            "https://security.netapp.com/advisory/ntap-20221111-0002/",
+            "https://ubuntu.com/security/notices/USN-5404-1",
+            "https://ubuntu.com/security/notices/USN-5404-2",
+            "https://www.cve.org/CVERecord?id=CVE-2022-24903",
+            "https://www.debian.org/security/2022/dsa-5150"
+          ],
+          "PublishedDate": "2022-05-06T00:15:07.873Z",
+          "LastModifiedDate": "2023-11-07T03:44:40.95Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2022-30698",
+          "PkgID": "unbound-libs@1.7.3-14.el8.x86_64",
+          "PkgName": "unbound-libs",
+          "InstalledVersion": "1.7.3-14.el8",
+          "FixedVersion": "1.16.2-2.el8",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "alma",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2022-30698",
+          "DataSource": {
+            "ID": "alma",
+            "Name": "AlmaLinux Product Errata",
+            "URL": "https://errata.almalinux.org/"
+          },
+          "Title": "unbound: novel ghost domain attack that allows attackers to trigger continued resolvability of malicious domain names",
+          "Description": "NLnet Labs Unbound, up to and including version 1.16.1 is vulnerable to a novel type of the \"ghost domain names\" attack. The vulnerability works by targeting an Unbound instance. Unbound is queried for a subdomain of a rogue domain name. The rogue nameserver returns delegation information for the subdomain that updates Unbound's delegation cache. This action can be repeated before expiry of the delegation information by querying Unbound for a second level subdomain which the rogue nameserver provides new delegation information. Since Unbound is a child-centric resolver, the ever-updating child delegation information can keep a rogue domain name resolvable long after revocation. From version 1.16.2 on, Unbound checks the validity of parent delegation records before using cached delegation information.",
+          "Severity": "MEDIUM",
+          "CweIDs": [
+            "CWE-613"
+          ],
+          "VendorSeverity": {
+            "alma": 2,
+            "amazon": 2,
+            "cbl-mariner": 2,
+            "nvd": 2,
+            "oracle-oval": 2,
+            "photon": 2,
+            "redhat": 2,
+            "rocky": 2,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N",
+              "V3Score": 6.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N",
+              "V3Score": 6.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/errata/RHSA-2022:8062",
+            "https://access.redhat.com/security/cve/CVE-2022-30698",
+            "https://bugzilla.redhat.com/2116725",
+            "https://bugzilla.redhat.com/2116729",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=1959468",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2018806",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2023549",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2027735",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2038251",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2081958",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2116725",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2116729",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-30698",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-30699",
+            "https://errata.almalinux.org/9/ALSA-2022-8062.html",
+            "https://errata.rockylinux.org/RLSA-2022:7622",
+            "https://linux.oracle.com/cve/CVE-2022-30698.html",
+            "https://linux.oracle.com/errata/ELSA-2022-8062.html",
+            "https://lists.debian.org/debian-lts-announce/2023/03/msg00024.html",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/5L3ZFWZZFPBIL654BG75RWXUMPFQJ5EC/",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/D35CX4SCZVNKZTWJXPDFTHWZHINMGEZD/",
+            "https://nvd.nist.gov/vuln/detail/CVE-2022-30698",
+            "https://security.gentoo.org/glsa/202212-02",
+            "https://ubuntu.com/security/notices/USN-5569-1",
+            "https://www.cve.org/CVERecord?id=CVE-2022-30698",
+            "https://www.nlnetlabs.nl/downloads/unbound/CVE-2022-30698_CVE-2022-30699.txt"
+          ],
+          "PublishedDate": "2022-08-01T15:15:09.84Z",
+          "LastModifiedDate": "2023-11-07T03:47:23.907Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2022-30699",
+          "PkgID": "unbound-libs@1.7.3-14.el8.x86_64",
+          "PkgName": "unbound-libs",
+          "InstalledVersion": "1.7.3-14.el8",
+          "FixedVersion": "1.16.2-2.el8",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "alma",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2022-30699",
+          "DataSource": {
+            "ID": "alma",
+            "Name": "AlmaLinux Product Errata",
+            "URL": "https://errata.almalinux.org/"
+          },
+          "Title": "unbound: novel ghost domain attack that allows attackers to trigger continued resolvability of malicious domain names",
+          "Description": "NLnet Labs Unbound, up to and including version 1.16.1, is vulnerable to a novel type of the \"ghost domain names\" attack. The vulnerability works by targeting an Unbound instance. Unbound is queried for a rogue domain name when the cached delegation information is about to expire. The rogue nameserver delays the response so that the cached delegation information is expired. Upon receiving the delayed answer containing the delegation information, Unbound overwrites the now expired entries. This action can be repeated when the delegation information is about to expire making the rogue delegation information ever-updating. From version 1.16.2 on, Unbound stores the start time for a query and uses that to decide if the cached delegation information can be overwritten.",
+          "Severity": "MEDIUM",
+          "CweIDs": [
+            "CWE-613"
+          ],
+          "VendorSeverity": {
+            "alma": 2,
+            "amazon": 2,
+            "cbl-mariner": 2,
+            "nvd": 2,
+            "oracle-oval": 2,
+            "photon": 2,
+            "redhat": 2,
+            "rocky": 2,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N",
+              "V3Score": 6.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N",
+              "V3Score": 6.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/errata/RHSA-2022:8062",
+            "https://access.redhat.com/security/cve/CVE-2022-30699",
+            "https://bugzilla.redhat.com/2116725",
+            "https://bugzilla.redhat.com/2116729",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=1959468",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2018806",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2023549",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2027735",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2038251",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2081958",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2116725",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2116729",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-30698",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-30699",
+            "https://errata.almalinux.org/9/ALSA-2022-8062.html",
+            "https://errata.rockylinux.org/RLSA-2022:7622",
+            "https://linux.oracle.com/cve/CVE-2022-30699.html",
+            "https://linux.oracle.com/errata/ELSA-2022-8062.html",
+            "https://lists.debian.org/debian-lts-announce/2023/03/msg00024.html",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/5L3ZFWZZFPBIL654BG75RWXUMPFQJ5EC/",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/D35CX4SCZVNKZTWJXPDFTHWZHINMGEZD/",
+            "https://nvd.nist.gov/vuln/detail/CVE-2022-30699",
+            "https://security.gentoo.org/glsa/202212-02",
+            "https://ubuntu.com/security/notices/USN-5569-1",
+            "https://www.cve.org/CVERecord?id=CVE-2022-30699",
+            "https://www.nlnetlabs.nl/downloads/unbound/CVE-2022-30698_CVE-2022-30699.txt"
+          ],
+          "PublishedDate": "2022-08-01T15:15:09.89Z",
+          "LastModifiedDate": "2023-11-07T03:47:23.97Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2022-3204",
+          "PkgID": "unbound-libs@1.7.3-14.el8.x86_64",
+          "PkgName": "unbound-libs",
+          "InstalledVersion": "1.7.3-14.el8",
+          "FixedVersion": "1.16.2-5.el8",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "alma",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2022-3204",
+          "DataSource": {
+            "ID": "alma",
+            "Name": "AlmaLinux Product Errata",
+            "URL": "https://errata.almalinux.org/"
+          },
+          "Title": "unbound: NRDelegation attack leads to uncontrolled resource consumption (Non-Responsive Delegation Attack)",
+          "Description": "A vulnerability named 'Non-Responsive Delegation Attack' (NRDelegation Attack) has been discovered in various DNS resolving software. The NRDelegation Attack works by having a malicious delegation with a considerable number of non responsive nameservers. The attack starts by querying a resolver for a record that relies on those unresponsive nameservers. The attack can cause a resolver to spend a lot of time/resources resolving records under a malicious delegation point where a considerable number of unresponsive NS records reside. It can trigger high CPU usage in some resolver implementations that continually look in the cache for resolved NS records in that delegation. This can lead to degraded performance and eventually denial of service in orchestrated attacks. Unbound does not suffer from high CPU usage, but resources are still needed for resolving the malicious delegation. Unbound will keep trying to resolve the record until hard limits are reached. Based on the nature of the attack and the replies, different limits could be reached. From version 1.16.3 on, Unbound introduces fixes for better performance when under load, by cutting opportunistic queries for nameserver discovery and DNSKEY prefetching and limiting the number of times a delegation point can issue a cache lookup for missing records.",
+          "Severity": "MEDIUM",
+          "CweIDs": [
+            "CWE-400"
+          ],
+          "VendorSeverity": {
+            "alma": 2,
+            "amazon": 2,
+            "cbl-mariner": 3,
+            "nvd": 3,
+            "oracle-oval": 2,
+            "photon": 3,
+            "redhat": 2,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/errata/RHSA-2023:2370",
+            "https://access.redhat.com/security/cve/CVE-2022-3204",
+            "https://bugzilla.redhat.com/2128947",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-3204",
+            "https://errata.almalinux.org/9/ALSA-2023-2370.html",
+            "https://linux.oracle.com/cve/CVE-2022-3204.html",
+            "https://linux.oracle.com/errata/ELSA-2023-2771.html",
+            "https://lists.debian.org/debian-lts-announce/2023/03/msg00024.html",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/35QGS5FBQTG3DBSK7QV67PA64P24ABHY/",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/3G2HS6CYPSIGAKO6QLEZPG3RD6AMPB7B/",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/4S4EU6DMJXQFMAIE6SLAH4H5RNRU6VQL/",
+            "https://nlnetlabs.nl/downloads/unbound/CVE-2022-3204.txt",
+            "https://nvd.nist.gov/vuln/detail/CVE-2022-3204",
+            "https://security.gentoo.org/glsa/202212-02",
+            "https://ubuntu.com/security/notices/USN-5732-1",
+            "https://www.cve.org/CVERecord?id=CVE-2022-3204",
+            "https://www.nlnetlabs.nl/downloads/unbound/CVE-2022-3204.txt"
+          ],
+          "PublishedDate": "2022-09-26T14:15:11.007Z",
+          "LastModifiedDate": "2023-11-07T03:50:58.52Z"
+        }
+      ]
+    },
+    {
+      "Target": "etc/ssh/ssh_host_rsa_key",
+      "Class": "secret",
+      "Secrets": [
+        {
+          "RuleID": "private-key",
+          "Category": "AsymmetricPrivateKey",
+          "Severity": "HIGH",
+          "Title": "Asymmetric Private Key",
+          "StartLine": 1,
+          "EndLine": 1,
+          "Code": {
+            "Lines": [
+              {
+                "Number": 1,
+                "Content": "-----BEGIN OPENSSH PRIVATE KEY-----*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END OPENSSH PRIVATE KEY-----",
+                "IsCause": true,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "-----BEGIN OPENSSH PRIVATE KEY-----*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END OPENSSH PRIVATE KEY-----",
+                "FirstCause": true,
+                "LastCause": true
+              },
+              {
+                "Number": 2,
+                "Content": "",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "FirstCause": false,
+                "LastCause": false
+              }
+            ]
+          },
+          "Match": "BEGIN OPENSSH PRIVATE KEY-----*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END OPENSSH PRI",
+          "Layer": {}
+        }
+      ]
+    },
+    {
+      "Target": "var/log/messages",
+      "Class": "secret",
+      "Secrets": [
+        {
+          "RuleID": "aws-secret-access-key",
+          "Category": "AWS",
+          "Severity": "CRITICAL",
+          "Title": "AWS Secret Access Key",
+          "StartLine": 962,
+          "EndLine": 962,
+          "Code": {
+            "Lines": [
+              {
+                "Number": 960,
+                "Content": "Dec 28 13:59:38 van-holbach kernel: registered taskstats version 1",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 28 13:59:38 van-holbach kernel: registered taskstats version 1",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 961,
+                "Content": "Dec 28 13:59:38 van-holbach kernel: Loading compiled-in X.509 certificates",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 28 13:59:38 van-holbach kernel: Loading compiled-in X.509 certificates",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 962,
+                "Content": "Dec 28 13:59:38 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kernel signing key: ****************************************'",
+                "IsCause": true,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 28 13:59:38 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kernel signing key: ****************************************'",
+                "FirstCause": true,
+                "LastCause": true
+              },
+              {
+                "Number": 963,
+                "Content": "Dec 28 13:59:38 van-holbach kernel: Loaded X.509 cert 'AlmaLinux Driver update signing key: ****************************************'",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 28 13:59:38 van-holbach kernel: Loaded X.509 cert 'AlmaLinux Driver update signing key: ****************************************'",
+                "FirstCause": false,
+                "LastCause": false
+              }
+            ]
+          },
+          "Match": "AlmaLinux kernel signing key: ****************************************'\nDec 28 13:59:38 va",
+          "Layer": {}
+        },
+        {
+          "RuleID": "aws-secret-access-key",
+          "Category": "AWS",
+          "Severity": "CRITICAL",
+          "Title": "AWS Secret Access Key",
+          "StartLine": 963,
+          "EndLine": 963,
+          "Code": {
+            "Lines": [
+              {
+                "Number": 961,
+                "Content": "Dec 28 13:59:38 van-holbach kernel: Loading compiled-in X.509 certificates",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 28 13:59:38 van-holbach kernel: Loading compiled-in X.509 certificates",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 962,
+                "Content": "Dec 28 13:59:38 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kernel signing key: ****************************************'",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 28 13:59:38 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kernel signing key: ****************************************'",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 963,
+                "Content": "Dec 28 13:59:38 van-holbach kernel: Loaded X.509 cert 'AlmaLinux Driver update signing key: ****************************************'",
+                "IsCause": true,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 28 13:59:38 van-holbach kernel: Loaded X.509 cert 'AlmaLinux Driver update signing key: ****************************************'",
+                "FirstCause": true,
+                "LastCause": true
+              },
+              {
+                "Number": 964,
+                "Content": "Dec 28 13:59:38 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kpatch signing key: ****************************************'",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 28 13:59:38 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kpatch signing key: ****************************************'",
+                "FirstCause": false,
+                "LastCause": false
+              }
+            ]
+          },
+          "Match": "ux Driver update signing key: ****************************************'\nDec 28 13:59:38 va",
+          "Layer": {}
+        },
+        {
+          "RuleID": "aws-secret-access-key",
+          "Category": "AWS",
+          "Severity": "CRITICAL",
+          "Title": "AWS Secret Access Key",
+          "StartLine": 964,
+          "EndLine": 964,
+          "Code": {
+            "Lines": [
+              {
+                "Number": 962,
+                "Content": "Dec 28 13:59:38 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kernel signing key: ****************************************'",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 28 13:59:38 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kernel signing key: ****************************************'",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 963,
+                "Content": "Dec 28 13:59:38 van-holbach kernel: Loaded X.509 cert 'AlmaLinux Driver update signing key: ****************************************'",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 28 13:59:38 van-holbach kernel: Loaded X.509 cert 'AlmaLinux Driver update signing key: ****************************************'",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 964,
+                "Content": "Dec 28 13:59:38 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kpatch signing key: ****************************************'",
+                "IsCause": true,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 28 13:59:38 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kpatch signing key: ****************************************'",
+                "FirstCause": true,
+                "LastCause": true
+              },
+              {
+                "Number": 965,
+                "Content": "Dec 28 13:59:38 van-holbach kernel: zswap: loaded using pool lzo/zbud",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 28 13:59:38 van-holbach kernel: zswap: loaded using pool lzo/zbud",
+                "FirstCause": false,
+                "LastCause": false
+              }
+            ]
+          },
+          "Match": "AlmaLinux kpatch signing key: ****************************************'\nDec 28 13:59:38 va",
+          "Layer": {}
+        },
+        {
+          "RuleID": "aws-secret-access-key",
+          "Category": "AWS",
+          "Severity": "CRITICAL",
+          "Title": "AWS Secret Access Key",
+          "StartLine": 3249,
+          "EndLine": 3249,
+          "Code": {
+            "Lines": [
+              {
+                "Number": 3247,
+                "Content": "Dec 29 14:15:56 van-holbach kernel: Asymmetric key parser 'x509' registered",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:15:56 van-holbach kernel: Asymmetric key parser 'x509' registered",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 3248,
+                "Content": "Dec 29 14:15:56 van-holbach kernel: Running certificate verification selftests",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:15:56 van-holbach kernel: Running certificate verification selftests",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 3249,
+                "Content": "Dec 29 14:15:56 van-holbach kernel: Loaded X.509 cert 'Certificate verification self-testing key: ****************************************'",
+                "IsCause": true,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:15:56 van-holbach kernel: Loaded X.509 cert 'Certificate verification self-testing key: ****************************************'",
+                "FirstCause": true,
+                "LastCause": true
+              },
+              {
+                "Number": 3250,
+                "Content": "Dec 29 14:15:56 van-holbach kernel: Block layer SCSI generic (bsg) driver version 0.4 loaded (major 247)",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:15:56 van-holbach kernel: Block layer SCSI generic (bsg) driver version 0.4 loaded (major 247)",
+                "FirstCause": false,
+                "LastCause": false
+              }
+            ]
+          },
+          "Match": "erification self-testing key: ****************************************'\nDec 29 14:15:56 va",
+          "Layer": {}
+        },
+        {
+          "RuleID": "aws-secret-access-key",
+          "Category": "AWS",
+          "Severity": "CRITICAL",
+          "Title": "AWS Secret Access Key",
+          "StartLine": 3356,
+          "EndLine": 3356,
+          "Code": {
+            "Lines": [
+              {
+                "Number": 3354,
+                "Content": "Dec 29 14:15:56 van-holbach kernel: registered taskstats version 1",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:15:56 van-holbach kernel: registered taskstats version 1",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 3355,
+                "Content": "Dec 29 14:15:56 van-holbach kernel: Loading compiled-in X.509 certificates",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:15:56 van-holbach kernel: Loading compiled-in X.509 certificates",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 3356,
+                "Content": "Dec 29 14:15:56 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kernel signing key: ****************************************'",
+                "IsCause": true,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:15:56 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kernel signing key: ****************************************'",
+                "FirstCause": true,
+                "LastCause": true
+              },
+              {
+                "Number": 3357,
+                "Content": "Dec 29 14:15:56 van-holbach kernel: Loaded X.509 cert 'AlmaLinux Driver update signing key: ****************************************'",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:15:56 van-holbach kernel: Loaded X.509 cert 'AlmaLinux Driver update signing key: ****************************************'",
+                "FirstCause": false,
+                "LastCause": false
+              }
+            ]
+          },
+          "Match": "AlmaLinux kernel signing key: ****************************************'\nDec 29 14:15:56 va",
+          "Layer": {}
+        },
+        {
+          "RuleID": "aws-secret-access-key",
+          "Category": "AWS",
+          "Severity": "CRITICAL",
+          "Title": "AWS Secret Access Key",
+          "StartLine": 3357,
+          "EndLine": 3357,
+          "Code": {
+            "Lines": [
+              {
+                "Number": 3355,
+                "Content": "Dec 29 14:15:56 van-holbach kernel: Loading compiled-in X.509 certificates",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:15:56 van-holbach kernel: Loading compiled-in X.509 certificates",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 3356,
+                "Content": "Dec 29 14:15:56 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kernel signing key: ****************************************'",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:15:56 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kernel signing key: ****************************************'",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 3357,
+                "Content": "Dec 29 14:15:56 van-holbach kernel: Loaded X.509 cert 'AlmaLinux Driver update signing key: ****************************************'",
+                "IsCause": true,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:15:56 van-holbach kernel: Loaded X.509 cert 'AlmaLinux Driver update signing key: ****************************************'",
+                "FirstCause": true,
+                "LastCause": true
+              },
+              {
+                "Number": 3358,
+                "Content": "Dec 29 14:15:56 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kpatch signing key: ****************************************'",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:15:56 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kpatch signing key: ****************************************'",
+                "FirstCause": false,
+                "LastCause": false
+              }
+            ]
+          },
+          "Match": "ux Driver update signing key: ****************************************'\nDec 29 14:15:56 va",
+          "Layer": {}
+        },
+        {
+          "RuleID": "aws-secret-access-key",
+          "Category": "AWS",
+          "Severity": "CRITICAL",
+          "Title": "AWS Secret Access Key",
+          "StartLine": 3358,
+          "EndLine": 3358,
+          "Code": {
+            "Lines": [
+              {
+                "Number": 3356,
+                "Content": "Dec 29 14:15:56 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kernel signing key: ****************************************'",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:15:56 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kernel signing key: ****************************************'",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 3357,
+                "Content": "Dec 29 14:15:56 van-holbach kernel: Loaded X.509 cert 'AlmaLinux Driver update signing key: ****************************************'",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:15:56 van-holbach kernel: Loaded X.509 cert 'AlmaLinux Driver update signing key: ****************************************'",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 3358,
+                "Content": "Dec 29 14:15:56 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kpatch signing key: ****************************************'",
+                "IsCause": true,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:15:56 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kpatch signing key: ****************************************'",
+                "FirstCause": true,
+                "LastCause": true
+              },
+              {
+                "Number": 3359,
+                "Content": "Dec 29 14:15:56 van-holbach kernel: zswap: loaded using pool lzo/zbud",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:15:56 van-holbach kernel: zswap: loaded using pool lzo/zbud",
+                "FirstCause": false,
+                "LastCause": false
+              }
+            ]
+          },
+          "Match": "AlmaLinux kpatch signing key: ****************************************'\nDec 29 14:15:56 va",
+          "Layer": {}
+        },
+        {
+          "RuleID": "aws-secret-access-key",
+          "Category": "AWS",
+          "Severity": "CRITICAL",
+          "Title": "AWS Secret Access Key",
+          "StartLine": 4816,
+          "EndLine": 4816,
+          "Code": {
+            "Lines": [
+              {
+                "Number": 4814,
+                "Content": "Dec 29 14:21:20 van-holbach kernel: Asymmetric key parser 'x509' registered",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:21:20 van-holbach kernel: Asymmetric key parser 'x509' registered",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 4815,
+                "Content": "Dec 29 14:21:20 van-holbach kernel: Running certificate verification selftests",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:21:20 van-holbach kernel: Running certificate verification selftests",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 4816,
+                "Content": "Dec 29 14:21:20 van-holbach kernel: Loaded X.509 cert 'Certificate verification self-testing key: ****************************************'",
+                "IsCause": true,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:21:20 van-holbach kernel: Loaded X.509 cert 'Certificate verification self-testing key: ****************************************'",
+                "FirstCause": true,
+                "LastCause": true
+              },
+              {
+                "Number": 4817,
+                "Content": "Dec 29 14:21:20 van-holbach kernel: Block layer SCSI generic (bsg) driver version 0.4 loaded (major 247)",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:21:20 van-holbach kernel: Block layer SCSI generic (bsg) driver version 0.4 loaded (major 247)",
+                "FirstCause": false,
+                "LastCause": false
+              }
+            ]
+          },
+          "Match": "erification self-testing key: ****************************************'\nDec 29 14:21:20 va",
+          "Layer": {}
+        },
+        {
+          "RuleID": "aws-secret-access-key",
+          "Category": "AWS",
+          "Severity": "CRITICAL",
+          "Title": "AWS Secret Access Key",
+          "StartLine": 4923,
+          "EndLine": 4923,
+          "Code": {
+            "Lines": [
+              {
+                "Number": 4921,
+                "Content": "Dec 29 14:21:20 van-holbach kernel: registered taskstats version 1",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:21:20 van-holbach kernel: registered taskstats version 1",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 4922,
+                "Content": "Dec 29 14:21:20 van-holbach kernel: Loading compiled-in X.509 certificates",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:21:20 van-holbach kernel: Loading compiled-in X.509 certificates",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 4923,
+                "Content": "Dec 29 14:21:20 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kernel signing key: ****************************************'",
+                "IsCause": true,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:21:20 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kernel signing key: ****************************************'",
+                "FirstCause": true,
+                "LastCause": true
+              },
+              {
+                "Number": 4924,
+                "Content": "Dec 29 14:21:20 van-holbach kernel: Loaded X.509 cert 'AlmaLinux Driver update signing key: ****************************************'",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:21:20 van-holbach kernel: Loaded X.509 cert 'AlmaLinux Driver update signing key: ****************************************'",
+                "FirstCause": false,
+                "LastCause": false
+              }
+            ]
+          },
+          "Match": "AlmaLinux kernel signing key: ****************************************'\nDec 29 14:21:20 va",
+          "Layer": {}
+        },
+        {
+          "RuleID": "aws-secret-access-key",
+          "Category": "AWS",
+          "Severity": "CRITICAL",
+          "Title": "AWS Secret Access Key",
+          "StartLine": 4924,
+          "EndLine": 4924,
+          "Code": {
+            "Lines": [
+              {
+                "Number": 4922,
+                "Content": "Dec 29 14:21:20 van-holbach kernel: Loading compiled-in X.509 certificates",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:21:20 van-holbach kernel: Loading compiled-in X.509 certificates",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 4923,
+                "Content": "Dec 29 14:21:20 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kernel signing key: ****************************************'",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:21:20 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kernel signing key: ****************************************'",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 4924,
+                "Content": "Dec 29 14:21:20 van-holbach kernel: Loaded X.509 cert 'AlmaLinux Driver update signing key: ****************************************'",
+                "IsCause": true,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:21:20 van-holbach kernel: Loaded X.509 cert 'AlmaLinux Driver update signing key: ****************************************'",
+                "FirstCause": true,
+                "LastCause": true
+              },
+              {
+                "Number": 4925,
+                "Content": "Dec 29 14:21:20 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kpatch signing key: ****************************************'",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:21:20 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kpatch signing key: ****************************************'",
+                "FirstCause": false,
+                "LastCause": false
+              }
+            ]
+          },
+          "Match": "ux Driver update signing key: ****************************************'\nDec 29 14:21:20 va",
+          "Layer": {}
+        },
+        {
+          "RuleID": "aws-secret-access-key",
+          "Category": "AWS",
+          "Severity": "CRITICAL",
+          "Title": "AWS Secret Access Key",
+          "StartLine": 4925,
+          "EndLine": 4925,
+          "Code": {
+            "Lines": [
+              {
+                "Number": 4923,
+                "Content": "Dec 29 14:21:20 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kernel signing key: ****************************************'",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:21:20 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kernel signing key: ****************************************'",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 4924,
+                "Content": "Dec 29 14:21:20 van-holbach kernel: Loaded X.509 cert 'AlmaLinux Driver update signing key: ****************************************'",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:21:20 van-holbach kernel: Loaded X.509 cert 'AlmaLinux Driver update signing key: ****************************************'",
+                "FirstCause": false,
+                "LastCause": false
+              },
+              {
+                "Number": 4925,
+                "Content": "Dec 29 14:21:20 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kpatch signing key: ****************************************'",
+                "IsCause": true,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:21:20 van-holbach kernel: Loaded X.509 cert 'AlmaLinux kpatch signing key: ****************************************'",
+                "FirstCause": true,
+                "LastCause": true
+              },
+              {
+                "Number": 4926,
+                "Content": "Dec 29 14:21:20 van-holbach kernel: zswap: loaded using pool lzo/zbud",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "Dec 29 14:21:20 van-holbach kernel: zswap: loaded using pool lzo/zbud",
+                "FirstCause": false,
+                "LastCause": false
+              }
+            ]
+          },
+          "Match": "AlmaLinux kpatch signing key: ****************************************'\nDec 29 14:21:20 va",
+          "Layer": {}
+        }
+      ]
+    },
+    {
+      "Target": "etc/pki/consumer/key.pem",
+      "Class": "secret",
+      "Secrets": [
+        {
+          "RuleID": "private-key",
+          "Category": "AsymmetricPrivateKey",
+          "Severity": "HIGH",
+          "Title": "Asymmetric Private Key",
+          "StartLine": 1,
+          "EndLine": 1,
+          "Code": {
+            "Lines": [
+              {
+                "Number": 1,
+                "Content": "-----BEGIN PRIVATE KEY-----***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END PRIVATE KEY-----",
+                "IsCause": true,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "-----BEGIN PRIVATE KEY-----***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END PRIVATE KEY-----",
+                "FirstCause": true,
+                "LastCause": true
+              },
+              {
+                "Number": 2,
+                "Content": "",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "FirstCause": false,
+                "LastCause": false
+              }
+            ]
+          },
+          "Match": "-----BEGIN PRIVATE KEY-----***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END PRIVATE KEY",
+          "Layer": {}
+        }
+      ]
+    },
+    {
+      "Target": "etc/pki/entitlement/7267035714220274546-key.pem",
+      "Class": "secret",
+      "Secrets": [
+        {
+          "RuleID": "private-key",
+          "Category": "AsymmetricPrivateKey",
+          "Severity": "HIGH",
+          "Title": "Asymmetric Private Key",
+          "StartLine": 1,
+          "EndLine": 1,
+          "Code": {
+            "Lines": [
+              {
+                "Number": 1,
+                "Content": "-----BEGIN PRIVATE KEY-----***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END PRIVATE KEY-----",
+                "IsCause": true,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "-----BEGIN PRIVATE KEY-----***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END PRIVATE KEY-----",
+                "FirstCause": true,
+                "LastCause": true
+              },
+              {
+                "Number": 2,
+                "Content": "",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "FirstCause": false,
+                "LastCause": false
+              }
+            ]
+          },
+          "Match": "-----BEGIN PRIVATE KEY-----***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END PRIVATE KEY",
+          "Layer": {}
+        }
+      ]
+    },
+    {
+      "Target": "etc/pki/entitlement/7984572981855230469-key.pem",
+      "Class": "secret",
+      "Secrets": [
+        {
+          "RuleID": "private-key",
+          "Category": "AsymmetricPrivateKey",
+          "Severity": "HIGH",
+          "Title": "Asymmetric Private Key",
+          "StartLine": 1,
+          "EndLine": 1,
+          "Code": {
+            "Lines": [
+              {
+                "Number": 1,
+                "Content": "-----BEGIN PRIVATE KEY-----***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END PRIVATE KEY-----",
+                "IsCause": true,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "-----BEGIN PRIVATE KEY-----***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END PRIVATE KEY-----",
+                "FirstCause": true,
+                "LastCause": true
+              },
+              {
+                "Number": 2,
+                "Content": "",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "FirstCause": false,
+                "LastCause": false
+              }
+            ]
+          },
+          "Match": "-----BEGIN PRIVATE KEY-----***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END PRIVATE KEY",
+          "Layer": {}
+        }
+      ]
+    },
+    {
+      "Target": "etc/ssh/ssh_host_ecdsa_key",
+      "Class": "secret",
+      "Secrets": [
+        {
+          "RuleID": "private-key",
+          "Category": "AsymmetricPrivateKey",
+          "Severity": "HIGH",
+          "Title": "Asymmetric Private Key",
+          "StartLine": 1,
+          "EndLine": 1,
+          "Code": {
+            "Lines": [
+              {
+                "Number": 1,
+                "Content": "-----BEGIN OPENSSH PRIVATE KEY-----***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END OPENSSH PRIVATE KEY-----",
+                "IsCause": true,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "-----BEGIN OPENSSH PRIVATE KEY-----***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END OPENSSH PRIVATE KEY-----",
+                "FirstCause": true,
+                "LastCause": true
+              },
+              {
+                "Number": 2,
+                "Content": "",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "FirstCause": false,
+                "LastCause": false
+              }
+            ]
+          },
+          "Match": "BEGIN OPENSSH PRIVATE KEY-----***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END OPENSSH PRI",
+          "Layer": {}
+        }
+      ]
+    },
+    {
+      "Target": "etc/ssh/ssh_host_ed25519_key",
+      "Class": "secret",
+      "Secrets": [
+        {
+          "RuleID": "private-key",
+          "Category": "AsymmetricPrivateKey",
+          "Severity": "HIGH",
+          "Title": "Asymmetric Private Key",
+          "StartLine": 1,
+          "EndLine": 1,
+          "Code": {
+            "Lines": [
+              {
+                "Number": 1,
+                "Content": "-----BEGIN OPENSSH PRIVATE KEY-----******************************************************************************************************************************************************************************************************************************************************************************************************************************-----END OPENSSH PRIVATE KEY-----",
+                "IsCause": true,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "-----BEGIN OPENSSH PRIVATE KEY-----******************************************************************************************************************************************************************************************************************************************************************************************************************************-----END OPENSSH PRIVATE KEY-----",
+                "FirstCause": true,
+                "LastCause": true
+              },
+              {
+                "Number": 2,
+                "Content": "",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "FirstCause": false,
+                "LastCause": false
+              }
+            ]
+          },
+          "Match": "BEGIN OPENSSH PRIVATE KEY-----******************************************************************************************************************************************************************************************************************************************************************************************************************************-----END OPENSSH PRI",
+          "Layer": {}
+        }
+      ]
+    }
+  ]
+}

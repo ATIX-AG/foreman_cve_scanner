@@ -103,8 +103,9 @@ module ForemanCveScanner
 
     # rubocop:disable Metrics/AbcSize
     def generate_unified_vuls
-      j = @raw_data['scan']
+      raise ::Foreman::Exception, _('Invalid CVE scanner report') unless @raw_data.key?('scan')
 
+      j = @raw_data['scan']
       vuls = {}
       if j.key?('matches') # Grype
         j['matches'].each do |vul|
@@ -119,7 +120,7 @@ module ForemanCveScanner
         end
       else
         Rails.logger.error 'Unsupported cve scanner report format'
-        raise ::Foreman::Exception, _('Invalid report')
+        raise ::Foreman::Exception, _('Unsupported cve scanner report format')
       end
 
       vuls
