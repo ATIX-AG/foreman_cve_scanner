@@ -1,4 +1,3 @@
-#!/usr/bin/env rake
 begin
   require 'bundler/setup'
 rescue LoadError
@@ -14,13 +13,13 @@ end
 
 RDoc::Task.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = 'ForemanPluginTemplate'
+  rdoc.title    = 'ForemanCveScanner'
   rdoc.options << '--line-numbers'
   rdoc.rdoc_files.include('README.rdoc')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-APP_RAKEFILE = File.expand_path('test/dummy/Rakefile', __dir__)
+APP_RAKEFILE = File.expand_path('../test/dummy/Rakefile', __FILE__)
 
 Bundler::GemHelper.install_tasks
 
@@ -38,7 +37,7 @@ task default: :test
 begin
   require 'rubocop/rake_task'
   RuboCop::RakeTask.new
-rescue
+rescue => _
   puts 'Rubocop not loaded.'
 end
 
