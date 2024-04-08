@@ -35,27 +35,21 @@ module ForemanCveScanner
       @logs
     end
 
-    def logs
-      @logs
-    end
-
-    def status
-      @status
-    end
+    attr_reader :logs, :status
 
     def metrics
       res = @status
       res['total'] = @status.values.sum
-      return res
+      res
     end
 
     private
 
     def generate_log_from_unified(id, entry)
-      return {
+      {
         'log': {
           'level': consume_severity_level(entry['severity']),
-          'messages': { 
+          'messages': {
             message: "#{id}: #{entry['title']} # url: #{entry['url']}"
           },
           sources: {
@@ -66,68 +60,70 @@ module ForemanCveScanner
     end
 
     def consume_severity_level(severity)
-      @status[severity.downcase] = 0 unless @status.has_key?(severity.downcase)
+      @status[severity.downcase] = 0 unless @status.key?(severity.downcase)
       @status[severity.downcase] += 1
 
-      log = case severity
-            when 'CRITICAL'
-              'err'
-            when 'HIGH'
-              'warning'
-            when 'MEDIUM'
-              'info'
-            when 'LOW'
-              'debug'
-            else 
-              'info'
-            end
-      return log
+      case severity
+      when 'CRITICAL'
+        'err'
+      when 'HIGH'
+        'warning'
+      when 'MEDIUM'
+        'info'
+      when 'LOW'
+        'debug'
+      else
+        'info'
+      end
     end
 
     def generate_grype_entry(entry)
-      unified = {}
-      unified['name'] = entry['artifact']['name']
-      unified['version'] = entry['artifact']['version']
-      unified['title'] = entry['vulnerability']['description'].gsub(/[\[\]"\\]/, "")
-      unified['severity'] = entry['vulnerability']['severity']
-      unified['url'] = entry['vulnerability']['dataSource']
-      return unified
+      {
+        'name' => entry['artifact']['name'],
+        'version' => entry['artifact']['version'],
+        'title' => entry['vulnerability']['description'].gsub(/[\[\]"\\]/, ''),
+        'severity' => entry['vulnerability']['severity'],
+        'url' => entry['vulnerability']['dataSource']
+      }
     end
 
     def generate_trivy_entry(entry)
-      unified = {}
-      unified['name'] = entry['PkgName']
-      unified['version'] = entry['InstalledVersion']
-      unified['title'] = entry['Title'].gsub(/[\[\]"\\]/, "")
-      unified['severity'] = entry['Severity']
-      unified['url'] = entry['PrimaryURL']  
-      unified['status'] = entry['Status'] 
-      unified['fixed'] = entry['FixedVersion'] || 'open'
-      unified['published'] = entry['PublishedDate'] if entry.has_key?('PublishedDate')
-      return unified
+      unified = {
+        'name' => entry['PkgName'],
+        'version' => entry['InstalledVersion'],
+        'title' => entry['Title'].gsub(/[\[\]"\\]/, ''),
+        'severity' => entry['Severity'],
+        'url' => entry['PrimaryURL'],
+        'status' => entry['Status'],
+        'fixed' => entry['FixedVersion'] || 'open'
+      }
+      unified['published'] = entry['PublishedDate'] if entry.key?('PublishedDate')
+      unified
     end
 
+    # rubocop:disable Metrics/AbcSize
     def generate_unified_vuls
       j = @raw_data['scan']
 
       vuls = {}
-      if j.has_key?('matches')  # Grype
+      if j.key?('matches') # Grype
         j['matches'].each do |vul|
           vuls[vul['vulnerability']['id']] = generate_grype_entry(vul)
         end
-      elsif j.has_key?('Results') # Trivy
+      elsif j.key?('Results') # Trivy
         j['Results'].each do |r|
-          next unless r.has_key? 'Vulnerabilities'
+          next unless r.key? 'Vulnerabilities'
           r['Vulnerabilities'].each do |vul|
             vuls[vul['VulnerabilityID']] = generate_trivy_entry(vul)
           end
-        end   
+        end
       else
-        Rails.logger.error "Unsupported cve scanner report format"
-        raise ::Foreman::Exception.new(_('Invalid report'))
+        Rails.logger.error 'Unsupported cve scanner report format'
+        raise ::Foreman::Exception, _('Invalid report')
       end
 
       vuls
     end
+    # rubocop:enable Metrics/AbcSize
   end
 end

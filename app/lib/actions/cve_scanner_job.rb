@@ -15,16 +15,16 @@ module Actions
 
       def finalize(*_args)
         host = Host.find(input[:host_id])
-        if host.present?
-          cve_scan_report = format_output(task.main_action.continuous_output.humanize)
-          report = Hash.new
-          report["host"] = host.name
-          report["logs"] = []
-          report["scan"] = cve_scan_report
-          report["reported_at"] = Time.now.utc.to_s
-          report['reporter'] = 'cve_scan'
-          ConfigReportImporter::import(report)
-	end
+        return if host.blank?
+
+        report = {
+          'host' => host.name,
+          'logs' => [],
+          'scan' => format_output(task.main_action.continuous_output.humanize),
+          'reported_at' => Time.now.utc.to_s,
+          'reporter' => 'cve_scan'
+        }
+        ConfigReportImporter.import(report)
       end
 
       private
@@ -46,4 +46,3 @@ module Actions
     end
   end
 end
-

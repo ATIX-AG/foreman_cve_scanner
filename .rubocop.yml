@@ -18,7 +18,13 @@ Layout/EmptyLineAfterGuardClause:
   Enabled: false
 
 Layout/LineLength:
-  Enabled: 111 # TODO: discuss and set this
+  Enabled: 120
+
+Metrics/ClassLength:
+  Max: 200
+
+Metrics/MethodLength:
+  Max: 20
 
 Rails:
   Enabled: true
