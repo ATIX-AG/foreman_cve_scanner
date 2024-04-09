@@ -4,11 +4,8 @@ Plugin to
 1. install trivy/grype CVE scanners on a host using a Foreman Remote Execution (REX) job
 2. run a CVE scan using a REX job, collect the output and generate a Config Report
    
-
    ![image](https://github.com/ATIX-AG/foreman_cve_scanner/assets/25485845/85e3b676-7d90-41e5-bea5-7e0b5f4a685c)
 
-Not finished yet....
-   
 
 *Introdction here*
 
@@ -19,11 +16,19 @@ for how to install Foreman plugins
 
 ## Usage
 
-*Usage here*
+- Run the REX job to install trivy and/or grype
+- Run the REX job to scan a host
+- Go to the Config Report page for a host to view the scan report
 
 ## TODO
 
-*Todo list here*
+- Better possiblities to filter the Config Report (maybe an extension to ConfigReport in Foreman)
+- Have a scheduled REX Job to scan the hosts
+- Make it visible on the Host Details page or on Foreman directly, if a high priority CVE on a host occurs
+- Export a CVE scan
+- Deliver trivy / grype via Katello
+- More tests
+- API
 
 ## Contributing
 
