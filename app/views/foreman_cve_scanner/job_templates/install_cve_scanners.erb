@@ -7,27 +7,65 @@ job_category: Security
 provider_type: script
 template_inputs:
 - name: trivy_version
+  description: 'Trivy version to install'
   required: true
   input_type: user
   advanced: false
-  value_type: plain
-  default: 0.48.1
-  hidden_value: false
+  default: 0.53.0
 - name: grype_version
+  description: 'Grype version to install'
   required: true
   input_type: user
   advanced: false
-  value_type: plain
-  default: 0.73.5
-  hidden_value: false
+  default: 0.79.3
+- name: scanner_to_install
+  description: 'Choose which scanner to install (Default: both)'
+  required: false
+  input_type: user
+  advanced: false
+  default: both
+  options: "both\r\ntrivy\r\ngrype"
 %>
 # Install CVE scanners from github
 <%
 trivy_version = input('trivy_version')
 grype_version = input('grype_version')
 
-trivy_url = "https://github.com/aquasecurity/trivy/releases/download/v#{trivy_version}/trivy_#{trivy_version}_Linux-64bit.rpm"
-grype_url = "https://github.com/anchore/grype/releases/download/v#{grype_version}/grype_#{grype_version}_linux_amd64.rpm"
+case @host.operatingsystem.family.to_s
+when 'Debian'
+  pkg = 'deb'
+when 'Redhat', 'Suse'
+  pkg = 'rpm'
+else
+  raise("OS '#{@host.operatingsystem.family}' not supported by template #{template_name}")
+end
+
+case @host.architecture.to_s
+when 'x86_64'
+  trivy_arch = 'Linux-64bit'
+  grype_arch = 'linux-amd64'
+when 'ppc64le'
+  trivy_arch = 'Linux-PPC64LE'
+  grype_arch = 'linux-ppc64le'
+when 'aarch64'
+  trivy_arch = 'Linux-ARM64'
+  grype_arch = 'linux-arm64'
+else
+  raise("Architecture '#{@host.architecture}' not supported by template #{template_name}")
+end
+
+trivy_url = "https://github.com/aquasecurity/trivy/releases/download/v#{trivy_version}/trivy_#{trivy_version}_#{trivy_arch}.#{pkg}"
+grype_url = "https://github.com/anchore/grype/releases/download/v#{grype_version}/grype_#{grype_version}_#{grype_arch}.#{pkg}"
+
+case @host.operatingsystem.family
+when 'Debian'
+  trivy_install_cmd = "wget -o /tmp/outfile.deb #{trivy_url} && dpkg -i /tmp/outfile.deb; rm -f /tmp/outfile.deb"
+  grype_install_cmd = "wget -o /tmp/outfile.deb #{grype_url} && dpkg -i /tmp/outfile.deb; rm -f /tmp/outfile.deb"
+when 'Redhat', 'Suse'
+  trivy_install_cmd = "rpm -ivh #{trivy_url}"
+  grype_install_cmd = "rpm -ivh #{grype_url}"
+end
 -%>
 
-yum install --assumeyes <%= trivy_url %> <%= grype_url %>
+<%= trivy_install_cmd if input('scanner_to_install') == 'both' || input('scanner_to_install') == 'trivy' %>
+<%= grype_install_cmd if input('scanner_to_install') == 'both' || input('scanner_to_install') == 'grype' %>
