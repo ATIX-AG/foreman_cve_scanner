@@ -54,7 +54,7 @@ scanners = {
 
 if scanner == 'trivy'
     cmd = "#{scanners[:trivy][target]} #{path}"
-    options += " --scanners vuln --quiet --format json"
+    options += " --exit-code 0 --scanners vuln --quiet --format json"
 elsif scanner == 'grype'
     cmd = "#{scanners[:grype][target]}:#{path}"
     options += " --quiet --quiet --output json"
