@@ -1,9 +1,6 @@
 # See the documentation for more information:
 # https://packit.dev/docs/configuration/
 
-# FIXME: remove this line when the plugin is packaged in nightly to enable packit builds
-packit_instances: []
-
 specfile_path: rubygem-foreman_cve_scanner.spec
 
 # add or remove files that should be synced
