@@ -4,14 +4,13 @@ module ForemanCveScanner
   class Engine < ::Rails::Engine
     engine_name 'foreman_cve_scanner'
 
-    config.autoload_paths += Dir["#{config.root}/app/services"]
-    config.autoload_paths += Dir["#{config.root}/app/lib"]
-
-    initializer 'foreman_cve_scanner.register_plugin', :before => :finisher_hook do |_app|
-      Foreman::Plugin.register :foreman_cve_scanner do
-        requires_foreman '>= 3.5.0'
-        register_report_scanner ForemanCveScanner::CveReportScanner
-        register_report_origin 'CveScanner', 'ConfigReport'
+    initializer 'foreman_cve_scanner.register_plugin', :before => :finisher_hook do |app|
+      app.reloader.to_prepare do
+        Foreman::Plugin.register :foreman_cve_scanner do
+          requires_foreman '>= 3.13'
+          register_report_scanner ForemanCveScanner::CveReportScanner
+          register_report_origin 'CveScanner', 'ConfigReport'
+        end
       end
     end
 
