@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.7', '< 4'
 
-  s.add_dependency 'foreman_remote_execution', '>= 9.0', '< 15'
+  s.add_dependency 'foreman_remote_execution', '>= 9.0', '< 17'
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rdoc'
