@@ -1,12 +1,10 @@
 ---
-name: Ruby Testing
-
-on:
-  pull_request:
+name: Ruby Tests
+"on":
   push:
     branches:
-      - 'main'
-      - '*-stable'
+      - main
+  pull_request:
 
 concurrency:
   group: ${{ github.ref_name }}-${{ github.workflow }}
@@ -14,12 +12,14 @@ concurrency:
 
 jobs:
   rubocop:
-    name: Rubocop
     uses: theforeman/actions/.github/workflows/rubocop.yml@v0
+    with:
+      command: bundle exec rubocop --parallel
 
-  test_ruby:
+  test:
     name: Ruby
     needs: rubocop
     uses: theforeman/actions/.github/workflows/foreman_plugin.yml@v0
     with:
       plugin: foreman_cve_scanner
+      matrix_exclude: '[{"ruby": "3.0", "node": "14"}]'
