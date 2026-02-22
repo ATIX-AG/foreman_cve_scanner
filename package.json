@@ -1,0 +1,48 @@
+{
+  "name": "foreman_cve_scanner",
+  "version": "0.5.0",
+  "description": "Run CVE scan on host and collect report",
+  "main": "webpack/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "lint": "tfm-lint --plugin -d /webpack",
+    "test": "tfm-test --plugin",
+    "create-react-component": "yo react-domain"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ATIX-AG/foreman_cve_scanner.git"
+  },
+  "peerDependencies": {
+    "@theforeman/vendor": ">= 8.16.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.0",
+    "@theforeman/builder": "^15.0.0",
+    "@theforeman/eslint-plugin-foreman": "^15.0.0",
+    "@theforeman/find-foreman": "^15.0.0",
+    "@theforeman/vendor-dev": "^15.0.0",
+    "babel-eslint": ">= 10.0.3",
+    "eslint": "^6.7.2",
+    "eslint-plugin-react": ">= 7.27.1",
+    "eslint-plugin-react-hooks": ">= 4.3.0",
+    "eslint-plugin-spellcheck": ">= 0.0.17",
+    "prettier": "^1.19.1"
+  },
+  "keywords": [
+    "CVE",
+    "Trivy",
+    "Grype",
+    "security",
+    "Foreman"
+  ],
+  "author": "ATIX AG",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/ATIX-AG/foreman_cve_scanner/issues"
+  },
+  "homepage": "https://github.com/ATIX-AG/foreman_cve_scanner#readme"
+}

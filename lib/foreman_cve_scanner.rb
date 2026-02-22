@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 require 'foreman_cve_scanner/engine'
 
-module ForemanPluginTemplate
+# Foreman CVE Scanner plugin namespace.
+module ForemanCveScanner
 end

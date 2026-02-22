@@ -1,13 +1,27 @@
 # ForemanCveScanner
 
-Plugin to 
-1. install trivy/grype CVE scanners on a host using a Foreman Remote Execution (REX) job
-2. run a CVE scan using a REX job, collect the output and generate a Config Report
-   
-   ![image](https://github.com/ATIX-AG/foreman_cve_scanner/assets/25485845/85e3b676-7d90-41e5-bea5-7e0b5f4a685c)
+Version: 0.5.0
 
+Plugin to:
+1. install Trivy/Grype on a host using Foreman Remote Execution (REX)
+2. run CVE scans via REX and parse the results
+3. store scan history per host in a dedicated table
+4. expose scan data via API
+5. show CVE findings in the Host details UI
+6. show summary status in the Hosts list
 
-*Introdction here*
+![image](https://github.com/ATIX-AG/foreman_cve_scanner/assets/25485845/85e3b676-7d90-41e5-bea5-7e0b5f4a685c)
+
+## Features
+
+- REX job templates for installing and running CVE scans
+- JSON output parsing with robust handling of chunked stdout
+- Per-host scan history with totals and severity counts
+- API endpoints for scan history and latest scan
+- Host Details card with findings and modal view
+- Host Details tab “CVE scans” for full history
+- Hosts overview list column “CVE” with quick summary and modal
+- Integrated in the Host Status
 
 ## Installation
 
@@ -16,19 +30,18 @@ for how to install Foreman plugins
 
 ## Usage
 
-- Run the REX job to install trivy and/or grype
+- Run the REX job to install Trivy and/or Grype
 - Run the REX job to scan a host
-- Go to the Config Report page for a host to view the scan report
+- You can configure recurring CVE scans via `Monitor -> Jobs`
+- View results in:
+  - Hosts overview list column “CVE” (use 'Manage Columns' to enable)
+  - Host Details card and modal
+  - Host Details tab “CVE scans”
 
 ## TODO
 
-- Better possiblities to filter the Config Report (maybe an extension to ConfigReport in Foreman)
-- Have a scheduled REX Job to scan the hosts
-- Make it visible on the Host Details page or on Foreman directly, if a high priority CVE on a host occurs
-- Export a CVE scan
-- Deliver trivy / grype via Katello
-- More tests
-- API
+- Export scan results
+- Deliver Trivy/Grype via Katello
 
 ## Contributing
 
@@ -50,4 +63,3 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
