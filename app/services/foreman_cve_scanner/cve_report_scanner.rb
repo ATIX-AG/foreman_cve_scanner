@@ -1,17 +1,10 @@
 # frozen_string_literal: true
 
 module ForemanCveScanner
-  # Scans ConfigReports after import for indicators of an CveScanner report and
-  # sets the origin of the report to 'CveScanner'
+  # Parses raw CVE scanner reports and produces unified logs/metrics.
+  # rubocop:disable Metrics/ClassLength
   class CveReportScanner
-    def self.add_reporter_data(_report, raw)
-      scanner = ForemanCveScanner::CveReportScanner.new(raw)
-      scanner.generate
-      raw['logs'] = scanner.logs
-      raw['status'] = scanner.status
-      raw['metrics'] = scanner.metrics
-      raw['report_status_calculator_options'] = { :metrics => %w[critical high medium low total] }
-    end
+    SEVERITY_ORDER = %w[CRITICAL HIGH MEDIUM LOW UNKNOWN].freeze
 
     def self.identify_origin(raw)
       'CveScanner' if cve_scanner_report?(raw)
@@ -37,9 +30,21 @@ module ForemanCveScanner
 
     attr_reader :logs, :status
 
+    def unified_vulnerabilities
+      @cve_report_data
+    end
+
+    def self.detect_scanner(scan_json)
+      return 'grype' if scan_json.is_a?(Hash) && scan_json.key?('matches')
+      return 'trivy' if scan_json.is_a?(Hash) && scan_json.key?('Results')
+
+      'unknown'
+    end
+
     def metrics
-      res = @status
-      res['total'] = @status.values.sum
+      known = %w[critical high medium low]
+      res = @status.slice(*known)
+      res['total'] = res.values.sum
       res
     end
 
@@ -47,34 +52,29 @@ module ForemanCveScanner
 
     def generate_log_from_unified(id, entry)
       {
-        'log': {
-          'level': consume_severity_level(entry['severity']),
-          'messages': {
-            message: "#{id}: #{entry['title']} # url: #{entry['url']}"
+        log: {
+          level: consume_severity_level(entry['severity']),
+          messages: {
+            message: "#{id}: #{entry['title']} # url: #{entry['url']}",
           },
           sources: {
-            source: "#{entry['name']} @ #{entry['version']}"
-          }
-        }
+            source: "#{entry['name']} @ #{entry['version']}",
+          },
+        },
       }.deep_stringify_keys
     end
 
     def consume_severity_level(severity)
+      severity = severity.to_s.strip.upcase
       @status[severity.downcase] = 0 unless @status.key?(severity.downcase)
       @status[severity.downcase] += 1
 
-      case severity
-      when 'CRITICAL'
-        'err'
-      when 'HIGH'
-        'warning'
-      when 'MEDIUM'
-        'info'
-      when 'LOW'
-        'debug'
-      else
-        'info'
-      end
+      {
+        'CRITICAL' => 'err',
+        'HIGH' => 'warning',
+        'MEDIUM' => 'info',
+        'LOW' => 'debug',
+      }.fetch(severity, 'info')
     end
 
     def generate_grype_entry(entry)
@@ -83,7 +83,7 @@ module ForemanCveScanner
         'version' => entry['artifact']['version'],
         'title' => entry['vulnerability']['description'].gsub(/[\[\]"\\]/, ''),
         'severity' => entry['vulnerability']['severity'],
-        'url' => entry['vulnerability']['dataSource']
+        'url' => entry['vulnerability']['dataSource'],
       }
     end
 
@@ -95,13 +95,13 @@ module ForemanCveScanner
         'severity' => entry['Severity'],
         'url' => entry['PrimaryURL'],
         'status' => entry['Status'],
-        'fixed' => entry['FixedVersion'] || 'open'
+        'fixed' => entry['FixedVersion'] || 'open',
       }
       unified['published'] = entry['PublishedDate'] if entry.key?('PublishedDate')
       unified
     end
 
-    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     def generate_unified_vuls
       raise ::Foreman::Exception, _('Invalid CVE scanner report') unless @raw_data.key?('scan')
 
@@ -114,6 +114,7 @@ module ForemanCveScanner
       elsif j.key?('Results') # Trivy
         j['Results'].each do |r|
           next unless r.key? 'Vulnerabilities'
+
           r['Vulnerabilities'].each do |vul|
             vuls[vul['VulnerabilityID']] = generate_trivy_entry(vul)
           end
@@ -125,6 +126,7 @@ module ForemanCveScanner
 
       vuls
     end
-    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   end
+  # rubocop:enable Metrics/ClassLength
 end

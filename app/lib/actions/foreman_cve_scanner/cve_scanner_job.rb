@@ -2,6 +2,7 @@
 
 module Actions
   module ForemanCveScanner
+    # Dynflow action that parses a CVE scan job output and stores the results.
     class CveScannerJob < Actions::EntryAction
       def self.subscribe
         Actions::RemoteExecution::RunHostJob
@@ -15,16 +16,9 @@ module Actions
 
       def finalize(*_args)
         host = Host.find(input[:host_id])
-        return if host.blank?
 
-        report = {
-          'host' => host.name,
-          'logs' => [],
-          'scan' => format_output(task.main_action.continuous_output.humanize),
-          'reported_at' => Time.now.utc.to_s,
-          'reporter' => 'cve_scan'
-        }
-        ConfigReportImporter.import(report)
+        ::ForemanCveScanner::ScanImporter.new(task.main_action.continuous_output)
+                                         .import_for_host!(host)
       end
 
       private
@@ -33,15 +27,6 @@ module Actions
         RemoteExecutionFeature.where(job_template_id: job_invocation.pattern_template_invocations
                                                                     .first
                                                                     .template_id, label: feature).any?
-      end
-
-      def format_output(job_output)
-        output = job_output.each_line(chomp: true)
-                           .drop_while { |l| !l.start_with? '===START' }.drop(1)
-                           .take_while { |l| !l.start_with? '===END' }
-                           .reject(&:empty?)
-                           .join('')
-        JSON.parse(output)
       end
     end
   end
