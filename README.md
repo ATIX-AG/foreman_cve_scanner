@@ -8,10 +8,9 @@ Plugin to:
 5. show CVE findings in the Host details UI
 6. show summary status in the Hosts list
 
-![image](https://github.com/ATIX-AG/foreman_cve_scanner/assets/25485845/85e3b676-7d90-41e5-bea5-7e0b5f4a685c)
-
 ## Features
 
+- Support for Trivy and Grype scanners
 - REX job templates for installing and running CVE scans
 - JSON output parsing with robust handling of chunked stdout
 - Per-host scan history with totals and severity counts
@@ -20,6 +19,7 @@ Plugin to:
 - Host Details tab “CVE scans” for full history
 - Hosts overview list column “CVE” with quick summary and modal
 - Integrated in the Host Status
+- Export scan results as CSV
 
 ## Installation
 
@@ -38,7 +38,6 @@ for how to install Foreman plugins
 
 ## TODO
 
-- Export scan results
 - Deliver Trivy/Grype via Katello
 
 ## Contributing
