@@ -24,7 +24,11 @@ import { foremanUrl } from 'foremanReact/common/helpers';
 import { translate as __ } from 'foremanReact/common/I18n';
 import { STATUS } from 'foremanReact/constants';
 import SeverityIcon from './SeverityIcon';
-import { compareStrings, formatDateTime, severityRank } from './cve_helpers';
+import {
+  findingMatchesSearch,
+  findingSorters,
+  formatDateTime,
+} from './cve_helpers';
 import './cve_scans.scss';
 
 const SEVERITY_OPTIONS = ['all', 'critical', 'high', 'medium', 'low'];
@@ -84,48 +88,19 @@ const CveFindingsModal = ({
   const visibleFindings = useMemo(() => {
     if (!normalizedSearch) return filteredFindings;
     return filteredFindings.filter(finding =>
-      [
-        finding.id,
-        finding.name,
-        finding.version,
-        finding.fixed,
-        finding.status,
-        finding.title,
-        finding.url,
-        finding.severity,
-      ]
-        .some(value =>
-          (value || '').toString().toLowerCase().includes(normalizedSearch)
-        )
+      findingMatchesSearch(finding, normalizedSearch)
     );
   }, [filteredFindings, normalizedSearch]);
-
-  const formatPublished = formatDateTime;
-
-  const sorters = useMemo(
-    () => ({
-      published: (a, b) =>
-        new Date(a.published || 0) - new Date(b.published || 0),
-      name: (a, b) => compareStrings(a.name, b.name),
-      version: (a, b) => compareStrings(a.version, b.version),
-      fixed: (a, b) => compareStrings(a.fixed, b.fixed),
-      id: (a, b) => compareStrings(a.id, b.id),
-      status: (a, b) => compareStrings(a.status, b.status),
-      title: (a, b) => compareStrings(a.title, b.title),
-      severity: (a, b) => severityRank(a.severity) - severityRank(b.severity),
-    }),
-    []
-  );
   const sortedFindings = useMemo(() => {
     const list = [...visibleFindings];
     const sortKey = sortBy.column || 'severity';
-    const sorter = sorters[sortKey] || sorters.severity;
+    const sorter = findingSorters[sortKey] || findingSorters.severity;
     list.sort((a, b) => {
       const result = sorter(a, b);
       return sortBy.direction === SortByDirection.asc ? result : -result;
     });
     return list;
-  }, [visibleFindings, sortBy, sorters]);
+  }, [visibleFindings, sortBy]);
 
   const onSort = column => {
     const nextDirection =
@@ -150,7 +125,7 @@ const CveFindingsModal = ({
     <Modal
       title={
         payload?.created_at && typeof payload?.total !== 'undefined'
-          ? `${__('Report from')} ${formatPublished(payload.created_at)} - ${__(
+          ? `${__('Report from')} ${formatDateTime(payload.created_at)} - ${__(
               'Total'
             )}: ${payload.total}`
           : __('CVE findings')
@@ -268,7 +243,7 @@ const CveFindingsModal = ({
                         </span>
                       </Td>
                       <Td dataLabel={__('Published')}>
-                        {formatPublished(finding.published)}
+                        {formatDateTime(finding.published)}
                       </Td>
                       <Td dataLabel={__('Package')}>{finding.name}</Td>
                       <Td dataLabel={__('Affected version')}>
@@ -282,7 +257,11 @@ const CveFindingsModal = ({
                       </Td>
                       <Td dataLabel={__('CVE')}>
                         {finding.url ? (
-                          <a href={finding.url} target="_blank" rel="noreferrer">
+                          <a
+                            href={finding.url}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
                             {finding.id}
                           </a>
                         ) : (
@@ -303,7 +282,6 @@ const CveFindingsModal = ({
     </Modal>
   );
 };
-
 CveFindingsModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
