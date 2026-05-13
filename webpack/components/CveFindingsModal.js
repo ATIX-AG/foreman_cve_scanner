@@ -8,6 +8,7 @@ import {
   Text,
   TextVariants,
   FormGroup,
+  SearchInput,
 } from '@patternfly/react-core';
 import {
   Table,
@@ -46,6 +47,7 @@ const CveFindingsModal = ({
   initialFilter,
 }) => {
   const [filter, setFilter] = useState(initialFilter || 'all');
+  const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState({
     direction: SortByDirection.desc,
     column: 'severity',
@@ -65,6 +67,7 @@ const CveFindingsModal = ({
   useEffect(() => {
     if (!isOpen) return;
     setFilter(initialFilter || 'all');
+    setSearch('');
   }, [initialFilter, isOpen, scanId]);
 
   const payload = response || {};
@@ -77,6 +80,25 @@ const CveFindingsModal = ({
       f => (f.severity || '').toLowerCase() === normalizedFilter
     );
   }, [normalizedFilter, findings]);
+  const normalizedSearch = search.trim().toLowerCase();
+  const visibleFindings = useMemo(() => {
+    if (!normalizedSearch) return filteredFindings;
+    return filteredFindings.filter(finding =>
+      [
+        finding.id,
+        finding.name,
+        finding.version,
+        finding.fixed,
+        finding.status,
+        finding.title,
+        finding.url,
+        finding.severity,
+      ]
+        .some(value =>
+          (value || '').toString().toLowerCase().includes(normalizedSearch)
+        )
+    );
+  }, [filteredFindings, normalizedSearch]);
 
   const formatPublished = formatDateTime;
 
@@ -95,7 +117,7 @@ const CveFindingsModal = ({
     []
   );
   const sortedFindings = useMemo(() => {
-    const list = [...filteredFindings];
+    const list = [...visibleFindings];
     const sortKey = sortBy.column || 'severity';
     const sorter = sorters[sortKey] || sorters.severity;
     list.sort((a, b) => {
@@ -103,7 +125,7 @@ const CveFindingsModal = ({
       return sortBy.direction === SortByDirection.asc ? result : -result;
     });
     return list;
-  }, [filteredFindings, sortBy, sorters]);
+  }, [visibleFindings, sortBy, sorters]);
 
   const onSort = column => {
     const nextDirection =
@@ -111,6 +133,17 @@ const CveFindingsModal = ({
         ? SortByDirection.desc
         : SortByDirection.asc;
     setSortBy({ column, direction: nextDirection });
+  };
+  const onSearchChange = (value, event) => {
+    if (typeof value === 'string') {
+      setSearch(value);
+      return;
+    }
+    if (typeof event === 'string') {
+      setSearch(event);
+      return;
+    }
+    setSearch(value?.target?.value || event?.target?.value || '');
   };
 
   return (
@@ -145,7 +178,18 @@ const CveFindingsModal = ({
       ) : (
         <div className="cve-modal-body">
           <div className="cve-modal-filters">
-            <FormGroup fieldId="cve-filter">
+            <FormGroup fieldId="cve-search" className="cve-modal-search">
+              <SearchInput
+                id="cve-search"
+                value={search}
+                onChange={onSearchChange}
+                onClear={() => setSearch('')}
+                onSearch={onSearchChange}
+                placeholder={__('Search CVE, package, status, title...')}
+                aria-label={__('Search CVE report')}
+              />
+            </FormGroup>
+            <FormGroup fieldId="cve-filter" className="cve-modal-quick-filters">
               <div className="cve-filter-buttons">
                 {SEVERITY_OPTIONS.map(opt => (
                   <button
