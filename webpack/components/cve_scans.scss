@@ -136,11 +136,15 @@ button.cve-summary {
 }
 
 .cve-modal-body {
+  display: flex;
+  flex-direction: column;
+  height: min(60vh, 34rem);
   position: relative;
-  min-height: 420px;
+  min-height: 26rem;
 }
 
 .cve-modal-filters {
+  flex: 0 0 auto;
   align-items: flex-end;
   display: flex;
   flex-wrap: wrap;
@@ -163,6 +167,12 @@ button.cve-summary {
 
 .cve-modal-quick-filters .cve-filter-buttons {
   justify-content: flex-end;
+}
+
+.cve-modal-results {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
 }
 
 .cve-more {

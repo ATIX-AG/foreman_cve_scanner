@@ -210,92 +210,94 @@ const CveFindingsModal = ({
             </FormGroup>
           </div>
 
-          {response?.error && (
-            <Text component={TextVariants.small} ouiaId="cve-findings-error">
-              {response.error.message}
-            </Text>
-          )}
-          {sortedFindings.length === 0 && !response?.error ? (
-            <Text component={TextVariants.small} ouiaId="cve-findings-empty">
-              {__('No findings for selected filter')}
-            </Text>
-          ) : (
-            <Table
-              variant="compact"
-              aria-label="CVE findings table"
-              ouiaId="cve-findings-table"
-            >
-              <Thead>
-                <Tr ouiaId="cve-findings-header">
-                  {COLUMNS.map(col => (
-                    <Th
-                      key={col.key}
-                      className={`cve-col-${col.key} cve-sortable`}
-                      aria-label={
-                        col.key === 'severity' ? __('Severity') : undefined
-                      }
-                      onClick={() => onSort(col.key)}
-                    >
-                      {col.key === 'severity' ? (
-                        <SeverityIcon severity="high" />
-                      ) : (
-                        col.label
-                      )}
-                      {sortBy.column === col.key && (
-                        <span className="cve-sort-indicator">
-                          {sortBy.direction === SortByDirection.asc
-                            ? ' ▲'
-                            : ' ▼'}
-                        </span>
-                      )}
-                    </Th>
-                  ))}
-                </Tr>
-              </Thead>
-              <Tbody>
-                {sortedFindings.map((finding, index) => (
-                  <Tr key={finding.id} ouiaId={`cve-findings-row-${index}`}>
-                    <Td dataLabel={__('Severity')}>
-                      <span
-                        className="cve-summary cve-summary--icon-only"
-                        title={finding.severity}
-                        aria-label={finding.severity}
+          <div className="cve-modal-results">
+            {response?.error && (
+              <Text component={TextVariants.small} ouiaId="cve-findings-error">
+                {response.error.message}
+              </Text>
+            )}
+            {sortedFindings.length === 0 && !response?.error ? (
+              <Text component={TextVariants.small} ouiaId="cve-findings-empty">
+                {__('No findings for selected filter')}
+              </Text>
+            ) : (
+              <Table
+                variant="compact"
+                aria-label="CVE findings table"
+                ouiaId="cve-findings-table"
+              >
+                <Thead>
+                  <Tr ouiaId="cve-findings-header">
+                    {COLUMNS.map(col => (
+                      <Th
+                        key={col.key}
+                        className={`cve-col-${col.key} cve-sortable`}
+                        aria-label={
+                          col.key === 'severity' ? __('Severity') : undefined
+                        }
+                        onClick={() => onSort(col.key)}
                       >
-                        <SeverityIcon
-                          severity={(finding.severity || '').toLowerCase()}
-                        />
-                      </span>
-                    </Td>
-                    <Td dataLabel={__('Published')}>
-                      {formatPublished(finding.published)}
-                    </Td>
-                    <Td dataLabel={__('Package')}>{finding.name}</Td>
-                    <Td dataLabel={__('Affected version')}>
-                      {finding.version}
-                    </Td>
-                    <Td dataLabel={__('Fixed version')} title={finding.fixed}>
-                      <span className="cve-truncate">{finding.fixed}</span>
-                    </Td>
-                    <Td dataLabel={__('Status')}>
-                      {finding.status || __('open')}
-                    </Td>
-                    <Td dataLabel={__('CVE')}>
-                      {finding.url ? (
-                        <a href={finding.url} target="_blank" rel="noreferrer">
-                          {finding.id}
-                        </a>
-                      ) : (
-                        finding.id
-                      )}
-                    </Td>
-                    <Td dataLabel={__('Title')} title={finding.title}>
-                      <span className="cve-truncate">{finding.title}</span>
-                    </Td>
+                        {col.key === 'severity' ? (
+                          <SeverityIcon severity="high" />
+                        ) : (
+                          col.label
+                        )}
+                        {sortBy.column === col.key && (
+                          <span className="cve-sort-indicator">
+                            {sortBy.direction === SortByDirection.asc
+                              ? ' ▲'
+                              : ' ▼'}
+                          </span>
+                        )}
+                      </Th>
+                    ))}
                   </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          )}
+                </Thead>
+                <Tbody>
+                  {sortedFindings.map((finding, index) => (
+                    <Tr key={finding.id} ouiaId={`cve-findings-row-${index}`}>
+                      <Td dataLabel={__('Severity')}>
+                        <span
+                          className="cve-summary cve-summary--icon-only"
+                          title={finding.severity}
+                          aria-label={finding.severity}
+                        >
+                          <SeverityIcon
+                            severity={(finding.severity || '').toLowerCase()}
+                          />
+                        </span>
+                      </Td>
+                      <Td dataLabel={__('Published')}>
+                        {formatPublished(finding.published)}
+                      </Td>
+                      <Td dataLabel={__('Package')}>{finding.name}</Td>
+                      <Td dataLabel={__('Affected version')}>
+                        {finding.version}
+                      </Td>
+                      <Td dataLabel={__('Fixed version')} title={finding.fixed}>
+                        <span className="cve-truncate">{finding.fixed}</span>
+                      </Td>
+                      <Td dataLabel={__('Status')}>
+                        {finding.status || __('open')}
+                      </Td>
+                      <Td dataLabel={__('CVE')}>
+                        {finding.url ? (
+                          <a href={finding.url} target="_blank" rel="noreferrer">
+                            {finding.id}
+                          </a>
+                        ) : (
+                          finding.id
+                        )}
+                      </Td>
+                      <Td dataLabel={__('Title')} title={finding.title}>
+                        <span className="cve-truncate">{finding.title}</span>
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            )}
+          </div>
         </div>
       )}
     </Modal>
