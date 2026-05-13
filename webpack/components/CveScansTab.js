@@ -3,6 +3,7 @@ import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button,
+  Checkbox,
   Pagination,
   EmptyState,
   EmptyStateIcon,
@@ -18,7 +19,9 @@ import SkeletonLoader from 'foremanReact/components/common/SkeletonLoader';
 import { STATUS } from 'foremanReact/constants';
 import RelativeDateTime from 'foremanReact/components/common/dates/RelativeDateTime';
 import CveFindingsModal from './CveFindingsModal';
+import CveCompareModal from './CveCompareModal';
 import { noReportsBody, noReportsTitle } from './cve_helpers';
+import './cve_scans.scss';
 
 const DEFAULT_PER_PAGE = 20;
 
@@ -27,8 +30,10 @@ const CveScansTab = ({ response }) => {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(DEFAULT_PER_PAGE);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [modalScanId, setModalScanId] = useState(null);
   const [modalFilter, setModalFilter] = useState('all');
+  const [selectedScanIds, setSelectedScanIds] = useState([]);
 
   const historyUrl = hostId
     ? foremanUrl(
@@ -40,6 +45,21 @@ const CveScansTab = ({ response }) => {
   });
 
   const scans = useMemo(() => apiResponse?.results || [], [apiResponse]);
+  const selectedScans = useMemo(
+    () => scans.filter(scan => selectedScanIds.includes(scan.id)),
+    [scans, selectedScanIds]
+  );
+  const orderedCompareIds = useMemo(
+    () =>
+      [...selectedScans]
+        .sort(
+          (a, b) =>
+            new Date(a.created_at || 0).getTime() -
+            new Date(b.created_at || 0).getTime()
+        )
+        .map(scan => scan.id),
+    [selectedScans]
+  );
   const itemCount = apiResponse?.total ?? scans.length;
   if (!hostId) return null;
 
@@ -51,11 +71,25 @@ const CveScansTab = ({ response }) => {
   const exportUrlFor = scanId =>
     foremanUrl(`/api/v2/hosts/${hostId}/cve_scans/${scanId}/export`);
 
-  const onSetPage = (_event, newPage) => setPage(newPage);
+  const onSetPage = (_event, newPage) => {
+    setPage(newPage);
+    setSelectedScanIds([]);
+  };
   const onPerPageSelect = (_event, newPerPage) => {
     setPerPage(newPerPage);
     setPage(1);
+    setSelectedScanIds([]);
   };
+  const toggleScanSelection = scanId => {
+    setSelectedScanIds(currentSelection => {
+      if (currentSelection.includes(scanId)) {
+        return currentSelection.filter(id => id !== scanId);
+      }
+      if (currentSelection.length >= 2) return currentSelection;
+      return [...currentSelection, scanId];
+    });
+  };
+  const clearSelection = () => setSelectedScanIds([]);
 
   return (
     <>
@@ -70,16 +104,39 @@ const CveScansTab = ({ response }) => {
           </EmptyState>
         ) : (
           <>
-            <Pagination
-              itemCount={itemCount}
-              perPage={perPage}
-              page={page}
-              onSetPage={onSetPage}
-              onPerPageSelect={onPerPageSelect}
-              variant="top"
-              isCompact
-              ouiaId="cve-scans-pagination"
-            />
+            <div className="cve-scans-toolbar">
+              <Pagination
+                itemCount={itemCount}
+                perPage={perPage}
+                page={page}
+                onSetPage={onSetPage}
+                onPerPageSelect={onPerPageSelect}
+                variant="top"
+                isCompact
+                ouiaId="cve-scans-pagination"
+              />
+              <div className="cve-scans-actions">
+                <span className="cve-scans-selection">
+                  {__('Selected')}: {selectedScans.length}/2
+                </span>
+                <Button
+                  variant="secondary"
+                  isDisabled={selectedScans.length !== 2}
+                  onClick={() => setIsCompareOpen(true)}
+                  ouiaId="cve-scans-compare"
+                >
+                  {__('Compare selected')}
+                </Button>
+                <Button
+                  variant="link"
+                  isDisabled={selectedScans.length === 0}
+                  onClick={clearSelection}
+                  ouiaId="cve-scans-clear-selection"
+                >
+                  {__('Clear selection')}
+                </Button>
+              </div>
+            </div>
             <Table
               variant="compact"
               aria-label="CVE scans history"
@@ -87,6 +144,7 @@ const CveScansTab = ({ response }) => {
             >
               <Thead>
                 <Tr ouiaId="cve-scans-header">
+                  <Th>{__('Select')}</Th>
                   <Th>{__('Reported at')}</Th>
                   <Th>{__('Scanner')}</Th>
                   <Th>{__('Total')}</Th>
@@ -100,6 +158,18 @@ const CveScansTab = ({ response }) => {
               <Tbody>
                 {scans.map((scan, index) => (
                   <Tr key={scan.id} ouiaId={`cve-scans-row-${index}`}>
+                    <Td dataLabel={__('Select')}>
+                      <Checkbox
+                        id={`cve-scan-select-${scan.id}`}
+                        isChecked={selectedScanIds.includes(scan.id)}
+                        isDisabled={
+                          selectedScanIds.length === 2 &&
+                          !selectedScanIds.includes(scan.id)
+                        }
+                        onChange={() => toggleScanSelection(scan.id)}
+                        aria-label={__('Select scan for comparison')}
+                      />
+                    </Td>
                     <Td dataLabel={__('Reported at')}>
                       <Button
                         variant="link"
@@ -187,6 +257,12 @@ const CveScansTab = ({ response }) => {
         hostId={hostId}
         scanId={modalScanId}
         initialFilter={modalFilter}
+      />
+      <CveCompareModal
+        isOpen={isCompareOpen}
+        onClose={() => setIsCompareOpen(false)}
+        hostId={hostId}
+        scanIds={orderedCompareIds}
       />
     </>
   );
