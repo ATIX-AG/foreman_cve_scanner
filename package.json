@@ -1,6 +1,6 @@
 {
   "name": "foreman_cve_scanner",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Run CVE scan on host and collect report",
   "main": "webpack/index.js",
   "directories": {

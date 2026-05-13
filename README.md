@@ -1,7 +1,5 @@
 # ForemanCveScanner
 
-Version: 0.5.0
-
 Plugin to:
 1. install Trivy/Grype on a host using Foreman Remote Execution (REX)
 2. run CVE scans via REX and parse the results
