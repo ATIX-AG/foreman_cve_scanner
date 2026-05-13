@@ -59,13 +59,26 @@ grype_url = "https://github.com/anchore/grype/releases/download/v#{grype_version
 
 case @host.operatingsystem.family
 when 'Debian'
-  trivy_install_cmd = "wget -o /tmp/outfile.deb #{trivy_url} && dpkg -i /tmp/outfile.deb; rm -f /tmp/outfile.deb"
-  grype_install_cmd = "wget -o /tmp/outfile.deb #{grype_url} && dpkg -i /tmp/outfile.deb; rm -f /tmp/outfile.deb"
+  trivy_download_cmd = "wget -O /tmp/trivy.deb \"#{trivy_url}\""
+  grype_download_cmd = "wget -O /tmp/grype.deb \"#{grype_url}\""
+  trivy_install_cmd = "dpkg -i /tmp/trivy.deb"
+  grype_install_cmd = "dpkg -i /tmp/grype.deb"
+  trivy_cleanup_cmd = "rm -f /tmp/trivy.deb"
+  grype_cleanup_cmd = "rm -f /tmp/grype.deb"
 when 'Redhat', 'Suse'
-  trivy_install_cmd = "rpm -ivh #{trivy_url}"
-  grype_install_cmd = "rpm -ivh #{grype_url}"
+  trivy_install_cmd = "rpm -ivh \"#{trivy_url}\""
+  grype_install_cmd = "rpm -ivh \"#{grype_url}\""
 end
 -%>
 
-<%= trivy_install_cmd if input('scanner_to_install') == 'both' || input('scanner_to_install') == 'trivy' %>
-<%= grype_install_cmd if input('scanner_to_install') == 'both' || input('scanner_to_install') == 'grype' %>
+<% if input('scanner_to_install') == 'both' || input('scanner_to_install') == 'trivy' -%>
+<%= trivy_download_cmd unless trivy_install_cmd.nil? %>
+<%= trivy_install_cmd %>
+<%= trivy_cleanup_cmd unless trivy_cleanup_cmd.nil? %>
+<% end -%>
+
+<% if input('scanner_to_install') == 'both' || input('scanner_to_install') == 'grype' -%>
+<%= grype_download_cmd unless grype_download_cmd.nil? %>
+<%= grype_install_cmd %>
+<%= grype_cleanup_cmd unless grype_cleanup_cmd.nil? %>
+<% end %>
