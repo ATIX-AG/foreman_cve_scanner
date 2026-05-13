@@ -217,8 +217,33 @@ button.cve-summary {
   padding: 0 1rem 1rem;
 }
 
+.cve-scans-subtabs {
+  margin-top: 0.5rem;
+}
+
+.cve-scans-section {
+  background: var(--pf-v5-global--BackgroundColor--100);
+  border: 1px solid var(--pf-v5-global--BorderColor--100);
+  border-radius: 8px;
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+.cve-scans-section-header {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.cve-scans-section-title {
+  min-width: 0;
+}
+
 .cve-trend {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
 }
 
 .cve-trend-summary {
