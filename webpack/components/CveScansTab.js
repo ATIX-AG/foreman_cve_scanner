@@ -48,6 +48,8 @@ const CveScansTab = ({ response }) => {
     setModalFilter(filter || 'all');
     setIsModalOpen(true);
   };
+  const exportUrlFor = scanId =>
+    foremanUrl(`/api/v2/hosts/${hostId}/cve_scans/${scanId}/export`);
 
   const onSetPage = (_event, newPage) => setPage(newPage);
   const onPerPageSelect = (_event, newPerPage) => {
@@ -92,6 +94,7 @@ const CveScansTab = ({ response }) => {
                   <Th>{__('High')}</Th>
                   <Th>{__('Medium')}</Th>
                   <Th>{__('Low')}</Th>
+                  <Th>{__('Export')}</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -159,6 +162,16 @@ const CveScansTab = ({ response }) => {
                         ouiaId={`cve-scans-low-${scan.id}`}
                       >
                         {scan.low}
+                      </Button>
+                    </Td>
+                    <Td dataLabel={__('Export')}>
+                      <Button
+                        component="a"
+                        variant="secondary"
+                        href={exportUrlFor(scan.id)}
+                        ouiaId={`cve-scans-export-${scan.id}`}
+                      >
+                        {__('Export CSV')}
                       </Button>
                     </Td>
                   </Tr>

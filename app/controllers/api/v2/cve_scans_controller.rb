@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'csv'
+
 module Api
   module V2
     # API controller for CVE scans per host.
@@ -44,7 +46,34 @@ module Api
         process_response @cve_scan.destroy
       end
 
+      api :GET, '/hosts/:host_id/cve_scans/:id/export', N_('Export a CVE scan as CSV')
+      description N_('Exports the findings of a specific CVE scan as CSV.')
+      param :host_id, :identifier, required: true
+      param :id, :identifier, required: true
+      def export
+        @cve_scan = resource_class.for_host(@host.id).find(params[:id])
+
+        send_data(
+          findings_csv(@cve_scan),
+          filename: export_filename(@cve_scan),
+          type: 'text/csv; charset=utf-8',
+          disposition: 'attachment'
+        )
+      end
+
       private
+
+      CSV_HEADERS = [
+        'Severity',
+        'Published',
+        'Package',
+        'Affected version',
+        'Fixed version',
+        'Status',
+        'CVE',
+        'Title',
+        'URL',
+      ].freeze
 
       def cve_scans_index_scope
         scope = resource_class.for_host(@host.id).recent_first
@@ -60,6 +89,32 @@ module Api
         return if @host.present?
 
         not_found
+      end
+
+      def findings_csv(scan)
+        CSV.generate do |csv|
+          csv << CSV_HEADERS
+          Array(scan.findings).each { |finding| csv << csv_row_for(finding) }
+        end
+      end
+
+      def export_filename(scan)
+        timestamp = scan.created_at&.utc&.strftime('%Y-%m-%d-%H%M%S')
+        "#{['cve-report', @host.shortname, scan.id, timestamp].compact.join('-')}.csv"
+      end
+
+      def csv_row_for(finding)
+        [
+          finding['severity'],
+          finding['published'],
+          finding['name'],
+          finding['version'],
+          finding['fixed'],
+          finding['status'].presence || 'open',
+          finding['id'],
+          finding['title'],
+          finding['url'],
+        ]
       end
     end
   end
