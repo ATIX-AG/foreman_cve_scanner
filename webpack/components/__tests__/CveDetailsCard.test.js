@@ -67,7 +67,6 @@ describe('CveDetailsCard', () => {
 
     const wrapper = mount(<CveDetailsCard hostDetails={hostDetails} />);
 
-    expect(wrapper.text()).toContain('Recent scans');
     expect(wrapper.find('table').length).toBeGreaterThan(0);
     expect(wrapper.text()).toContain('CVEs');
     expect(wrapper.text()).toContain('pkg');

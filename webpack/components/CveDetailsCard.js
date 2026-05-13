@@ -26,7 +26,6 @@ import { STATUS } from 'foremanReact/constants';
 import RelativeDateTime from 'foremanReact/components/common/dates/RelativeDateTime';
 import SeverityIcon from './SeverityIcon';
 import CveFindingsModal from './CveFindingsModal';
-import CveHistoryTable from './CveHistoryTable';
 import {
   noReportsBody,
   noReportsTitle,
@@ -57,10 +56,6 @@ const CveDetailsCard = ({ hostDetails }) => {
   if (!hostId) return null;
   const scans = historyResponse?.results || [];
   const latest = latestResponse?.id ? latestResponse : scans[0];
-  const historyScans =
-    latest && Array.isArray(scans)
-      ? scans.filter(scan => scan.id !== latest.id)
-      : scans;
   const findings = latest?.findings || [];
   const sortedFindings = [...findings].sort((a, b) => {
     const severityDiff = severityRank(b.severity) - severityRank(a.severity);
@@ -262,20 +257,6 @@ const CveDetailsCard = ({ hostDetails }) => {
                     </Button>
                   </div>
                 )}
-              </>
-            )}
-
-            {historyScans.length > 0 && (
-              <>
-                <TextContent className="cve-section-title">
-                  <Text
-                    component={TextVariants.h4}
-                    ouiaId="cve-details-recent-title"
-                  >
-                    {__('Recent scans')}
-                  </Text>
-                </TextContent>
-                <CveHistoryTable scans={historyScans} onOpen={openModal} />
               </>
             )}
           </>
