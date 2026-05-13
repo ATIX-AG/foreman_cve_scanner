@@ -141,8 +141,28 @@ button.cve-summary {
 }
 
 .cve-modal-filters {
+  align-items: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-bottom: 1rem;
   position: relative;
   z-index: 1;
+}
+
+.cve-modal-search {
+  flex: 1 1 18rem;
+  margin-bottom: 0;
+}
+
+.cve-modal-quick-filters {
+  flex: 0 1 auto;
+  margin-bottom: 0;
+}
+
+.cve-modal-quick-filters .cve-filter-buttons {
+  justify-content: flex-end;
 }
 
 .cve-more {
