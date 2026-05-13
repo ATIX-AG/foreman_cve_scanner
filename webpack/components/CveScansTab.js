@@ -92,7 +92,7 @@ const CveScansTab = ({ response }) => {
   const clearSelection = () => setSelectedScanIds([]);
 
   return (
-    <>
+    <div className="cve-scans-tab">
       <SkeletonLoader status={status || STATUS.PENDING}>
         {scans.length === 0 ? (
           <EmptyState>
@@ -264,7 +264,7 @@ const CveScansTab = ({ response }) => {
         hostId={hostId}
         scanIds={orderedCompareIds}
       />
-    </>
+    </div>
   );
 };
 
