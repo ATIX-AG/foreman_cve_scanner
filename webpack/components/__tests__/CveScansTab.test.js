@@ -61,6 +61,7 @@ describe('CveScansTab', () => {
     expect(wrapper.text()).toContain('Reported at');
     expect(wrapper.text()).toContain('trivy');
     expect(wrapper.text()).toContain('grype');
+    expect(wrapper.text()).toContain('Trend');
     expect(wrapper.text()).toContain('Export CSV');
     expect(wrapper.text()).toContain('Compare selected');
   });
