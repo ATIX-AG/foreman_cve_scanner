@@ -2,29 +2,30 @@
 import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button,
-  Checkbox,
-  Pagination,
   EmptyState,
   EmptyStateIcon,
   EmptyStateBody,
+  Tab,
+  TabTitleText,
+  Tabs,
   Title,
 } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
-import { Table, Thead, Tbody, Tr, Th, Td } from '@patternfly/react-table';
 import { useAPI } from 'foremanReact/common/hooks/API/APIHooks';
 import { foremanUrl } from 'foremanReact/common/helpers';
 import { translate as __ } from 'foremanReact/common/I18n';
 import SkeletonLoader from 'foremanReact/components/common/SkeletonLoader';
 import { STATUS } from 'foremanReact/constants';
-import RelativeDateTime from 'foremanReact/components/common/dates/RelativeDateTime';
 import CveTrendChart from './CveTrendChart';
+import CveScansReports from './CveScansReports';
 import CveFindingsModal from './CveFindingsModal';
 import CveCompareModal from './CveCompareModal';
 import { noReportsBody, noReportsTitle } from './cve_helpers';
 import './cve_scans.scss';
 
 const DEFAULT_PER_PAGE = 20;
+const OVERVIEW_TAB = 0;
+const REPORTS_TAB = 1;
 
 const CveScansTab = ({ response }) => {
   const hostId = response?.id;
@@ -35,6 +36,7 @@ const CveScansTab = ({ response }) => {
   const [modalScanId, setModalScanId] = useState(null);
   const [modalFilter, setModalFilter] = useState('all');
   const [selectedScanIds, setSelectedScanIds] = useState([]);
+  const [activeTabKey, setActiveTabKey] = useState(OVERVIEW_TAB);
 
   const historyUrl = hostId
     ? foremanUrl(
@@ -104,153 +106,49 @@ const CveScansTab = ({ response }) => {
             <EmptyStateBody>{noReportsBody()}</EmptyStateBody>
           </EmptyState>
         ) : (
-          <>
-            <CveTrendChart scans={scans} onOpen={scanId => openModal(scanId, 'all')} />
-            <div className="cve-scans-toolbar">
-              <Pagination
+          <Tabs
+            activeKey={activeTabKey}
+            onSelect={(_event, tabIndex) => setActiveTabKey(tabIndex)}
+            className="cve-scans-subtabs"
+            ouiaId="cve-scans-subtabs"
+          >
+            <Tab
+              eventKey={OVERVIEW_TAB}
+              title={<TabTitleText>{__('Overview')}</TabTitleText>}
+              ouiaId="cve-scans-overview-tab"
+            >
+              <section
+                className="cve-scans-section"
+                aria-label="CVE scan overview"
+              >
+                <CveTrendChart
+                  scans={scans}
+                  onOpen={scanId => openModal(scanId, 'all')}
+                />
+              </section>
+            </Tab>
+            <Tab
+              eventKey={REPORTS_TAB}
+              title={<TabTitleText>{__('Reports')}</TabTitleText>}
+              ouiaId="cve-scans-reports-tab"
+            >
+              <CveScansReports
+                scans={scans}
                 itemCount={itemCount}
-                perPage={perPage}
                 page={page}
+                perPage={perPage}
                 onSetPage={onSetPage}
                 onPerPageSelect={onPerPageSelect}
-                variant="top"
-                isCompact
-                ouiaId="cve-scans-pagination"
+                selectedScanIds={selectedScanIds}
+                selectedCount={selectedScans.length}
+                onCompare={() => setIsCompareOpen(true)}
+                onClearSelection={clearSelection}
+                onToggleSelection={toggleScanSelection}
+                onOpenModal={openModal}
+                exportUrlFor={exportUrlFor}
               />
-              <div className="cve-scans-actions">
-                <span className="cve-scans-selection">
-                  {__('Selected')}: {selectedScans.length}/2
-                </span>
-                <Button
-                  variant="secondary"
-                  isDisabled={selectedScans.length !== 2}
-                  onClick={() => setIsCompareOpen(true)}
-                  ouiaId="cve-scans-compare"
-                >
-                  {__('Compare selected')}
-                </Button>
-                <Button
-                  variant="link"
-                  isDisabled={selectedScans.length === 0}
-                  onClick={clearSelection}
-                  ouiaId="cve-scans-clear-selection"
-                >
-                  {__('Clear selection')}
-                </Button>
-              </div>
-            </div>
-            <Table
-              variant="compact"
-              aria-label="CVE scans history"
-              ouiaId="cve-scans-table"
-            >
-              <Thead>
-                <Tr ouiaId="cve-scans-header">
-                  <Th>{__('Select')}</Th>
-                  <Th>{__('Reported at')}</Th>
-                  <Th>{__('Scanner')}</Th>
-                  <Th>{__('Total')}</Th>
-                  <Th>{__('Critical')}</Th>
-                  <Th>{__('High')}</Th>
-                  <Th>{__('Medium')}</Th>
-                  <Th>{__('Low')}</Th>
-                  <Th>{__('Export')}</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {scans.map((scan, index) => (
-                  <Tr key={scan.id} ouiaId={`cve-scans-row-${index}`}>
-                    <Td dataLabel={__('Select')}>
-                      <Checkbox
-                        id={`cve-scan-select-${scan.id}`}
-                        isChecked={selectedScanIds.includes(scan.id)}
-                        isDisabled={
-                          selectedScanIds.length === 2 &&
-                          !selectedScanIds.includes(scan.id)
-                        }
-                        onChange={() => toggleScanSelection(scan.id)}
-                        aria-label={__('Select scan for comparison')}
-                      />
-                    </Td>
-                    <Td dataLabel={__('Reported at')}>
-                      <Button
-                        variant="link"
-                        className="cve-summary-link"
-                        onClick={() => openModal(scan.id, 'all')}
-                        ouiaId={`cve-scans-open-${scan.id}`}
-                      >
-                        <RelativeDateTime
-                          date={scan.created_at}
-                          defaultValue={__('Unknown time')}
-                        />
-                      </Button>
-                    </Td>
-                    <Td dataLabel={__('Scanner')}>{scan.scanner}</Td>
-                    <Td dataLabel={__('Total')}>
-                      <Button
-                        variant="link"
-                        className="cve-summary-link"
-                        onClick={() => openModal(scan.id, 'all')}
-                        ouiaId={`cve-scans-total-${scan.id}`}
-                      >
-                        {scan.total}
-                      </Button>
-                    </Td>
-                    <Td dataLabel={__('Critical')}>
-                      <Button
-                        variant="link"
-                        className="cve-summary-link"
-                        onClick={() => openModal(scan.id, 'critical')}
-                        ouiaId={`cve-scans-critical-${scan.id}`}
-                      >
-                        {scan.critical}
-                      </Button>
-                    </Td>
-                    <Td dataLabel={__('High')}>
-                      <Button
-                        variant="link"
-                        className="cve-summary-link"
-                        onClick={() => openModal(scan.id, 'high')}
-                        ouiaId={`cve-scans-high-${scan.id}`}
-                      >
-                        {scan.high}
-                      </Button>
-                    </Td>
-                    <Td dataLabel={__('Medium')}>
-                      <Button
-                        variant="link"
-                        className="cve-summary-link"
-                        onClick={() => openModal(scan.id, 'medium')}
-                        ouiaId={`cve-scans-medium-${scan.id}`}
-                      >
-                        {scan.medium}
-                      </Button>
-                    </Td>
-                    <Td dataLabel={__('Low')}>
-                      <Button
-                        variant="link"
-                        className="cve-summary-link"
-                        onClick={() => openModal(scan.id, 'low')}
-                        ouiaId={`cve-scans-low-${scan.id}`}
-                      >
-                        {scan.low}
-                      </Button>
-                    </Td>
-                    <Td dataLabel={__('Export')}>
-                      <Button
-                        component="a"
-                        variant="secondary"
-                        href={exportUrlFor(scan.id)}
-                        ouiaId={`cve-scans-export-${scan.id}`}
-                      >
-                        {__('Export CSV')}
-                      </Button>
-                    </Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </>
+            </Tab>
+          </Tabs>
         )}
       </SkeletonLoader>
       <CveFindingsModal
