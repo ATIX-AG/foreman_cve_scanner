@@ -18,6 +18,7 @@ import { translate as __ } from 'foremanReact/common/I18n';
 import SkeletonLoader from 'foremanReact/components/common/SkeletonLoader';
 import { STATUS } from 'foremanReact/constants';
 import RelativeDateTime from 'foremanReact/components/common/dates/RelativeDateTime';
+import CveTrendChart from './CveTrendChart';
 import CveFindingsModal from './CveFindingsModal';
 import CveCompareModal from './CveCompareModal';
 import { noReportsBody, noReportsTitle } from './cve_helpers';
@@ -104,6 +105,7 @@ const CveScansTab = ({ response }) => {
           </EmptyState>
         ) : (
           <>
+            <CveTrendChart scans={scans} onOpen={scanId => openModal(scanId, 'all')} />
             <div className="cve-scans-toolbar">
               <Pagination
                 itemCount={itemCount}
