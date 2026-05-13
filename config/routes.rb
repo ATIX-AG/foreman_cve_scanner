@@ -8,9 +8,12 @@ Rails.application.routes.draw do
                      constraints: ApiConstraints.new(version: 2, default: true) do
       constraints(host_id: %r{[^/]+}) do
         resources :hosts, only: [] do
-          resources :cve_scans, only: %i[index show] do
+          resources :cve_scans, only: %i[index show destroy] do
             collection do
               get :latest
+            end
+            member do
+              get :export
             end
           end
         end

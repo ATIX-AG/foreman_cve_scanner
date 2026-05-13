@@ -33,12 +33,39 @@ module Api
         assert_equal @scan_old.id, body['id']
       end
 
+      test 'export returns csv headers for scan by id' do
+        set_export_findings!
+
+        get :export, params: { host_id: @host.id, id: @scan_old.id }
+
+        assert_response :success
+        assert_export_headers
+      end
+
+      test 'export returns csv body for scan by id' do
+        set_export_findings!
+
+        get :export, params: { host_id: @host.id, id: @scan_old.id }
+
+        assert_response :success
+        assert_export_body
+      end
+
       test 'show does not return a scan from another host' do
         other_host = FactoryBot.create(:host)
         other_scan = create_scan(host: other_host, total: 1, low: 1)
 
         assert_not_found do
           get :show, params: { host_id: @host.id, id: other_scan.id }
+        end
+      end
+
+      test 'export does not return a scan from another host' do
+        other_host = FactoryBot.create(:host)
+        other_scan = create_scan(host: other_host, total: 1, low: 1)
+
+        assert_not_found do
+          get :export, params: { host_id: @host.id, id: other_scan.id }
         end
       end
 
@@ -111,11 +138,41 @@ module Api
       end
       # rubocop:enable Metrics/MethodLength
 
+      def set_export_findings!
+        @scan_old.update!(
+          findings: [
+            {
+              'severity' => 'HIGH',
+              'published' => '2026-02-20',
+              'name' => 'openssl',
+              'version' => '1.1',
+              'fixed' => '1.2',
+              'status' => 'fixed',
+              'id' => 'CVE-2026-0001',
+              'title' => 'OpenSSL issue',
+              'url' => 'https://example.test/CVE-2026-0001',
+            },
+          ]
+        )
+      end
+
       def assert_not_found
         yield
         assert_response :not_found
       rescue ActiveRecord::RecordNotFound
         assert true
+      end
+
+      def assert_export_headers
+        assert_includes @response.header['Content-Type'], 'text/csv'
+        assert_includes @response.header['Content-Disposition'], 'attachment'
+        assert_includes @response.header['Content-Disposition'], @host.shortname
+      end
+
+      def assert_export_body
+        assert_includes @response.body, 'Severity,Published,Package'
+        assert_includes @response.body, 'CVE-2026-0001'
+        assert_includes @response.body, 'openssl'
       end
     end
   end
