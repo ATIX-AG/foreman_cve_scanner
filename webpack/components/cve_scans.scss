@@ -43,6 +43,30 @@
   margin: 0;
 }
 
+.cve-overview {
+  background: var(--pf-v5-global--BackgroundColor--200);
+  border: 1px solid var(--pf-v5-global--BorderColor--100);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+.cve-overview-meta {
+  row-gap: 0.75rem;
+}
+
+.cve-overview-total {
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.cve-overview-source {
+  color: var(--pf-v5-global--Color--200);
+  font-weight: 500;
+}
+
 button.cve-summary {
   background: none;
   border: 0;
@@ -52,8 +76,18 @@ button.cve-summary {
 
 .cve-count {
   align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.cve-count-label {
+  align-items: center;
+  color: var(--pf-v5-global--Color--100);
   display: inline-flex;
-  gap: 0.35rem;
+  gap: 0.4rem;
+  text-transform: capitalize;
 }
 
 .cve-bubble {
@@ -64,6 +98,22 @@ button.cve-summary {
   display: inline-flex;
   font-weight: 600;
   padding: 0 0.5rem;
+}
+
+.cve-bubble--critical,
+.cve-bubble--high {
+  background: var(--pf-v5-global--danger-color--100);
+  color: var(--pf-v5-global--BackgroundColor--100);
+}
+
+.cve-bubble--medium {
+  background: var(--pf-v5-global--warning-color--100);
+  color: var(--pf-v5-global--BackgroundColor--100);
+}
+
+.cve-bubble--low {
+  background: var(--pf-v5-global--palette--blue-400);
+  color: var(--pf-v5-global--BackgroundColor--100);
 }
 
 .cve-total-bubble {
@@ -96,15 +146,43 @@ button.cve-summary {
 
 .cve-counts {
   display: grid;
-  gap: 0.35rem 1rem;
-  grid-template-columns: auto auto;
-  margin-top: 0.25rem;
+  gap: 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 1rem;
 }
 
 .cve-counts--compact {
-  column-gap: 0.5rem;
-  row-gap: 0.25rem;
-  margin-top: 0.15rem;
+  column-gap: 0.75rem;
+  row-gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.cve-count-card {
+  background: var(--pf-v5-global--BackgroundColor--100);
+  border: 1px solid var(--pf-v5-global--BorderColor--100);
+  border-radius: 8px;
+  border-left-width: 4px;
+  padding: 0.65rem 0.8rem;
+  text-align: left;
+  width: 100%;
+}
+
+.cve-count-card:hover {
+  border-color: var(--pf-v5-global--primary-color--100);
+  box-shadow: var(--pf-v5-global--BoxShadow--sm);
+}
+
+.cve-count-card--critical,
+.cve-count-card--high {
+  border-left-color: var(--pf-v5-global--danger-color--100);
+}
+
+.cve-count-card--medium {
+  border-left-color: var(--pf-v5-global--warning-color--100);
+}
+
+.cve-count-card--low {
+  border-left-color: var(--pf-v5-global--palette--blue-400);
 }
 
 .cve-filter-buttons {

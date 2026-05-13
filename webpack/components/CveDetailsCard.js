@@ -98,80 +98,110 @@ const CveDetailsCard = ({ hostDetails }) => {
           </EmptyState>
         ) : (
           <>
-            <DescriptionList isCompact isHorizontal>
-              <DescriptionListGroup>
-                <DescriptionListTerm>{__('Report')}</DescriptionListTerm>
-                <DescriptionListDescription>
-                  <RelativeDateTime
-                    date={latest.created_at}
-                    defaultValue={__('Unknown time')}
-                  />
-                </DescriptionListDescription>
-              </DescriptionListGroup>
-              <DescriptionListGroup>
-                <DescriptionListTerm>{__('Total')}</DescriptionListTerm>
-                <DescriptionListDescription>
-                  <Button
-                    variant="link"
-                    className="cve-summary-link"
-                    onClick={() => openModal(latest.id, 'all')}
-                    ouiaId="cve-details-total-button"
-                  >
-                    <span
-                      className={`cve-total-bubble cve-total-bubble--${riskLevel}`}
-                    >
-                      {latest.total}
+            <div className="cve-overview">
+              <DescriptionList
+                isCompact
+                isHorizontal
+                className="cve-overview-meta"
+              >
+                <DescriptionListGroup>
+                  <DescriptionListTerm>{__('Report')}</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    <RelativeDateTime
+                      date={latest.created_at}
+                      defaultValue={__('Unknown time')}
+                    />
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+                <DescriptionListGroup>
+                  <DescriptionListTerm>{__('Total')}</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    <span className="cve-overview-total">
+                      <Button
+                        variant="link"
+                        className="cve-summary-link"
+                        onClick={() => openModal(latest.id, 'all')}
+                        ouiaId="cve-details-total-button"
+                      >
+                        <span
+                          className={`cve-total-bubble cve-total-bubble--${riskLevel}`}
+                        >
+                          {latest.total}
+                        </span>
+                      </Button>
+                      <span className="cve-overview-source">
+                        {__('CVEs by')} {latest.scanner}
+                      </span>
                     </span>
-                  </Button>{' '}
-                  {__('CVEs by')} {latest.scanner}
-                </DescriptionListDescription>
-              </DescriptionListGroup>
-            </DescriptionList>
-            <div className="cve-counts cve-counts--compact">
-              <Button
-                variant="link"
-                className="cve-summary-link"
-                onClick={() => openModal(latest.id, 'critical')}
-                ouiaId="cve-details-critical-button"
-              >
-                <span className="cve-count">
-                  {__('critical')}
-                  <span className="cve-bubble">{latest.critical}</span>
-                </span>
-              </Button>
-              <Button
-                variant="link"
-                className="cve-summary-link"
-                onClick={() => openModal(latest.id, 'medium')}
-                ouiaId="cve-details-medium-button"
-              >
-                <span className="cve-count">
-                  {__('medium')}
-                  <span className="cve-bubble">{latest.medium}</span>
-                </span>
-              </Button>
-              <Button
-                variant="link"
-                className="cve-summary-link"
-                onClick={() => openModal(latest.id, 'high')}
-                ouiaId="cve-details-high-button"
-              >
-                <span className="cve-count">
-                  {__('high')}
-                  <span className="cve-bubble">{latest.high}</span>
-                </span>
-              </Button>
-              <Button
-                variant="link"
-                className="cve-summary-link"
-                onClick={() => openModal(latest.id, 'low')}
-                ouiaId="cve-details-low-button"
-              >
-                <span className="cve-count">
-                  {__('low')}
-                  <span className="cve-bubble">{latest.low}</span>
-                </span>
-              </Button>
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+              </DescriptionList>
+              <div className="cve-counts cve-counts--compact">
+                <Button
+                  variant="plain"
+                  className="cve-count-card cve-count-card--critical"
+                  onClick={() => openModal(latest.id, 'critical')}
+                  ouiaId="cve-details-critical-button"
+                >
+                  <span className="cve-count">
+                    <span className="cve-count-label">
+                      <SeverityIcon severity="critical" />
+                      <span>{__('critical')}</span>
+                    </span>
+                    <span className="cve-bubble cve-bubble--critical">
+                      {latest.critical}
+                    </span>
+                  </span>
+                </Button>
+                <Button
+                  variant="plain"
+                  className="cve-count-card cve-count-card--medium"
+                  onClick={() => openModal(latest.id, 'medium')}
+                  ouiaId="cve-details-medium-button"
+                >
+                  <span className="cve-count">
+                    <span className="cve-count-label">
+                      <SeverityIcon severity="medium" />
+                      <span>{__('medium')}</span>
+                    </span>
+                    <span className="cve-bubble cve-bubble--medium">
+                      {latest.medium}
+                    </span>
+                  </span>
+                </Button>
+                <Button
+                  variant="plain"
+                  className="cve-count-card cve-count-card--high"
+                  onClick={() => openModal(latest.id, 'high')}
+                  ouiaId="cve-details-high-button"
+                >
+                  <span className="cve-count">
+                    <span className="cve-count-label">
+                      <SeverityIcon severity="high" />
+                      <span>{__('high')}</span>
+                    </span>
+                    <span className="cve-bubble cve-bubble--high">
+                      {latest.high}
+                    </span>
+                  </span>
+                </Button>
+                <Button
+                  variant="plain"
+                  className="cve-count-card cve-count-card--low"
+                  onClick={() => openModal(latest.id, 'low')}
+                  ouiaId="cve-details-low-button"
+                >
+                  <span className="cve-count">
+                    <span className="cve-count-label">
+                      <SeverityIcon severity="low" />
+                      <span>{__('low')}</span>
+                    </span>
+                    <span className="cve-bubble cve-bubble--low">
+                      {latest.low}
+                    </span>
+                  </span>
+                </Button>
+              </div>
             </div>
 
             {visibleFindings.length === 0 ? (
