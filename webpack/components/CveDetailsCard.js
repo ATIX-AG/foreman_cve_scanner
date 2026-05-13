@@ -31,6 +31,7 @@ import {
   noReportsBody,
   noReportsTitle,
   riskLevelFromWorst,
+  severityRank,
 } from './cve_helpers';
 import './cve_scans.scss';
 
@@ -62,10 +63,21 @@ const CveDetailsCard = ({ hostDetails }) => {
       : scans;
   const findings = latest?.findings || [];
   const sortedFindings = [...findings].sort((a, b) => {
+    const severityDiff = severityRank(b.severity) - severityRank(a.severity);
+    if (severityDiff !== 0) return severityDiff;
     const aTime = new Date(a.published || 0).getTime();
     const bTime = new Date(b.published || 0).getTime();
     return bTime - aTime;
   });
+  // The host details preview should show ranked CVEs first and only fall back
+  // to unknown severities when a scan has no ranked findings at all.
+  const previewFindings = sortedFindings.filter(
+    finding => severityRank(finding.severity) > 0
+  );
+  const visibleFindings =
+    previewFindings.length > 0
+      ? previewFindings.slice(0, 5)
+      : sortedFindings.slice(0, 5);
   const worst = latest?.summary?.worst || 'none';
   const riskLevel = riskLevelFromWorst(worst);
   const openModal = (scanId, filter) => {
@@ -162,7 +174,7 @@ const CveDetailsCard = ({ hostDetails }) => {
               </Button>
             </div>
 
-            {sortedFindings.length === 0 ? (
+            {visibleFindings.length === 0 ? (
               <Text component={TextVariants.small} ouiaId="cve-details-empty">
                 {__('No vulnerabilities reported')}
               </Text>
@@ -189,7 +201,7 @@ const CveDetailsCard = ({ hostDetails }) => {
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {sortedFindings.slice(0, 5).map((finding, index) => (
+                    {visibleFindings.map((finding, index) => (
                       <Tr
                         key={finding.id}
                         ouiaId={`cve-details-finding-row-${index}`}
@@ -208,7 +220,7 @@ const CveDetailsCard = ({ hostDetails }) => {
                     ))}
                   </Tbody>
                 </Table>
-                {sortedFindings.length > 5 && (
+                {sortedFindings.length > visibleFindings.length && (
                   <div className="cve-more">
                     <Button
                       variant="link"

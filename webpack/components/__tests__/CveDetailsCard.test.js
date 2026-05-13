@@ -116,6 +116,75 @@ describe('CveDetailsCard', () => {
     expect(wrapper.text()).toContain('grype');
   });
 
+  it('keeps unknown severities out of the preview when ranked CVEs exist', () => {
+    const hostDetails = { id: 1 };
+    const latestResponse = {
+      id: 2,
+      created_at: '2026-02-21',
+      scanner: 'grype',
+      total: 6,
+      summary: { worst: 'critical' },
+      findings: [
+        {
+          id: 'CVE-unknown',
+          name: 'unknown-pkg',
+          version: '1.0',
+          severity: 'UNKNOWN',
+          published: '2026-02-20',
+        },
+        {
+          id: 'CVE-critical',
+          name: 'critical-pkg',
+          version: '1.0',
+          severity: 'CRITICAL',
+          published: '2026-02-10',
+        },
+        {
+          id: 'CVE-high',
+          name: 'high-pkg',
+          version: '1.0',
+          severity: 'HIGH',
+          published: '2026-02-11',
+        },
+        {
+          id: 'CVE-medium',
+          name: 'medium-pkg',
+          version: '1.0',
+          severity: 'MEDIUM',
+          published: '2026-02-12',
+        },
+        {
+          id: 'CVE-low-a',
+          name: 'low-a-pkg',
+          version: '1.0',
+          severity: 'LOW',
+          published: '2026-02-13',
+        },
+        {
+          id: 'CVE-low-b',
+          name: 'low-b-pkg',
+          version: '1.0',
+          severity: 'LOW',
+          published: '2026-02-14',
+        },
+      ],
+    };
+
+    useAPI.mockImplementation((_method, url) => {
+      if (url && url.includes('/latest')) {
+        return { response: latestResponse, status: 'RESOLVED' };
+      }
+      return { response: { results: [] }, status: 'RESOLVED' };
+    });
+
+    const wrapper = mount(<CveDetailsCard hostDetails={hostDetails} />);
+
+    expect(wrapper.text()).toContain('critical-pkg');
+    expect(wrapper.text()).toContain('low-b-pkg');
+    expect(wrapper.text()).not.toContain('unknown-pkg');
+    expect(wrapper.text()).toContain('More');
+  });
+
   it('renders empty state when no scans', () => {
     const hostDetails = { id: 1 };
     useAPI.mockReturnValue({ response: null, status: 'RESOLVED' });
