@@ -81,7 +81,7 @@ module ForemanCveScanner
       {
         'name' => entry['artifact']['name'],
         'version' => entry['artifact']['version'],
-        'title' => entry['vulnerability']['description'].gsub(/[\[\]"\\]/, ''),
+        'title' => entry['vulnerability']['description'].to_s.gsub(/[\[\]"\\]/, ''),
         'severity' => entry['vulnerability']['severity'],
         'url' => entry['vulnerability']['dataSource'],
       }
@@ -91,7 +91,7 @@ module ForemanCveScanner
       unified = {
         'name' => entry['PkgName'],
         'version' => entry['InstalledVersion'],
-        'title' => entry['Title'].gsub(/[\[\]"\\]/, ''),
+        'title' => entry['Title'].to_s.gsub(/[\[\]"\\]/, ''),
         'severity' => entry['Severity'],
         'url' => entry['PrimaryURL'],
         'status' => entry['Status'],
