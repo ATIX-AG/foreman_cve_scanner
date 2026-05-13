@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   EmptyState,
@@ -36,6 +36,7 @@ const CveScansTab = ({ response }) => {
   const [modalScanId, setModalScanId] = useState(null);
   const [modalFilter, setModalFilter] = useState('all');
   const [selectedScanIds, setSelectedScanIds] = useState([]);
+  const [isTrendCompareMode, setIsTrendCompareMode] = useState(false);
   const [activeTabKey, setActiveTabKey] = useState(OVERVIEW_TAB);
 
   const historyUrl = hostId
@@ -64,7 +65,6 @@ const CveScansTab = ({ response }) => {
     [selectedScans]
   );
   const itemCount = apiResponse?.total ?? scans.length;
-  if (!hostId) return null;
 
   const openModal = (scanId, filter) => {
     setModalScanId(scanId);
@@ -77,11 +77,13 @@ const CveScansTab = ({ response }) => {
   const onSetPage = (_event, newPage) => {
     setPage(newPage);
     setSelectedScanIds([]);
+    setIsTrendCompareMode(false);
   };
   const onPerPageSelect = (_event, newPerPage) => {
     setPerPage(newPerPage);
     setPage(1);
     setSelectedScanIds([]);
+    setIsTrendCompareMode(false);
   };
   const toggleScanSelection = scanId => {
     setSelectedScanIds(currentSelection => {
@@ -92,7 +94,22 @@ const CveScansTab = ({ response }) => {
       return [...currentSelection, scanId];
     });
   };
-  const clearSelection = () => setSelectedScanIds([]);
+  const clearSelection = () => {
+    setSelectedScanIds([]);
+    setIsTrendCompareMode(false);
+  };
+  const toggleTrendCompareMode = () => {
+    setIsTrendCompareMode(current => !current);
+    setSelectedScanIds([]);
+  };
+
+  useEffect(() => {
+    if (!isTrendCompareMode || selectedScanIds.length !== 2) return;
+    setIsCompareOpen(true);
+    setIsTrendCompareMode(false);
+  }, [isTrendCompareMode, selectedScanIds]);
+
+  if (!hostId) return null;
 
   return (
     <div className="cve-scans-tab">
@@ -124,6 +141,10 @@ const CveScansTab = ({ response }) => {
                 <CveTrendChart
                   scans={scans}
                   onOpen={scanId => openModal(scanId, 'all')}
+                  compareMode={isTrendCompareMode}
+                  selectedScanIds={selectedScanIds}
+                  onToggleSelection={toggleScanSelection}
+                  onToggleCompareMode={toggleTrendCompareMode}
                 />
               </section>
             </Tab>

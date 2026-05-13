@@ -64,6 +64,51 @@ describe('CveScansTab', () => {
     expect(wrapper.text()).toContain('Latest total');
   });
 
+  it('opens compare modal from overview trend selection', () => {
+    const scansResponse = {
+      results: [
+        {
+          id: 1,
+          created_at: '2026-02-20',
+          scanner: 'trivy',
+          total: 10,
+          critical: 1,
+          high: 2,
+          medium: 3,
+          low: 4,
+        },
+        {
+          id: 2,
+          created_at: '2026-02-21',
+          scanner: 'grype',
+          total: 5,
+          critical: 0,
+          high: 1,
+          medium: 1,
+          low: 3,
+        },
+      ],
+      total: 2,
+    };
+
+    useAPI.mockReturnValue({ response: scansResponse, status: 'RESOLVED' });
+
+    const wrapper = mount(<CveScansTab response={{ id: 1 }} />);
+
+    wrapper
+      .find('button')
+      .filterWhere(node => node.text() === 'Compare 2 reports')
+      .first()
+      .simulate('click');
+    wrapper.update();
+
+    wrapper.find('button.cve-trend-bar-button').at(0).simulate('click');
+    wrapper.find('button.cve-trend-bar-button').at(1).simulate('click');
+    wrapper.update();
+
+    expect(wrapper.find('[data-test="compare-modal"]').text()).toBe('1,2');
+  });
+
   it('renders scan rows in the reports sub-tab', () => {
     const scansResponse = {
       results: [

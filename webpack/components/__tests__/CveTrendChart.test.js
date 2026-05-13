@@ -70,4 +70,53 @@ describe('CveTrendChart', () => {
 
     expect(onOpen).toHaveBeenCalledWith(1);
   });
+
+  it('renders compare mode controls and uses bar clicks for selection', () => {
+    const onToggleSelection = jest.fn();
+    const onToggleCompareMode = jest.fn();
+    const onOpen = jest.fn();
+    const wrapper = mount(
+      <CveTrendChart
+        scans={[
+          {
+            id: 2,
+            created_at: '2026-05-14T10:00:00Z',
+            total: 12,
+            critical: 2,
+            high: 3,
+            medium: 3,
+            low: 4,
+          },
+          {
+            id: 1,
+            created_at: '2026-05-10T10:00:00Z',
+            total: 8,
+            critical: 1,
+            high: 1,
+            medium: 2,
+            low: 4,
+          },
+        ]}
+        compareMode
+        selectedScanIds={[2]}
+        onOpen={onOpen}
+        onToggleSelection={onToggleSelection}
+        onToggleCompareMode={onToggleCompareMode}
+      />
+    );
+
+    expect(wrapper.text()).toContain('Cancel compare');
+    expect(wrapper.text()).toContain('1/2 selected');
+
+    wrapper.find('button.cve-trend-bar-button').at(1).simulate('click');
+    wrapper
+      .find('button')
+      .filterWhere(node => node.text() === 'Cancel compare')
+      .first()
+      .simulate('click');
+
+    expect(onToggleSelection).toHaveBeenCalledWith(2);
+    expect(onOpen).not.toHaveBeenCalled();
+    expect(onToggleCompareMode).toHaveBeenCalled();
+  });
 });
