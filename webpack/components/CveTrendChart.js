@@ -2,6 +2,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import {
+  Button,
   Text,
   TextContent,
   TextVariants,
@@ -48,13 +49,22 @@ const deltaClassName = value => {
   return 'is-flat';
 };
 
-const CveTrendChart = ({ scans, onOpen }) => {
+const CveTrendChart = ({
+  scans,
+  onOpen,
+  compareMode,
+  selectedScanIds,
+  onToggleSelection,
+  onToggleCompareMode,
+}) => {
   const visibleScans = useMemo(
     () => [...scans].slice(0, TREND_LIMIT).reverse(),
     [scans]
   );
   const latestScan = scans[0];
   const previousScan = scans[1];
+  const isCompareSelectable = typeof onToggleSelection === 'function';
+  const selectedCount = selectedScanIds.length;
   const maxTotal = Math.max(...visibleScans.map(scan => scan.total || 0), 1);
   const criticalHighDelta =
     (latestScan?.critical || 0) +
@@ -127,39 +137,72 @@ const CveTrendChart = ({ scans, onOpen }) => {
         ))}
       </div>
 
+      {isCompareSelectable && (
+        <div className="cve-trend-controls">
+          <div className="cve-trend-actions">
+            <Button
+              variant={compareMode ? 'link' : 'secondary'}
+              onClick={onToggleCompareMode}
+              ouiaId="cve-trend-compare-mode"
+            >
+              {compareMode ? __('Cancel compare') : __('Compare 2 reports')}
+            </Button>
+            {compareMode && (
+              <span className="cve-trend-compare-state">
+                {`${selectedCount}/2 ${__('selected')}`}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="cve-trend-bars">
         {visibleScans.map(scan => (
-          <button
-            key={scan.id}
-            type="button"
-            className="cve-trend-bar-button"
-            onClick={() => onOpen(scan.id)}
-            aria-label={__('Open scan details for %s').replace(
-              '%s',
-              formatDateTime(scan.created_at)
-            )}
-            title={`${formatDateTime(scan.created_at)} | ${__('Total')}: ${
-              scan.total
-            } | ${__('Critical')}: ${scan.critical} | ${__('High')}: ${
-              scan.high
-            } | ${__('Medium')}: ${scan.medium} | ${__('Low')}: ${scan.low}`}
-          >
-            <span className="cve-trend-bar-frame">
-              {STACK_ORDER.map(level => (
-                <span
-                  key={level}
-                  className={`cve-trend-segment cve-trend-segment--${level}`}
-                  style={{
-                    height: `${((scan[level] || 0) / maxTotal) * 100}%`,
-                  }}
-                />
-              ))}
-            </span>
-            <span className="cve-trend-bar-total">{scan.total}</span>
-            <span className="cve-trend-bar-label">
-              {shortDateLabel(scan.created_at)}
-            </span>
-          </button>
+          <div key={scan.id} className="cve-trend-bar-item">
+            <button
+              type="button"
+              className={
+                compareMode && selectedScanIds.includes(scan.id)
+                  ? 'cve-trend-bar-button is-selected'
+                  : 'cve-trend-bar-button'
+              }
+              onClick={() =>
+                compareMode ? onToggleSelection(scan.id) : onOpen(scan.id)
+              }
+              aria-label={
+                compareMode
+                  ? __('Select scan from %s for comparison').replace(
+                      '%s',
+                      formatDateTime(scan.created_at)
+                    )
+                  : __('Open scan details for %s').replace(
+                      '%s',
+                      formatDateTime(scan.created_at)
+                    )
+              }
+              title={`${formatDateTime(scan.created_at)} | ${__('Total')}: ${
+                scan.total
+              } | ${__('Critical')}: ${scan.critical} | ${__('High')}: ${
+                scan.high
+              } | ${__('Medium')}: ${scan.medium} | ${__('Low')}: ${scan.low}`}
+            >
+              <span className="cve-trend-bar-frame">
+                {STACK_ORDER.map(level => (
+                  <span
+                    key={level}
+                    className={`cve-trend-segment cve-trend-segment--${level}`}
+                    style={{
+                      height: `${((scan[level] || 0) / maxTotal) * 100}%`,
+                    }}
+                  />
+                ))}
+              </span>
+              <span className="cve-trend-bar-total">{scan.total}</span>
+              <span className="cve-trend-bar-label">
+                {shortDateLabel(scan.created_at)}
+              </span>
+            </button>
+          </div>
         ))}
       </div>
     </section>
@@ -179,11 +222,19 @@ CveTrendChart.propTypes = {
     })
   ),
   onOpen: PropTypes.func,
+  compareMode: PropTypes.bool,
+  selectedScanIds: PropTypes.arrayOf(PropTypes.number),
+  onToggleSelection: PropTypes.func,
+  onToggleCompareMode: PropTypes.func,
 };
 
 CveTrendChart.defaultProps = {
   scans: [],
   onOpen: () => {},
+  compareMode: false,
+  selectedScanIds: [],
+  onToggleSelection: undefined,
+  onToggleCompareMode: () => {},
 };
 
 export default CveTrendChart;
