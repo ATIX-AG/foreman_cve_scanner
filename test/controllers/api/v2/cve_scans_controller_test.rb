@@ -33,6 +33,45 @@ module Api
         assert_equal @scan_old.id, body['id']
       end
 
+      test 'compare returns scan comparison for host' do
+        set_comparison_findings!
+
+        get :compare, params: {
+          host_id: @host.id,
+          first_id: @scan_old.id,
+          second_id: @scan_new.id,
+        }
+
+        assert_response :success
+        body = ActiveSupport::JSON.decode(@response.body)
+        assert_equal @scan_old.id, body['previous']['id']
+        assert_equal 1, body['summary']['updated']
+        assert_equal 1, body['summary']['resolved']
+        assert_equal 1, body['summary']['new']
+      end
+
+      test 'compare includes diff payload for updated finding' do
+        set_comparison_findings!
+
+        get :compare, params: {
+          host_id: @host.id,
+          first_id: @scan_old.id,
+          second_id: @scan_new.id,
+        }
+
+        assert_response :success
+        body = ActiveSupport::JSON.decode(@response.body)
+        updated_row = body['results'].find { |row| row['id'] == 'CVE-1' }
+        assert_equal 'updated', updated_row['status']
+        assert_equal 'CRITICAL', updated_row['diff']['severity']['new']
+      end
+
+      test 'compare requires both scan ids' do
+        get :compare, params: { host_id: @host.id, first_id: @scan_old.id }
+
+        assert_response :unprocessable_entity
+      end
+
       test 'export returns csv headers for scan by id' do
         set_export_findings!
 
@@ -66,6 +105,19 @@ module Api
 
         assert_not_found do
           get :export, params: { host_id: @host.id, id: other_scan.id }
+        end
+      end
+
+      test 'compare does not return scans from another host' do
+        other_host = FactoryBot.create(:host)
+        other_scan = create_scan(host: other_host, total: 1, low: 1)
+
+        assert_not_found do
+          get :compare, params: {
+            host_id: @host.id,
+            first_id: @scan_old.id,
+            second_id: other_scan.id,
+          }
         end
       end
 
@@ -151,6 +203,49 @@ module Api
               'id' => 'CVE-2026-0001',
               'title' => 'OpenSSL issue',
               'url' => 'https://example.test/CVE-2026-0001',
+            },
+          ]
+        )
+      end
+
+      def set_comparison_findings!
+        @scan_old.update!(
+          findings: [
+            {
+              'id' => 'CVE-1',
+              'name' => 'openssl',
+              'severity' => 'HIGH',
+              'version' => '1.0',
+              'title' => 'OpenSSL issue',
+              'published' => '2026-02-20',
+            },
+            {
+              'id' => 'CVE-2',
+              'name' => 'curl',
+              'severity' => 'LOW',
+              'version' => '1.0',
+              'title' => 'Curl issue',
+              'published' => '2026-02-20',
+            },
+          ]
+        )
+        @scan_new.update!(
+          findings: [
+            {
+              'id' => 'CVE-1',
+              'name' => 'openssl',
+              'severity' => 'CRITICAL',
+              'version' => '1.0',
+              'title' => 'OpenSSL issue',
+              'published' => '2026-02-20',
+            },
+            {
+              'id' => 'CVE-3',
+              'name' => 'bash',
+              'severity' => 'MEDIUM',
+              'version' => '2.0',
+              'title' => 'Bash issue',
+              'published' => '2026-02-21',
             },
           ]
         )

@@ -23,19 +23,18 @@ import { foremanUrl } from 'foremanReact/common/helpers';
 import { translate as __ } from 'foremanReact/common/I18n';
 import { STATUS } from 'foremanReact/constants';
 import {
+  comparisonDiffEntries,
   comparisonColumns,
   comparisonFilters,
-  compareScanFindings,
   comparisonMatchesSearch,
   comparisonSorters,
   comparisonStatusLabels,
   formatDateTime,
-  summarizeComparison,
 } from './cve_helpers';
 import './cve_scans.scss';
 
 const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
-  const [filter, setFilter] = useState('all_changes');
+  const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState({
     direction: SortByDirection.desc,
@@ -43,24 +42,19 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
   });
   const previousScanId = scanIds[0];
   const currentScanId = scanIds[1];
-  const previousUrl =
-    isOpen && previousScanId
-      ? foremanUrl(`/api/v2/hosts/${hostId}/cve_scans/${previousScanId}`)
+  const compareUrl =
+    isOpen && previousScanId && currentScanId
+      ? foremanUrl(
+          `/api/v2/hosts/${hostId}/cve_scans/compare?first_id=${previousScanId}&second_id=${currentScanId}`
+        )
       : null;
-  const currentUrl =
-    isOpen && currentScanId
-      ? foremanUrl(`/api/v2/hosts/${hostId}/cve_scans/${currentScanId}`)
-      : null;
-  const previousRequest = useAPI(isOpen ? 'get' : null, previousUrl, {
-    key: `CVE_COMPARE_${previousScanId}`,
-  });
-  const currentRequest = useAPI(isOpen ? 'get' : null, currentUrl, {
-    key: `CVE_COMPARE_${currentScanId}`,
+  const compareRequest = useAPI(isOpen ? 'get' : null, compareUrl, {
+    key: `CVE_COMPARE_${previousScanId}_${currentScanId}`,
   });
 
   useEffect(() => {
     if (!isOpen) return;
-    setFilter('all_changes');
+    setFilter('all');
     setSearch('');
     setSortBy({
       direction: SortByDirection.desc,
@@ -68,26 +62,18 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
     });
   }, [currentScanId, isOpen, previousScanId]);
 
-  const previousScan = previousRequest.response || {};
-  const currentScan = currentRequest.response || {};
-  const comparisonRows = useMemo(
-    () =>
-      compareScanFindings(
-        previousScan.findings || [],
-        currentScan.findings || []
-      ),
-    [currentScan.findings, previousScan.findings]
-  );
-  const summary = useMemo(() => summarizeComparison(comparisonRows), [
-    comparisonRows,
+  const comparison = compareRequest.response || {};
+  const previousScan = comparison.previous || {};
+  const currentScan = comparison.current || {};
+  const comparisonRows = useMemo(() => comparison.results || [], [
+    comparison.results,
   ]);
+  const summary = comparison.summary || {};
   const normalizedSearch = search.trim().toLowerCase();
   const filteredRows = useMemo(() => {
     let rows = comparisonRows;
-    if (filter !== 'all_changes') {
+    if (filter !== 'all') {
       rows = rows.filter(row => row.status === filter);
-    } else {
-      rows = rows.filter(row => row.status !== 'unchanged');
     }
     if (!normalizedSearch) return rows;
     return rows.filter(row => comparisonMatchesSearch(row, normalizedSearch));
@@ -102,8 +88,7 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
     return rows;
   }, [filteredRows, sortBy]);
 
-  const status =
-    previousRequest.status || currentRequest.status || STATUS.PENDING;
+  const status = compareRequest.status || STATUS.PENDING;
   const subtitle =
     previousScan.created_at && currentScan.created_at
       ? `${formatDateTime(previousScan.created_at)} -> ${formatDateTime(
@@ -128,6 +113,21 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
       return;
     }
     setSearch(value?.target?.value || event?.target?.value || '');
+  };
+  const renderDiff = diff => {
+    const entries = comparisonDiffEntries(diff);
+    if (entries.length === 0) return '-';
+
+    return entries.map(entry => (
+      <div key={entry.field} className="cve-compare-diff-entry">
+        <span className="cve-compare-diff-label">{entry.label}:</span>{' '}
+        <span className="cve-compare-diff-values">
+          <span className="cve-compare-diff-old">{entry.oldValue}</span>
+          <span className="cve-compare-diff-arrow">-&gt;</span>
+          <span className="cve-compare-diff-new">{entry.newValue}</span>
+        </span>
+      </div>
+    ));
   };
 
   return (
@@ -172,7 +172,7 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
             </div>
             <div className="cve-compare-cards">
               {comparisonFilters
-                .filter(item => item.key !== 'all_changes')
+                .filter(item => item.key !== 'all')
                 .map(item => (
                   <button
                     key={item.key}
@@ -200,7 +200,7 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
               onChange={onSearchChange}
               onClear={() => setSearch('')}
               onSearch={onSearchChange}
-              placeholder={__('Search changes by CVE, package, severity...')}
+              placeholder={__('Search comparison by CVE, package, diff...')}
               aria-label={__('Search CVE comparison')}
               className="cve-modal-search"
             />
@@ -265,10 +265,11 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
                         )}
                       </Td>
                       <Td dataLabel={__('Package')}>{row.name}</Td>
-                      <Td dataLabel={__('Old severity')}>{row.oldSeverity}</Td>
-                      <Td dataLabel={__('New severity')}>{row.newSeverity}</Td>
-                      <Td dataLabel={__('Old version')}>{row.oldVersion}</Td>
-                      <Td dataLabel={__('New version')}>{row.newVersion}</Td>
+                      <Td dataLabel={__('Severity')}>{row.severity}</Td>
+                      <Td dataLabel={__('Version')}>{row.version}</Td>
+                      <Td dataLabel={__('Fixed')}>{row.fixed}</Td>
+                      <Td dataLabel={__('Scan status')}>{row.scan_status}</Td>
+                      <Td dataLabel={__('Diff')}>{renderDiff(row.diff)}</Td>
                       <Td dataLabel={__('Published')}>
                         {formatDateTime(row.published)}
                       </Td>

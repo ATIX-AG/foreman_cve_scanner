@@ -4,8 +4,6 @@ import {
   riskLevelFromWorst,
   formatDateTime,
   compareStrings,
-  compareScanFindings,
-  summarizeComparison,
 } from '../cve_helpers';
 
 describe('cve_helpers', () => {
@@ -42,44 +40,4 @@ describe('cve_helpers', () => {
     expect(compareStrings(null, 'a')).toBeLessThan(0);
   });
 
-  it('builds comparison rows for scan findings', () => {
-    const previousFindings = [
-      { id: 'CVE-1', name: 'pkg-a', severity: 'HIGH', version: '1.0' },
-      { id: 'CVE-2', name: 'pkg-b', severity: 'LOW', version: '1.0' },
-      { id: 'CVE-3', name: 'pkg-c', severity: 'LOW', version: '1.0' },
-      { id: 'CVE-4', name: 'pkg-d', severity: 'MEDIUM', version: '1.0' },
-    ];
-    const currentFindings = [
-      { id: 'CVE-1', name: 'pkg-a', severity: 'CRITICAL', version: '1.0' },
-      { id: 'CVE-2', name: 'pkg-b', severity: 'LOW', version: '2.0' },
-      { id: 'CVE-4', name: 'pkg-d', severity: 'MEDIUM', version: '1.0' },
-      { id: 'CVE-5', name: 'pkg-e', severity: 'HIGH', version: '1.0' },
-    ];
-
-    const rows = compareScanFindings(previousFindings, currentFindings);
-    const statusesById = Object.fromEntries(rows.map(row => [row.id, row.status]));
-
-    expect(statusesById['CVE-1']).toBe('severity_changed');
-    expect(statusesById['CVE-2']).toBe('updated');
-    expect(statusesById['CVE-3']).toBe('resolved');
-    expect(statusesById['CVE-4']).toBe('unchanged');
-    expect(statusesById['CVE-5']).toBe('new');
-  });
-
-  it('summarizes comparison rows by status', () => {
-    const summary = summarizeComparison([
-      { status: 'new' },
-      { status: 'resolved' },
-      { status: 'severity_changed' },
-      { status: 'updated' },
-      { status: 'unchanged' },
-      { status: 'new' },
-    ]);
-
-    expect(summary.new).toBe(2);
-    expect(summary.resolved).toBe(1);
-    expect(summary.severity_changed).toBe(1);
-    expect(summary.updated).toBe(1);
-    expect(summary.unchanged).toBe(1);
-  });
 });

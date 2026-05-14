@@ -37,6 +37,20 @@ module Api
         @cve_scan = resource_class.for_host(@host.id).find(params[:id])
       end
 
+      api :GET, '/hosts/:host_id/cve_scans/compare', N_('Compare two CVE scans for a host')
+      description N_('Returns a comparison between two CVE scans for a host.')
+      param :host_id, :identifier, required: true
+      param :first_id, :identifier, required: true
+      param :second_id, :identifier, required: true
+      def compare
+        return compare_params_missing unless params[:first_id].present? && params[:second_id].present?
+
+        first_scan = resource_class.for_host(@host.id).find_by(id: params[:first_id])
+        second_scan = resource_class.for_host(@host.id).find_by(id: params[:second_id])
+
+        render json: ::ForemanCveScanner::ScanComparison.compare(first_scan, second_scan)
+      end
+
       api :DELETE, '/hosts/:host_id/cve_scans/:id', N_('Delete a CVE scan')
       description N_('Deletes a specific CVE scan by id for a host.')
       param :host_id, :identifier, required: true
@@ -115,6 +129,11 @@ module Api
           finding['title'],
           finding['url'],
         ]
+      end
+
+      def compare_params_missing
+        render json: { error: { message: 'first_id and second_id are required' } },
+               status: :unprocessable_entity
       end
     end
   end
