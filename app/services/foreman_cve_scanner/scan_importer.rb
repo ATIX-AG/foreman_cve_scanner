@@ -63,6 +63,7 @@ module ForemanCveScanner
         build_scan_attributes(host, scanner_name, scan_json, metrics, scanner)
       )
       refresh_host_status(host)
+      cleanup_old_scans(host)
       scan
     end
 
@@ -95,6 +96,10 @@ module ForemanCveScanner
       scanner.unified_vulnerabilities.map do |id, entry|
         entry.merge('id' => id)
       end
+    end
+
+    def cleanup_old_scans(host)
+      ::ForemanCveScanner::ScanCleanup.new(scope: host.cve_scans).cleanup!
     end
   end
 end
