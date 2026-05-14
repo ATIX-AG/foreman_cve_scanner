@@ -32,15 +32,16 @@ describe('CveDetailsCard', () => {
     const hostDetails = { id: 1 };
     const historyResponse = {
       results: [
-        { id: 1, created_at: '2026-02-20', scanner: 'trivy', total: 10 },
-        { id: 2, created_at: '2026-02-21', scanner: 'trivy', total: 12 },
-        { id: 3, created_at: '2026-02-22', scanner: 'grype', total: 8 },
+        { id: 1, scanned_at: '2026-02-20', scanner: 'trivy', source: 'rex', total: 10 },
+        { id: 2, scanned_at: '2026-02-21', scanner: 'trivy', source: 'rex', total: 12 },
+        { id: 3, scanned_at: '2026-02-22', scanner: 'grype', source: 'external', total: 8 },
       ],
     };
     const latestResponse = {
       id: 3,
-      created_at: '2026-02-22',
+      scanned_at: '2026-02-22',
       scanner: 'grype',
+      source: 'external',
       total: 8,
       summary: { worst: 'high' },
       critical: 1,
@@ -75,7 +76,7 @@ describe('CveDetailsCard', () => {
   it('falls back to history when latest is empty', () => {
     const hostDetails = { id: 1 };
     const historyResponse = {
-      results: [{ id: 1, created_at: '2026-02-20', scanner: 'trivy', total: 10 }],
+      results: [{ id: 1, scanned_at: '2026-02-20', scanner: 'trivy', source: 'rex', total: 10 }],
     };
 
     useAPI.mockImplementation((_method, url) => {
@@ -93,12 +94,13 @@ describe('CveDetailsCard', () => {
   it('prefers latest when present', () => {
     const hostDetails = { id: 1 };
     const historyResponse = {
-      results: [{ id: 1, created_at: '2026-02-20', scanner: 'trivy', total: 10 }],
+      results: [{ id: 1, scanned_at: '2026-02-20', scanner: 'trivy', source: 'rex', total: 10 }],
     };
     const latestResponse = {
       id: 2,
-      created_at: '2026-02-21',
+      scanned_at: '2026-02-21',
       scanner: 'grype',
+      source: 'external',
       total: 8,
       summary: { worst: 'high' },
       findings: [],
@@ -119,8 +121,9 @@ describe('CveDetailsCard', () => {
     const hostDetails = { id: 1 };
     const latestResponse = {
       id: 2,
-      created_at: '2026-02-21',
+      scanned_at: '2026-02-21',
       scanner: 'grype',
+      source: 'external',
       total: 6,
       summary: { worst: 'critical' },
       findings: [

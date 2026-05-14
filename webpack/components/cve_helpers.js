@@ -154,3 +154,12 @@ export const comparisonSorters = {
 
 export const noReportsTitle = () => __('No CVE reports for this host');
 export const noReportsBody = () => __('Run a CVE scan to see results here.');
+export const visibleScanSource = source =>
+  (source || '').toLowerCase() === 'rex' ? '' : source || '';
+export const formatScanOrigin = (scanner, source, fallback = __('Unknown')) => {
+  const scannerLabel = scanner || fallback;
+  const visibleSource = visibleScanSource(source);
+  return visibleSource ? `${scannerLabel} / ${visibleSource}` : scannerLabel;
+};
+export const formatScannedAt = value =>
+  formatDateTime(value) || __('Unknown time');

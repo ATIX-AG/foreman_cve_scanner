@@ -26,6 +26,8 @@ import { STATUS } from 'foremanReact/constants';
 import SeverityIcon from './SeverityIcon';
 import {
   findingMatchesSearch,
+  formatScanOrigin,
+  formatScannedAt,
   findingSorters,
   formatDateTime,
 } from './cve_helpers';
@@ -76,6 +78,7 @@ const CveFindingsModal = ({
 
   const payload = response || {};
   const findings = Array.isArray(payload.findings) ? payload.findings : [];
+  const origin = formatScanOrigin(payload.scanner, payload.source);
 
   const normalizedFilter = (filter || 'all').toLowerCase();
   const filteredFindings = useMemo(() => {
@@ -124,10 +127,10 @@ const CveFindingsModal = ({
   return (
     <Modal
       title={
-        payload?.created_at && typeof payload?.total !== 'undefined'
-          ? `${__('Report from')} ${formatDateTime(payload.created_at)} - ${__(
-              'Total'
-            )}: ${payload.total}`
+        payload?.scanned_at && typeof payload?.total !== 'undefined'
+          ? `${__('Report from')} ${formatScannedAt(
+              payload.scanned_at
+            )} - ${origin} - ${__('Total')}: ${payload.total}`
           : __('CVE findings')
       }
       isOpen={isOpen}

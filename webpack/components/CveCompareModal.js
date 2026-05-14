@@ -30,6 +30,8 @@ import {
   comparisonSorters,
   comparisonStatusLabels,
   formatDateTime,
+  formatScanOrigin,
+  formatScannedAt,
 } from './cve_helpers';
 import './cve_scans.scss';
 
@@ -51,7 +53,6 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
   const compareRequest = useAPI(isOpen ? 'get' : null, compareUrl, {
     key: `CVE_COMPARE_${previousScanId}_${currentScanId}`,
   });
-
   useEffect(() => {
     if (!isOpen) return;
     setFilter('all');
@@ -65,6 +66,14 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
   const comparison = compareRequest.response || {};
   const previousScan = comparison.previous || {};
   const currentScan = comparison.current || {};
+  const previousOrigin = formatScanOrigin(
+    previousScan.scanner,
+    previousScan.source
+  );
+  const currentOrigin = formatScanOrigin(
+    currentScan.scanner,
+    currentScan.source
+  );
   const comparisonRows = useMemo(() => comparison.results || [], [
     comparison.results,
   ]);
@@ -87,12 +96,11 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
     });
     return rows;
   }, [filteredRows, sortBy]);
-
   const status = compareRequest.status || STATUS.PENDING;
   const subtitle =
-    previousScan.created_at && currentScan.created_at
-      ? `${formatDateTime(previousScan.created_at)} -> ${formatDateTime(
-          currentScan.created_at
+    previousScan.scanned_at && currentScan.scanned_at
+      ? `${formatScannedAt(previousScan.scanned_at)} -> ${formatScannedAt(
+          currentScan.scanned_at
         )}`
       : __('Compare CVE reports');
 
@@ -117,13 +125,12 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
   const renderDiff = diff => {
     const entries = comparisonDiffEntries(diff);
     if (entries.length === 0) return '-';
-
     return entries.map(entry => (
       <div key={entry.field} className="cve-compare-diff-entry">
         <span className="cve-compare-diff-label">{entry.label}:</span>{' '}
         <span className="cve-compare-diff-values">
-          <span className="cve-compare-diff-old">{entry.oldValue}</span>
-          <span className="cve-compare-diff-arrow">-&gt;</span>
+          <span className="cve-compare-diff-old">{entry.oldValue}</span>{' '}
+          <span className="cve-compare-diff-arrow">-&gt;</span>{' '}
           <span className="cve-compare-diff-new">{entry.newValue}</span>
         </span>
       </div>
@@ -162,12 +169,12 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
                 component={TextVariants.small}
                 ouiaId="cve-compare-previous"
               >
-                {__('Previous')}: {previousScan.scanner || __('Unknown')} /{' '}
-                {formatDateTime(previousScan.created_at)}
+                {__('Previous')}: {previousOrigin} /{' '}
+                {formatScannedAt(previousScan.scanned_at)}
               </Text>
               <Text component={TextVariants.small} ouiaId="cve-compare-current">
-                {__('Current')}: {currentScan.scanner || __('Unknown')} /{' '}
-                {formatDateTime(currentScan.created_at)}
+                {__('Current')}: {currentOrigin} /{' '}
+                {formatScannedAt(currentScan.scanned_at)}
               </Text>
             </div>
             <div className="cve-compare-cards">
@@ -192,7 +199,6 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
                 ))}
             </div>
           </div>
-
           <div className="cve-modal-filters">
             <SearchInput
               id="cve-compare-search"
@@ -224,7 +230,6 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
               </div>
             </div>
           </div>
-
           <div className="cve-modal-results">
             {sortedRows.length === 0 ? (
               <Text component={TextVariants.small} ouiaId="cve-compare-empty">
@@ -294,9 +299,7 @@ CveCompareModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   scanIds: PropTypes.arrayOf(PropTypes.number),
 };
-
 CveCompareModal.defaultProps = {
   scanIds: [],
 };
-
 export default CveCompareModal;

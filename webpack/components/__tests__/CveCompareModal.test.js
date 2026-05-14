@@ -19,13 +19,15 @@ describe('CveCompareModal', () => {
       response: {
         previous: {
           id: 1,
-          created_at: '2026-02-20T10:00:00Z',
+          scanned_at: '2026-02-20T10:00:00Z',
           scanner: 'trivy',
+          source: 'rex',
         },
         current: {
           id: 2,
-          created_at: '2026-02-21T10:00:00Z',
+          scanned_at: '2026-02-21T10:00:00Z',
           scanner: 'grype',
+          source: 'external',
         },
         summary: {
           new: 1,

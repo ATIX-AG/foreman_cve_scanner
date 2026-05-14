@@ -3,7 +3,10 @@ import {
   severityRank,
   riskLevelFromWorst,
   formatDateTime,
+  formatScanOrigin,
+  formatScannedAt,
   compareStrings,
+  visibleScanSource,
 } from '../cve_helpers';
 
 describe('cve_helpers', () => {
@@ -33,6 +36,16 @@ describe('cve_helpers', () => {
     expect(formatDateTime('not-a-date')).toBe('not-a-date');
   });
 
+  it('formats scan origin without rex source noise', () => {
+    expect(formatScanOrigin('trivy', 'rex')).toBe('trivy');
+    expect(formatScanOrigin('grype', 'external')).toBe('grype / external');
+  });
+
+  it('formats scanned_at with unknown fallback', () => {
+    expect(formatScannedAt('2026-02-22T10:05:00Z')).toContain('2026-02-22');
+    expect(formatScannedAt('')).toBe('Unknown time');
+  });
+
   it('compares strings safely', () => {
     expect(compareStrings('a', 'b')).toBeLessThan(0);
     expect(compareStrings('b', 'a')).toBeGreaterThan(0);
@@ -40,4 +53,8 @@ describe('cve_helpers', () => {
     expect(compareStrings(null, 'a')).toBeLessThan(0);
   });
 
+  it('hides rex source and keeps external source visible', () => {
+    expect(visibleScanSource('rex')).toBe('');
+    expect(visibleScanSource('external')).toBe('external');
+  });
 });

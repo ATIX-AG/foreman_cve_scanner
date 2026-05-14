@@ -8,12 +8,14 @@ module ForemanCveScanner
       @host = FactoryBot.create(:host)
     end
 
-    test 'is invalid without required host and scanner attributes' do
+    test 'is invalid without required host, scanner, source and scanned_at attributes' do
       scan = CveScan.new
 
       assert_not scan.valid?
       assert_includes scan.errors.attribute_names, :host_id
       assert_includes scan.errors.attribute_names, :scanner
+      assert_includes scan.errors.attribute_names, :source
+      assert_includes scan.errors.attribute_names, :scanned_at
     end
 
     test 'is invalid without required scan payload attributes' do
@@ -36,12 +38,12 @@ module ForemanCveScanner
       assert_not_includes result, other_scan
     end
 
-    test 'recent_first orders by created_at desc and id desc' do
-      older = create_scan(host: @host, created_at: 2.hours.ago)
-      newer = create_scan(host: @host, created_at: 1.hour.ago)
+    test 'recent_first orders by scanned_at desc and id desc' do
+      older = create_scan(host: @host, scanned_at: 2.hours.ago)
+      newer = create_scan(host: @host, scanned_at: 1.hour.ago)
       timestamp = Time.zone.parse('2026-05-13 10:00:00')
-      same_time_a = create_scan(host: @host, created_at: timestamp)
-      same_time_b = create_scan(host: @host, created_at: timestamp)
+      same_time_a = create_scan(host: @host, scanned_at: timestamp)
+      same_time_b = create_scan(host: @host, scanned_at: timestamp)
 
       result = CveScan.recent_first.to_a
 
@@ -60,11 +62,12 @@ module ForemanCveScanner
 
     private
 
-    def create_scan(host:, created_at: Time.current, total: 0)
+    def create_scan(host:, scanned_at: Time.current, total: 0)
       CveScan.create!(
         host: host,
         scanner: 'trivy',
-        created_at: created_at,
+        source: 'rex',
+        scanned_at: scanned_at,
         raw: { 'dummy' => true },
         summary: { 'worst' => 'low' },
         findings: [{ 'id' => 'CVE-0000-0000' }],

@@ -10,6 +10,7 @@ Rails.application.routes.draw do
         resources :hosts, only: [] do
           resources :cve_scans, only: %i[index show destroy] do
             collection do
+              post :import
               get :latest
               get :compare
             end

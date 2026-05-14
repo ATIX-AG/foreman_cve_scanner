@@ -4,4 +4,4 @@ object @cve_scan
 
 extends 'api/v2/cve_scans/base'
 
-attributes :findings, :created_at, :updated_at
+attributes :findings, :updated_at

@@ -27,6 +27,7 @@ import RelativeDateTime from 'foremanReact/components/common/dates/RelativeDateT
 import SeverityIcon from './SeverityIcon';
 import CveFindingsModal from './CveFindingsModal';
 import {
+  formatScanOrigin,
   noReportsBody,
   noReportsTitle,
   riskLevelFromWorst,
@@ -75,6 +76,7 @@ const CveDetailsCard = ({ hostDetails }) => {
       : sortedFindings.slice(0, 5);
   const worst = latest?.summary?.worst || 'none';
   const riskLevel = riskLevelFromWorst(worst);
+  const origin = formatScanOrigin(latest?.scanner, latest?.source);
   const openModal = (scanId, filter) => {
     setModalScanId(scanId);
     setModalFilter(filter || 'all');
@@ -103,7 +105,7 @@ const CveDetailsCard = ({ hostDetails }) => {
                   <DescriptionListTerm>{__('Report')}</DescriptionListTerm>
                   <DescriptionListDescription>
                     <RelativeDateTime
-                      date={latest.created_at}
+                      date={latest.scanned_at}
                       defaultValue={__('Unknown time')}
                     />
                   </DescriptionListDescription>
@@ -124,9 +126,7 @@ const CveDetailsCard = ({ hostDetails }) => {
                           {latest.total}
                         </span>
                       </Button>
-                      <span className="cve-overview-source">
-                        {__('CVEs by')} {latest.scanner}
-                      </span>
+                      <span className="cve-overview-source">{origin}</span>
                     </span>
                   </DescriptionListDescription>
                 </DescriptionListGroup>

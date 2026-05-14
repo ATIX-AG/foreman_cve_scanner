@@ -9,7 +9,7 @@ import {
   Tooltip,
 } from '@patternfly/react-core';
 import { translate as __ } from 'foremanReact/common/I18n';
-import { formatDateTime } from './cve_helpers';
+import { formatScannedAt } from './cve_helpers';
 
 const TREND_LIMIT = 10;
 const STACK_ORDER = ['low', 'medium', 'high', 'critical'];
@@ -121,7 +121,7 @@ const CveTrendChart = ({
         <div className="cve-trend-card">
           <span className="cve-trend-card-label">{__('Last scanned')}</span>
           <span className="cve-trend-card-value cve-trend-card-value--small">
-            {formatDateTime(latestScan.created_at)}
+            {formatScannedAt(latestScan.scanned_at)}
           </span>
         </div>
       </div>
@@ -173,14 +173,14 @@ const CveTrendChart = ({
                 compareMode
                   ? __('Select scan from %s for comparison').replace(
                       '%s',
-                      formatDateTime(scan.created_at)
+                      formatScannedAt(scan.scanned_at)
                     )
                   : __('Open scan details for %s').replace(
                       '%s',
-                      formatDateTime(scan.created_at)
+                      formatScannedAt(scan.scanned_at)
                     )
               }
-              title={`${formatDateTime(scan.created_at)} | ${__('Total')}: ${
+              title={`${formatScannedAt(scan.scanned_at)} | ${__('Total')}: ${
                 scan.total
               } | ${__('Critical')}: ${scan.critical} | ${__('High')}: ${
                 scan.high
@@ -199,7 +199,7 @@ const CveTrendChart = ({
               </span>
               <span className="cve-trend-bar-total">{scan.total}</span>
               <span className="cve-trend-bar-label">
-                {shortDateLabel(scan.created_at)}
+                {shortDateLabel(scan.scanned_at)}
               </span>
             </button>
           </div>
@@ -213,7 +213,7 @@ CveTrendChart.propTypes = {
   scans: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
-      created_at: PropTypes.string,
+      scanned_at: PropTypes.string,
       total: PropTypes.number,
       critical: PropTypes.number,
       high: PropTypes.number,

@@ -7,20 +7,12 @@ module ForemanCveScanner
     def setup
       @host = FactoryBot.create(:host)
       @first_scan = create_scan(
-        created_at: 2.hours.ago,
-        findings: [
-          finding('CVE-1', 'openssl', 'HIGH', '1.0'),
-          finding('CVE-2', 'curl', 'LOW', '1.0'),
-          finding('CVE-3', 'bash', 'MEDIUM', '1.0'),
-        ]
+        scanned_at: 2.hours.ago,
+        findings: first_findings
       )
       @second_scan = create_scan(
-        created_at: 1.hour.ago,
-        findings: [
-          finding('CVE-1', 'openssl', 'CRITICAL', '1.0'),
-          finding('CVE-2', 'curl', 'LOW', '2.0'),
-          finding('CVE-4', 'glibc', 'HIGH', '1.0'),
-        ]
+        scanned_at: 1.hour.ago,
+        findings: second_findings
       )
     end
 
@@ -58,11 +50,26 @@ module ForemanCveScanner
       }
     end
 
-    def create_scan(created_at:, findings:)
+    def first_findings
+      [
+        finding('CVE-1', 'openssl', 'HIGH', '1.0'),
+        finding('CVE-2', 'curl', 'LOW', '1.0'),
+      ]
+    end
+
+    def second_findings
+      [
+        finding('CVE-1', 'openssl', 'CRITICAL', '1.0'),
+        finding('CVE-3', 'glibc', 'HIGH', '1.0'),
+      ]
+    end
+
+    def create_scan(scanned_at:, findings:)
       ForemanCveScanner::CveScan.create!(
         host: @host,
         scanner: 'trivy',
-        created_at: created_at,
+        source: 'rex',
+        scanned_at: scanned_at,
         raw: { 'dummy' => true },
         summary: { 'worst' => 'high' },
         findings: findings,
