@@ -5,6 +5,8 @@ module ForemanCveScanner
   class CveScan < ApplicationRecord
     self.table_name = 'foreman_cve_scanner_cve_scans'
 
+    SEVERITY_LEVELS = %w[critical high medium low].freeze
+
     belongs_to :host, class_name: '::Host::Managed'
 
     validates :host_id, :scanner, :source, :scanned_at, :raw, :summary, :findings, presence: true
@@ -13,7 +15,7 @@ module ForemanCveScanner
     scope :recent_first, -> { order(scanned_at: :desc, id: :desc) }
 
     def self.worst_severity(metrics)
-      %w[critical high medium low].find { |severity| metrics[severity].to_i.positive? } || 'none'
+      SEVERITY_LEVELS.find { |severity| metrics[severity].to_i.positive? } || 'none'
     end
   end
 end

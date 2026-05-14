@@ -218,13 +218,10 @@ module Api
 
       def findings_metrics(findings)
         severities = findings.map { |finding| finding['severity'].to_s.upcase }
-        {
-          'total' => findings.size,
-          'critical' => severities.count('CRITICAL'),
-          'high' => severities.count('HIGH'),
-          'medium' => severities.count('MEDIUM'),
-          'low' => severities.count('LOW'),
-        }
+        metrics = ::ForemanCveScanner::CveScan::SEVERITY_LEVELS.index_with do |severity|
+          severities.count(severity.upcase)
+        end
+        metrics.merge('total' => findings.size)
       end
 
       def host_permission
