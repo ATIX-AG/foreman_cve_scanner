@@ -11,6 +11,7 @@ Rails.application.routes.draw do
           resources :cve_scans, only: %i[index show destroy] do
             collection do
               get :latest
+              get :compare
             end
             member do
               get :export

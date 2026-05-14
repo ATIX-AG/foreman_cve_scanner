@@ -8,17 +8,25 @@ const SEVERITY_RANK = {
   LOW: 1,
 };
 const COMPARE_STATUS_RANK = {
-  new: 5,
-  resolved: 4,
-  severity_changed: 3,
+  new: 4,
+  resolved: 3,
   updated: 2,
   unchanged: 1,
 };
+const COMPARISON_DIFF_LABELS = {
+  severity: __('Severity'),
+  version: __('Version'),
+  fixed: __('Fixed'),
+  scan_status: __('Scan status'),
+  title: __('Title'),
+  published: __('Published'),
+  url: __('URL'),
+};
+
 export const comparisonFilters = [
-  { key: 'all_changes', label: __('All changes') },
+  { key: 'all', label: __('All') },
   { key: 'new', label: __('New') },
   { key: 'resolved', label: __('Resolved') },
-  { key: 'severity_changed', label: __('Severity changed') },
   { key: 'updated', label: __('Updated') },
   { key: 'unchanged', label: __('Unchanged') },
 ];
@@ -26,17 +34,17 @@ export const comparisonColumns = [
   { key: 'status', label: __('Status') },
   { key: 'id', label: __('CVE') },
   { key: 'name', label: __('Package') },
-  { key: 'oldSeverity', label: __('Old severity') },
-  { key: 'newSeverity', label: __('New severity') },
-  { key: 'oldVersion', label: __('Old version') },
-  { key: 'newVersion', label: __('New version') },
+  { key: 'severity', label: __('Severity') },
+  { key: 'version', label: __('Version') },
+  { key: 'fixed', label: __('Fixed') },
+  { key: 'scan_status', label: __('Scan status') },
+  { key: 'diff', label: __('Diff') },
   { key: 'published', label: __('Published') },
   { key: 'title', label: __('Title') },
 ];
 export const comparisonStatusLabels = {
   new: __('New'),
   resolved: __('Resolved'),
-  severity_changed: __('Severity changed'),
   updated: __('Updated'),
   unchanged: __('Unchanged'),
 };
@@ -92,76 +100,19 @@ export const findingSorters = {
   severity: (a, b) => severityRank(a.severity) - severityRank(b.severity),
 };
 
-const findingIdentity = finding => `${finding.id || ''}::${finding.name || ''}`;
-const normalizeStatus = status => status || 'open';
-
-const compareFindingPayload = (previousFinding, currentFinding) =>
-  ['version', 'fixed', 'status', 'title', 'url', 'published'].some(
-    key => (previousFinding?.[key] || '') !== (currentFinding?.[key] || '')
-  );
-
-const comparisonStatusFor = (previousFinding, currentFinding) => {
-  if (!previousFinding) return 'new';
-  if (!currentFinding) return 'resolved';
-  if ((previousFinding.severity || '') !== (currentFinding.severity || '')) {
-    return 'severity_changed';
-  }
-  if (compareFindingPayload(previousFinding, currentFinding)) return 'updated';
-  return 'unchanged';
-};
-
 export const comparisonStatusRank = status => COMPARE_STATUS_RANK[status] || 0;
 
-export const compareScanFindings = (
-  previousFindings = [],
-  currentFindings = []
-) => {
-  const previousMap = new Map(
-    previousFindings.map(finding => [findingIdentity(finding), finding])
-  );
-  const currentMap = new Map(
-    currentFindings.map(finding => [findingIdentity(finding), finding])
-  );
-  const identities = Array.from(
-    new Set([...previousMap.keys(), ...currentMap.keys()])
-  );
+export const comparisonDiffEntries = diff =>
+  Object.entries(diff || {}).map(([field, values]) => ({
+    field,
+    label: COMPARISON_DIFF_LABELS[field] || field,
+    oldValue: values.old || '-',
+    newValue: values.new || '-',
+  }));
 
-  return identities.map(identity => {
-    const previousFinding = previousMap.get(identity);
-    const currentFinding = currentMap.get(identity);
-    return {
-      key: identity,
-      status: comparisonStatusFor(previousFinding, currentFinding),
-      id: currentFinding?.id || previousFinding?.id,
-      name: currentFinding?.name || previousFinding?.name,
-      title: currentFinding?.title || previousFinding?.title,
-      published: currentFinding?.published || previousFinding?.published,
-      oldSeverity: previousFinding?.severity || '',
-      newSeverity: currentFinding?.severity || '',
-      oldVersion: previousFinding?.version || '',
-      newVersion: currentFinding?.version || '',
-      oldFixed: previousFinding?.fixed || '',
-      newFixed: currentFinding?.fixed || '',
-      oldStatus: normalizeStatus(previousFinding?.status),
-      newStatus: normalizeStatus(currentFinding?.status),
-      url: currentFinding?.url || previousFinding?.url,
-    };
-  });
-};
-
-export const summarizeComparison = rows =>
-  rows.reduce(
-    (summary, row) => {
-      summary[row.status] += 1;
-      return summary;
-    },
-    {
-      new: 0,
-      resolved: 0,
-      severity_changed: 0,
-      updated: 0,
-      unchanged: 0,
-    }
+export const formatComparisonDiff = diff =>
+  comparisonDiffEntries(diff).map(
+    entry => `${entry.label}: ${entry.oldValue} -> ${entry.newValue}`
   );
 
 export const comparisonMatchesSearch = (row, query) =>
@@ -170,15 +121,12 @@ export const comparisonMatchesSearch = (row, query) =>
     row.name,
     row.title,
     row.published,
-    row.oldSeverity,
-    row.newSeverity,
-    row.oldVersion,
-    row.newVersion,
-    row.oldFixed,
-    row.newFixed,
-    row.oldStatus,
-    row.newStatus,
+    row.severity,
+    row.version,
+    row.fixed,
+    row.scan_status,
     row.status,
+    ...formatComparisonDiff(row.diff),
   ].some(value =>
     (value || '')
       .toString()
@@ -192,12 +140,16 @@ export const comparisonSorters = {
   id: (a, b) => compareStrings(a.id, b.id),
   name: (a, b) => compareStrings(a.name, b.name),
   published: (a, b) => new Date(a.published || 0) - new Date(b.published || 0),
-  oldSeverity: (a, b) =>
-    severityRank(a.oldSeverity) - severityRank(b.oldSeverity),
-  newSeverity: (a, b) =>
-    severityRank(a.newSeverity) - severityRank(b.newSeverity),
-  oldVersion: (a, b) => compareStrings(a.oldVersion, b.oldVersion),
-  newVersion: (a, b) => compareStrings(a.newVersion, b.newVersion),
+  severity: (a, b) => severityRank(a.severity) - severityRank(b.severity),
+  version: (a, b) => compareStrings(a.version, b.version),
+  fixed: (a, b) => compareStrings(a.fixed, b.fixed),
+  scan_status: (a, b) => compareStrings(a.scan_status, b.scan_status),
+  diff: (a, b) =>
+    compareStrings(
+      formatComparisonDiff(a.diff).join(' '),
+      formatComparisonDiff(b.diff).join(' ')
+    ),
+  title: (a, b) => compareStrings(a.title, b.title),
 };
 
 export const noReportsTitle = () => __('No CVE reports for this host');

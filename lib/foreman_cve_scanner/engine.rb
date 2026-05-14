@@ -23,7 +23,7 @@ module ForemanCveScanner
 
           security_block :foreman_cve_scanner do
             permission :view_cve_scans,
-              { 'api/v2/cve_scans': %i[index latest show export] },
+              { 'api/v2/cve_scans': %i[index latest show export compare] },
               resource_type: 'Host'
             permission :destroy_cve_scans,
               { 'api/v2/cve_scans': %i[destroy] },

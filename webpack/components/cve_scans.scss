@@ -318,6 +318,46 @@ button.cve-summary {
   margin-bottom: 0.75rem;
 }
 
+.cve-compare-diff-entry {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.cve-compare-diff-entry + .cve-compare-diff-entry {
+  margin-top: 0.35rem;
+}
+
+.cve-compare-diff-label {
+  color: var(--pf-v5-global--Color--200);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.cve-compare-diff-values {
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.cve-compare-diff-old,
+.cve-compare-diff-new {
+  background: var(--pf-v5-global--BackgroundColor--200);
+  border-radius: 4px;
+  display: inline-flex;
+  line-height: 1.3;
+  padding: 0.1rem 0.35rem;
+}
+
+.cve-compare-diff-new {
+  font-weight: 600;
+}
+
+.cve-compare-diff-arrow {
+  color: var(--pf-v5-global--Color--200);
+  font-size: 0.85rem;
+}
+
 .cve-trend-actions {
   align-items: center;
   display: flex;
