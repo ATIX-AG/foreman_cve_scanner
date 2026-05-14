@@ -19,7 +19,9 @@ describe('CveFindingsModal', () => {
     useAPI.mockReturnValue({
       response: {
         id: 1,
-        created_at: '2026-02-22T10:00:00Z',
+        scanned_at: '2026-02-22T10:00:00Z',
+        scanner: 'trivy',
+        source: 'rex',
         total: 2,
         findings: [
           { id: 'CVE-1', severity: 'HIGH', name: 'a', version: '1' },
@@ -57,7 +59,9 @@ describe('CveFindingsModal', () => {
     useAPI.mockReturnValue({
       response: {
         id: 1,
-        created_at: '2026-02-22T10:00:00Z',
+        scanned_at: '2026-02-22T10:00:00Z',
+        scanner: 'trivy',
+        source: 'rex',
         total: 0,
         findings: [],
       },
@@ -81,7 +85,9 @@ describe('CveFindingsModal', () => {
     useAPI.mockReturnValue({
       response: {
         id: 1,
-        created_at: '2026-02-22T10:00:00Z',
+        scanned_at: '2026-02-22T10:00:00Z',
+        scanner: 'trivy',
+        source: 'rex',
         total: 2,
         findings: [
           {

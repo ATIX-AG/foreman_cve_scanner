@@ -32,8 +32,9 @@ describe('CveScansTab', () => {
       results: [
         {
           id: 1,
-          created_at: '2026-02-20',
+          scanned_at: '2026-02-20',
           scanner: 'trivy',
+          source: 'rex',
           total: 10,
           critical: 1,
           high: 2,
@@ -42,8 +43,9 @@ describe('CveScansTab', () => {
         },
         {
           id: 2,
-          created_at: '2026-02-21',
+          scanned_at: '2026-02-21',
           scanner: 'grype',
+          source: 'external',
           total: 5,
           critical: 0,
           high: 1,
@@ -69,8 +71,9 @@ describe('CveScansTab', () => {
       results: [
         {
           id: 1,
-          created_at: '2026-02-20',
+          scanned_at: '2026-02-20',
           scanner: 'trivy',
+          source: 'rex',
           total: 10,
           critical: 1,
           high: 2,
@@ -79,8 +82,9 @@ describe('CveScansTab', () => {
         },
         {
           id: 2,
-          created_at: '2026-02-21',
+          scanned_at: '2026-02-21',
           scanner: 'grype',
+          source: 'external',
           total: 5,
           critical: 0,
           high: 1,
@@ -114,8 +118,9 @@ describe('CveScansTab', () => {
       results: [
         {
           id: 1,
-          created_at: '2026-02-20',
+          scanned_at: '2026-02-20',
           scanner: 'trivy',
+          source: 'rex',
           total: 10,
           critical: 1,
           high: 2,
@@ -124,8 +129,9 @@ describe('CveScansTab', () => {
         },
         {
           id: 2,
-          created_at: '2026-02-21',
+          scanned_at: '2026-02-21',
           scanner: 'grype',
+          source: 'external',
           total: 5,
           critical: 0,
           high: 1,
@@ -147,9 +153,9 @@ describe('CveScansTab', () => {
       .simulate('click');
     wrapper.update();
 
-    expect(wrapper.text()).toContain('Reported at');
+    expect(wrapper.text()).toContain('Scanned at');
     expect(wrapper.text()).toContain('trivy');
-    expect(wrapper.text()).toContain('grype');
+    expect(wrapper.text()).toContain('grype / external');
     expect(wrapper.text()).toContain('Export CSV');
     expect(wrapper.text()).toContain('Compare selected');
   });
@@ -159,8 +165,9 @@ describe('CveScansTab', () => {
       results: [
         {
           id: 1,
-          created_at: '2026-02-20',
+          scanned_at: '2026-02-20',
           scanner: 'trivy',
+          source: 'rex',
           total: 10,
           critical: 1,
           high: 2,
@@ -169,8 +176,9 @@ describe('CveScansTab', () => {
         },
         {
           id: 2,
-          created_at: '2026-02-21',
+          scanned_at: '2026-02-21',
           scanner: 'grype',
+          source: 'external',
           total: 5,
           critical: 0,
           high: 1,

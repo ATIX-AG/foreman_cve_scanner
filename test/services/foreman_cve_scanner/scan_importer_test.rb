@@ -19,6 +19,7 @@ module ForemanCveScanner
       assert_not_nil scan
       assert_equal @host.id, scan.host_id
       assert_equal 'trivy', scan.scanner
+      assert_equal 'rex', scan.source
     end
 
     test 'import_for_host! sets totals and findings for trivy output' do
@@ -29,6 +30,7 @@ module ForemanCveScanner
 
       assert_operator scan.total, :>, 0
       assert_equal scan.total, scan.findings.count
+      assert_not_nil scan.scanned_at
     end
 
     test 'import_for_host! persists scan from proxy output' do

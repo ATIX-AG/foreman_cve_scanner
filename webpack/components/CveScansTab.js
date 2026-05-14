@@ -58,8 +58,8 @@ const CveScansTab = ({ response }) => {
       [...selectedScans]
         .sort(
           (a, b) =>
-            new Date(a.created_at || 0).getTime() -
-            new Date(b.created_at || 0).getTime()
+            new Date(a.scanned_at || 0).getTime() -
+            new Date(b.scanned_at || 0).getTime()
         )
         .map(scan => scan.id),
     [selectedScans]

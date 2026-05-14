@@ -50,7 +50,8 @@ module HostStatus
       ForemanCveScanner::CveScan.create!(
         host: @host,
         scanner: 'trivy',
-        created_at: Time.now.utc,
+        source: 'rex',
+        scanned_at: Time.current,
         raw: { 'dummy' => true },
         summary: { 'worst' => 'low' },
         findings: [{ 'id' => 'CVE-0000-0000' }],

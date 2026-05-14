@@ -2,7 +2,6 @@
 
 module ForemanCveScanner
   # Parses raw CVE scanner reports and produces unified logs/metrics.
-  # rubocop:disable Metrics/ClassLength
   class CveReportScanner
     SEVERITY_ORDER = %w[CRITICAL HIGH MEDIUM LOW UNKNOWN].freeze
 
@@ -101,7 +100,7 @@ module ForemanCveScanner
       unified
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     def generate_unified_vuls
       raise ::Foreman::Exception, _('Invalid CVE scanner report') unless @raw_data.key?('scan')
 
@@ -126,7 +125,6 @@ module ForemanCveScanner
 
       vuls
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   end
-  # rubocop:enable Metrics/ClassLength
 end

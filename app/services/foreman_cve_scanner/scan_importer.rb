@@ -73,18 +73,13 @@ module ForemanCveScanner
       Rails.logger.error("CVE status refresh failed for host_id=#{host.id}: #{e}")
     end
 
-    def worst_severity(metrics)
-      %w[critical high medium low].each do |severity|
-        return severity if metrics[severity].to_i.positive?
-      end
-      'none'
-    end
-
     def build_scan_attributes(host, scanner_name, scan_json, metrics, scanner)
-      summary = metrics.merge('worst' => worst_severity(metrics))
+      summary = metrics.merge('worst' => ::ForemanCveScanner::CveScan.worst_severity(metrics))
       {
         host: host,
         scanner: scanner_name,
+        source: 'rex',
+        scanned_at: Time.current,
         raw: scan_json,
         summary: summary,
         findings: build_findings(scanner),

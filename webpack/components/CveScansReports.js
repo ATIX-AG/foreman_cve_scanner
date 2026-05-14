@@ -5,6 +5,7 @@ import { Button, Checkbox, Pagination, Title } from '@patternfly/react-core';
 import { Table, Thead, Tbody, Tr, Th, Td } from '@patternfly/react-table';
 import { translate as __ } from 'foremanReact/common/I18n';
 import RelativeDateTime from 'foremanReact/components/common/dates/RelativeDateTime';
+import { formatScanOrigin } from './cve_helpers';
 
 const CveScansReports = ({
   scans,
@@ -70,7 +71,7 @@ const CveScansReports = ({
       <Thead>
         <Tr ouiaId="cve-scans-header">
           <Th>{__('Select')}</Th>
-          <Th>{__('Reported at')}</Th>
+          <Th>{__('Scanned at')}</Th>
           <Th>{__('Scanner')}</Th>
           <Th>{__('Total')}</Th>
           <Th>{__('Critical')}</Th>
@@ -96,7 +97,7 @@ const CveScansReports = ({
                 ouiaId={`cve-scan-select-${scan.id}`}
               />
             </Td>
-            <Td dataLabel={__('Reported at')}>
+            <Td dataLabel={__('Scanned at')}>
               <Button
                 variant="link"
                 className="cve-summary-link"
@@ -104,12 +105,14 @@ const CveScansReports = ({
                 ouiaId={`cve-scans-open-${scan.id}`}
               >
                 <RelativeDateTime
-                  date={scan.created_at}
+                  date={scan.scanned_at}
                   defaultValue={__('Unknown time')}
                 />
               </Button>
             </Td>
-            <Td dataLabel={__('Scanner')}>{scan.scanner}</Td>
+            <Td dataLabel={__('Scanner')}>
+              {formatScanOrigin(scan.scanner, scan.source)}
+            </Td>
             <Td dataLabel={__('Total')}>
               <Button
                 variant="link"
@@ -181,8 +184,9 @@ CveScansReports.propTypes = {
   scans: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
-      created_at: PropTypes.string,
+      scanned_at: PropTypes.string,
       scanner: PropTypes.string,
+      source: PropTypes.string,
       total: PropTypes.number,
       critical: PropTypes.number,
       high: PropTypes.number,

@@ -2,4 +2,4 @@
 
 object @cve_scan
 
-attributes :id, :host_id, :scanner, :created_at, :total, :critical, :high, :medium, :low, :summary
+attributes :id, :host_id, :scanner, :source, :scanned_at, :created_at, :total, :critical, :high, :medium, :low, :summary
