@@ -6,6 +6,11 @@ module ForemanCveScanner
   class ScanImporterTest < ActiveSupport::TestCase
     def setup
       @host = FactoryBot.create(:host)
+      @previous_retention = Setting[:cve_scan_delete_after_days]
+    end
+
+    def teardown
+      Setting[:cve_scan_delete_after_days] = @previous_retention
     end
 
     test 'import_for_host! persists scan from trivy output' do
@@ -67,6 +72,32 @@ module ForemanCveScanner
       scan = importer.import_for_host!(@host)
 
       assert_nil scan
+    end
+
+    test 'import_for_host! cleans up old scans for the host using retention setting' do
+      Setting[:cve_scan_delete_after_days] = 1
+      old_scan = ForemanCveScanner::CveScan.create!(
+        host: @host,
+        scanner: 'trivy',
+        source: 'rex',
+        scanned_at: 3.days.ago,
+        raw: { 'dummy' => true },
+        summary: { 'worst' => 'low' },
+        findings: [{ 'id' => 'CVE-0000-0000' }],
+        total: 1,
+        critical: 0,
+        high: 0,
+        medium: 0,
+        low: 1
+      )
+      output = wrap_output(load_fixture('trivy.json'))
+      importer = ForemanCveScanner::ScanImporter.new(output)
+
+      scan = importer.import_for_host!(@host)
+
+      assert_not_nil scan
+      assert_not ForemanCveScanner::CveScan.exists?(old_scan.id)
+      assert ForemanCveScanner::CveScan.exists?(scan.id)
     end
 
     private

@@ -113,6 +113,26 @@ Notes:
 - `summary` and severity counters are calculated on the server from `findings`
 - `raw` is not part of the public API contract
 
+## Retention
+
+You can configure automatic CVE scan cleanup with the plugin setting:
+
+- `Administer -> Settings -> CVE Scanner -> Delete CVE scans after X days`
+
+Behavior:
+
+- `0` disables automatic cleanup
+- scans older than the configured number of days are deleted
+- the cleanup runs after imports and can also be triggered manually
+
+Manual cleanup task:
+
+- `bundle exec rake foreman_cve_scanner:cleanup_scans`
+
+Override the configured retention for one run:
+
+- `bundle exec rake foreman_cve_scanner:cleanup_scans DAYS=30`
+
 ## TODO
 
 - Deliver Trivy/Grype via Katello
