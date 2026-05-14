@@ -41,8 +41,7 @@ module ForemanCveScanner
     end
 
     def metrics
-      known = %w[critical high medium low]
-      res = @status.slice(*known)
+      res = @status.slice(*::ForemanCveScanner::CveScan::SEVERITY_LEVELS)
       res['total'] = res.values.sum
       res
     end
