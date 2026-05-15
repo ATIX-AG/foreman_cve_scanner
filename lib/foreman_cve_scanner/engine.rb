@@ -37,8 +37,8 @@ module ForemanCveScanner
     def self.register_rex_features
       RemoteExecutionFeature.register(
         :run_cve_scan,
-        N_('Run a CVE scan on a host'),
-        description: N_('Run CVE scan on host'),
+        N_('Run CVE scan'),
+        description: N_('Run CVE scan'),
         host_action_button: true
       )
     end
