@@ -43,13 +43,13 @@ end
 case @host.architecture.to_s
 when 'x86_64'
   trivy_arch = 'Linux-64bit'
-  grype_arch = 'linux-amd64'
+  grype_arch = 'linux_amd64'
 when 'ppc64le'
   trivy_arch = 'Linux-PPC64LE'
-  grype_arch = 'linux-ppc64le'
+  grype_arch = 'linux_ppc64le'
 when 'aarch64'
   trivy_arch = 'Linux-ARM64'
-  grype_arch = 'linux-arm64'
+  grype_arch = 'linux_arm64'
 else
   raise("Architecture '#{@host.architecture}' not supported by template #{template_name}")
 end
