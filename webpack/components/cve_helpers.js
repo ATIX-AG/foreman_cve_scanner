@@ -72,6 +72,12 @@ export const formatDateTime = value => {
 export const compareStrings = (a, b) =>
   (a || '').toString().localeCompare((b || '').toString());
 
+export const normalizeSearchInputValue = (value, event) => {
+  if (typeof value === 'string') return value;
+  if (typeof event === 'string') return event;
+  return value?.target?.value || event?.target?.value || '';
+};
+
 export const findingMatchesSearch = (finding, query) =>
   [
     finding.id,

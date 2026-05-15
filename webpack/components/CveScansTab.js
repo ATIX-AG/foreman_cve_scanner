@@ -20,6 +20,7 @@ import CveTrendChart from './CveTrendChart';
 import CveScansReports from './CveScansReports';
 import CveFindingsModal from './CveFindingsModal';
 import CveCompareModal from './CveCompareModal';
+import useModalScan from './useModalScan';
 import { noReportsBody, noReportsTitle } from './cve_helpers';
 import './cve_scans.scss';
 
@@ -31,13 +32,11 @@ const CveScansTab = ({ response }) => {
   const hostId = response?.id;
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(DEFAULT_PER_PAGE);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
-  const [modalScanId, setModalScanId] = useState(null);
-  const [modalFilter, setModalFilter] = useState('all');
   const [selectedScanIds, setSelectedScanIds] = useState([]);
   const [isTrendCompareMode, setIsTrendCompareMode] = useState(false);
   const [activeTabKey, setActiveTabKey] = useState(OVERVIEW_TAB);
+  const { isOpen, scanId, filter, openModal, closeModal } = useModalScan();
 
   const historyUrl = hostId
     ? foremanUrl(
@@ -65,14 +64,8 @@ const CveScansTab = ({ response }) => {
     [selectedScans]
   );
   const itemCount = apiResponse?.total ?? scans.length;
-
-  const openModal = (scanId, filter) => {
-    setModalScanId(scanId);
-    setModalFilter(filter || 'all');
-    setIsModalOpen(true);
-  };
-  const exportUrlFor = scanId =>
-    foremanUrl(`/api/v2/hosts/${hostId}/cve_scans/${scanId}/export`);
+  const exportUrlFor = reportId =>
+    foremanUrl(`/api/v2/hosts/${hostId}/cve_scans/${reportId}/export`);
 
   const onSetPage = (_event, newPage) => {
     setPage(newPage);
@@ -85,13 +78,13 @@ const CveScansTab = ({ response }) => {
     setSelectedScanIds([]);
     setIsTrendCompareMode(false);
   };
-  const toggleScanSelection = scanId => {
+  const toggleScanSelection = reportId => {
     setSelectedScanIds(currentSelection => {
-      if (currentSelection.includes(scanId)) {
-        return currentSelection.filter(id => id !== scanId);
+      if (currentSelection.includes(reportId)) {
+        return currentSelection.filter(id => id !== reportId);
       }
       if (currentSelection.length >= 2) return currentSelection;
-      return [...currentSelection, scanId];
+      return [...currentSelection, reportId];
     });
   };
   const clearSelection = () => {
@@ -140,7 +133,7 @@ const CveScansTab = ({ response }) => {
               >
                 <CveTrendChart
                   scans={scans}
-                  onOpen={scanId => openModal(scanId, 'all')}
+                  onOpen={reportId => openModal(reportId, 'all')}
                   compareMode={isTrendCompareMode}
                   selectedScanIds={selectedScanIds}
                   onToggleSelection={toggleScanSelection}
@@ -173,11 +166,11 @@ const CveScansTab = ({ response }) => {
         )}
       </SkeletonLoader>
       <CveFindingsModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isOpen}
+        onClose={closeModal}
         hostId={hostId}
-        scanId={modalScanId}
-        initialFilter={modalFilter}
+        scanId={scanId}
+        initialFilter={filter}
       />
       <CveCompareModal
         isOpen={isCompareOpen}
