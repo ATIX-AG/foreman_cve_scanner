@@ -32,6 +32,7 @@ import {
   formatDateTime,
   formatScanOrigin,
   formatScannedAt,
+  normalizeSearchInputValue,
 } from './cve_helpers';
 import './cve_scans.scss';
 
@@ -112,15 +113,7 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
     setSortBy({ column, direction: nextDirection });
   };
   const onSearchChange = (value, event) => {
-    if (typeof value === 'string') {
-      setSearch(value);
-      return;
-    }
-    if (typeof event === 'string') {
-      setSearch(event);
-      return;
-    }
-    setSearch(value?.target?.value || event?.target?.value || '');
+    setSearch(normalizeSearchInputValue(value, event));
   };
   const renderDiff = diff => {
     const entries = comparisonDiffEntries(diff);

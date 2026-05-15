@@ -73,22 +73,12 @@ describe('CveDetailsCard', () => {
     expect(wrapper.text()).toContain('pkg');
   });
 
-  it('falls back to history when latest is empty', () => {
+  it('renders empty state when latest is empty', () => {
     const hostDetails = { id: 1 };
-    const historyResponse = {
-      results: [{ id: 1, scanned_at: '2026-02-20', scanner: 'trivy', source: 'rex', total: 10 }],
-    };
-
-    useAPI.mockImplementation((_method, url) => {
-      if (url && url.includes('/latest')) {
-        return { response: {}, status: 'RESOLVED' };
-      }
-      return { response: historyResponse, status: 'RESOLVED' };
-    });
+    useAPI.mockReturnValue({ response: {}, status: 'RESOLVED' });
 
     const wrapper = mount(<CveDetailsCard hostDetails={hostDetails} />);
-    expect(wrapper.text()).toContain('Report');
-    expect(wrapper.text()).toContain('trivy');
+    expect(wrapper.text()).toContain('No CVE reports for this host');
   });
 
   it('prefers latest when present', () => {

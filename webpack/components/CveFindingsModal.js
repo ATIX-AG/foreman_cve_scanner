@@ -26,10 +26,11 @@ import { STATUS } from 'foremanReact/constants';
 import SeverityIcon from './SeverityIcon';
 import {
   findingMatchesSearch,
+  formatDateTime,
   formatScanOrigin,
   formatScannedAt,
   findingSorters,
-  formatDateTime,
+  normalizeSearchInputValue,
 } from './cve_helpers';
 import './cve_scans.scss';
 
@@ -113,15 +114,7 @@ const CveFindingsModal = ({
     setSortBy({ column, direction: nextDirection });
   };
   const onSearchChange = (value, event) => {
-    if (typeof value === 'string') {
-      setSearch(value);
-      return;
-    }
-    if (typeof event === 'string') {
-      setSearch(event);
-      return;
-    }
-    setSearch(value?.target?.value || event?.target?.value || '');
+    setSearch(normalizeSearchInputValue(value, event));
   };
 
   return (

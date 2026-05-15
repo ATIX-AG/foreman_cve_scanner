@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Table, Tbody, Tr, Th, Thead, Td } from '@patternfly/react-table';
 import {
@@ -26,6 +26,7 @@ import { STATUS } from 'foremanReact/constants';
 import RelativeDateTime from 'foremanReact/components/common/dates/RelativeDateTime';
 import SeverityIcon from './SeverityIcon';
 import CveFindingsModal from './CveFindingsModal';
+import useModalScan from './useModalScan';
 import {
   formatScanOrigin,
   noReportsBody,
@@ -37,26 +38,17 @@ import './cve_scans.scss';
 
 const CveDetailsCard = ({ hostDetails }) => {
   const hostId = hostDetails?.id;
-  const historyUrl = hostId
-    ? foremanUrl(`/api/v2/hosts/${hostId}/cve_scans?per_page=3`)
-    : null;
   const latestUrl = hostId
     ? foremanUrl(`/api/v2/hosts/${hostId}/cve_scans/latest`)
     : null;
-  const { response: historyResponse, status } = useAPI('get', historyUrl, {
-    key: `CVE_DETAILS_${hostId}`,
-  });
   const { response: latestResponse, status: latestStatus } = useAPI(
     'get',
     latestUrl,
     { key: `CVE_DETAILS_LATEST_${hostId}` }
   );
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalScanId, setModalScanId] = useState(null);
-  const [modalFilter, setModalFilter] = useState('all');
+  const { isOpen, scanId, filter, openModal, closeModal } = useModalScan();
   if (!hostId) return null;
-  const scans = historyResponse?.results || [];
-  const latest = latestResponse?.id ? latestResponse : scans[0];
+  const latest = latestResponse?.id ? latestResponse : null;
   const findings = latest?.findings || [];
   const sortedFindings = [...findings].sort((a, b) => {
     const severityDiff = severityRank(b.severity) - severityRank(a.severity);
@@ -77,14 +69,9 @@ const CveDetailsCard = ({ hostDetails }) => {
   const worst = latest?.summary?.worst || 'none';
   const riskLevel = riskLevelFromWorst(worst);
   const origin = formatScanOrigin(latest?.scanner, latest?.source);
-  const openModal = (scanId, filter) => {
-    setModalScanId(scanId);
-    setModalFilter(filter || 'all');
-    setIsModalOpen(true);
-  };
   return (
     <CardTemplate header={__('CVE scan details')} expandable masonryLayout>
-      <SkeletonLoader status={status || latestStatus || STATUS.PENDING}>
+      <SkeletonLoader status={latestStatus || STATUS.PENDING}>
         {!latest ? (
           <EmptyState>
             <EmptyStateIcon icon={SearchIcon} />
@@ -263,11 +250,11 @@ const CveDetailsCard = ({ hostDetails }) => {
         )}
       </SkeletonLoader>
       <CveFindingsModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isOpen}
+        onClose={closeModal}
         hostId={hostId}
-        scanId={modalScanId}
-        initialFilter={modalFilter}
+        scanId={scanId}
+        initialFilter={filter}
       />
     </CardTemplate>
   );
