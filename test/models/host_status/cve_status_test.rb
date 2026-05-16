@@ -39,6 +39,14 @@ module HostStatus
       assert_equal 1, status.to_status
     end
 
+    test 'zero findings scan returns ok status' do
+      create_scan(critical: 0, high: 0, medium: 0, low: 0)
+      status = @host.get_status(HostStatus::CveStatus)
+      assert_equal 'No CVEs found', status.to_label
+      assert_equal HostStatus::Global::OK, status.to_global
+      assert_equal 0, status.to_status
+    end
+
     test 'status is registered in registry' do
       assert_includes HostStatus.status_registry, HostStatus::CveStatus
     end
@@ -53,8 +61,8 @@ module HostStatus
         source: 'rex',
         scanned_at: Time.current,
         raw: { 'dummy' => true },
-        summary: { 'worst' => 'low' },
-        findings: [{ 'id' => 'CVE-0000-0000' }],
+        summary: { 'worst' => total.zero? ? 'none' : 'low' },
+        findings: total.zero? ? [] : [{ 'id' => 'CVE-0000-0000' }],
         total: total,
         critical: critical,
         high: high,

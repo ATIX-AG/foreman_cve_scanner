@@ -108,6 +108,28 @@ module ForemanCveScanner
       assert ForemanCveScanner::CveScan.exists?(scan.id)
     end
 
+    test 'import_for_host! persists scan with zero findings' do
+      output = wrap_output(
+        {
+          'Results' => [
+            {
+              'Target' => '/',
+              'Class' => 'os-pkgs',
+            },
+          ],
+        }.to_json
+      )
+      importer = ForemanCveScanner::ScanImporter.new(output)
+
+      scan = importer.import_for_host!(@host)
+
+      assert_not_nil scan
+      assert_equal 'trivy', scan.scanner
+      assert_empty scan.findings
+      assert_equal 0, scan.total
+      assert_equal 'none', scan.summary['worst']
+    end
+
     private
 
     def load_fixture(name)

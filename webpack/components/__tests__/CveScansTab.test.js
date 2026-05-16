@@ -221,6 +221,32 @@ describe('CveScansTab', () => {
     expect(wrapper.text()).toContain('No CVE reports for this host');
   });
 
+  it('renders trend overview when recent scans have no cves', () => {
+    const scansResponse = {
+      results: [
+        {
+          id: 1,
+          scanned_at: '2026-02-20',
+          scanner: 'trivy',
+          source: 'rex',
+          total: 0,
+          critical: 0,
+          high: 0,
+          medium: 0,
+          low: 0,
+        },
+      ],
+      total: 1,
+    };
+
+    useAPI.mockReturnValue({ response: scansResponse, status: 'RESOLVED' });
+
+    const wrapper = mount(<CveScansTab response={{ id: 1 }} />);
+    expect(wrapper.text()).toContain('Trend');
+    expect(wrapper.text()).toContain('Latest total');
+    expect(wrapper.text()).toContain('0');
+  });
+
   it('does not render when host id is missing', () => {
     useAPI.mockReturnValue({ response: { results: [] }, status: 'RESOLVED' });
 

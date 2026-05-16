@@ -126,17 +126,6 @@ const CveTrendChart = ({
         </div>
       </div>
 
-      <div className="cve-trend-legend" aria-label="CVE trend legend">
-        {TREND_LEGEND.map(item => (
-          <span key={item.key} className="cve-trend-legend-item">
-            <span
-              className={`cve-trend-legend-swatch cve-trend-segment--${item.key}`}
-            />
-            <span>{item.label}</span>
-          </span>
-        ))}
-      </div>
-
       {isCompareSelectable && (
         <div className="cve-trend-controls">
           <div className="cve-trend-actions">
@@ -155,6 +144,17 @@ const CveTrendChart = ({
           </div>
         </div>
       )}
+
+      <div className="cve-trend-legend" aria-label="CVE trend legend">
+        {TREND_LEGEND.map(item => (
+          <span key={item.key} className="cve-trend-legend-item">
+            <span
+              className={`cve-trend-legend-swatch cve-trend-segment--${item.key}`}
+            />
+            <span>{item.label}</span>
+          </span>
+        ))}
+      </div>
 
       <div className="cve-trend-bars">
         {visibleScans.map(scan => (
@@ -186,7 +186,13 @@ const CveTrendChart = ({
                 scan.high
               } | ${__('Medium')}: ${scan.medium} | ${__('Low')}: ${scan.low}`}
             >
-              <span className="cve-trend-bar-frame">
+              <span
+                className={
+                  scan.total === 0
+                    ? 'cve-trend-bar-frame cve-trend-bar-frame--clean'
+                    : 'cve-trend-bar-frame'
+                }
+              >
                 {STACK_ORDER.map(level => (
                   <span
                     key={level}

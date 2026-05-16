@@ -160,6 +160,9 @@ export const comparisonSorters = {
 
 export const noReportsTitle = () => __('No CVE reports for this host');
 export const noReportsBody = () => __('Run a CVE scan to see results here.');
+export const noFindingsTitle = () => __('No CVEs found');
+export const noFindingsBody = () =>
+  __('The latest CVE scan found no vulnerabilities for this host.');
 export const visibleScanSource = source =>
   (source || '').toLowerCase() === 'rex' ? '' : source || '';
 export const formatScanOrigin = (scanner, source, fallback = __('Unknown')) => {
