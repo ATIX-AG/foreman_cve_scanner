@@ -29,16 +29,16 @@ template_inputs:
   default: /
   hidden_value: false
 - name: scanner
-  required: true
+  required: false
   input_type: user
   options: "trivy\r\ngrype"
   advanced: false
   value_type: plain
-  default: trivy
   hidden_value: false
 %>
 <%
-scanner = input('scanner')
+scanner = input('scanner').to_s.strip
+scanner = foreman_cve_scanner('preferred_scanner') if scanner.empty?
 target = input('target').to_sym
 path = input('path')
 options = input('options').to_s

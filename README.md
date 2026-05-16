@@ -32,6 +32,7 @@ for how to install Foreman plugins
 - Run the REX job to install Trivy and/or Grype
 - Run the REX job to scan a host
 - You can configure recurring CVE scans via `Monitor -> Jobs`
+- You can configure the default scanner for the `Run CVE scanner` template via `Administer -> Settings -> CVE Scanner -> Preferred CVE scanner`
 - View results in:
   - Hosts overview list column “CVE” (use 'Manage Columns' to enable)
   - Host Details card and modal
