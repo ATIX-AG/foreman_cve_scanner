@@ -481,6 +481,14 @@ button.cve-summary {
   font-size: 0.75rem;
 }
 
+.cve-trend-tooltip {
+  text-align: left;
+}
+
+.cve-trend-tooltip-line + .cve-trend-tooltip-line {
+  margin-top: 0.15rem;
+}
+
 
 .cve-scans-toolbar {
   align-items: center;
