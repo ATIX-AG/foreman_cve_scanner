@@ -58,20 +58,28 @@ module ForemanCveScanner
       assert_operator scan.total, :>, 0
     end
 
-    test 'import_for_host! returns nil when no json markers' do
+    test 'import_for_host! raises when no json markers' do
       importer = ForemanCveScanner::ScanImporter.new('no markers here')
 
-      scan = importer.import_for_host!(@host)
-
-      assert_nil scan
+      assert_raises(::Foreman::Exception) do
+        importer.import_for_host!(@host)
+      end
     end
 
-    test 'import_for_host! returns nil when json is invalid' do
+    test 'import_for_host! raises when json is invalid' do
       importer = ForemanCveScanner::ScanImporter.new("===START\n{bad\n===END")
 
-      scan = importer.import_for_host!(@host)
+      assert_raises(::Foreman::Exception) do
+        importer.import_for_host!(@host)
+      end
+    end
 
-      assert_nil scan
+    test 'import_for_host! raises when marker block is empty' do
+      importer = ForemanCveScanner::ScanImporter.new("===START\n===END")
+
+      assert_raises(::Foreman::Exception) do
+        importer.import_for_host!(@host)
+      end
     end
 
     test 'import_for_host! cleans up old scans for the host using retention setting' do
