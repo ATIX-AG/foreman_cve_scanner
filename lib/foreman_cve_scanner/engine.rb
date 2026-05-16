@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'foreman_remote_execution'
+require 'foreman_cve_scanner/template_helpers'
 
 module ForemanCveScanner
   # Rails engine for the Foreman CVE Scanner plugin.
@@ -48,6 +49,7 @@ module ForemanCveScanner
         requires_foreman '>= 3.13'
         register_global_js_file 'fills'
         apipie_documented_controllers ForemanCveScanner::Engine.documented_controllers
+        extend_template_helpers ForemanCveScanner::TemplateHelpers
         ForemanCveScanner::Engine.register_cleanup_setting(self)
         ForemanCveScanner::Engine.register_permissions(self)
         add_all_permissions_to_default_roles
@@ -61,6 +63,11 @@ module ForemanCveScanner
     def self.register_cleanup_setting(plugin)
       plugin.settings do
         category :foreman_cve_scanner, N_('CVE Scanner') do
+          setting 'preferred_cve_scanner',
+            type: :string,
+            default: 'trivy',
+            full_name: N_('Preferred CVE scanner'),
+            description: N_('Default scanner used by the Run CVE scanner job template.')
           setting 'cve_scan_delete_after_days',
             type: :integer,
             default: 90,
