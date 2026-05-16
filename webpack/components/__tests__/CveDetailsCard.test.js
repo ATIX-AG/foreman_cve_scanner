@@ -184,4 +184,29 @@ describe('CveDetailsCard', () => {
     const wrapper = mount(<CveDetailsCard hostDetails={hostDetails} />);
     expect(wrapper.text()).toContain('No CVE reports for this host');
   });
+
+  it('renders success state when latest scan has no findings', () => {
+    const hostDetails = { id: 1 };
+    const latestResponse = {
+      id: 2,
+      scanned_at: '2026-02-21',
+      scanner: 'trivy',
+      source: 'rex',
+      total: 0,
+      summary: { worst: 'none' },
+      critical: 0,
+      high: 0,
+      medium: 0,
+      low: 0,
+      findings: [],
+    };
+
+    useAPI.mockReturnValue({ response: latestResponse, status: 'RESOLVED' });
+
+    const wrapper = mount(<CveDetailsCard hostDetails={hostDetails} />);
+    expect(wrapper.text()).toContain('No CVEs found');
+    expect(wrapper.text()).toContain(
+      'The latest CVE scan found no vulnerabilities for this host.'
+    );
+  });
 });

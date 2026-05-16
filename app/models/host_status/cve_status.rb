@@ -20,6 +20,8 @@ module HostStatus
         N_('Medium CVEs')
       when :low
         N_('Low CVEs')
+      when :clean
+        N_('No CVEs found')
       when :none
         N_('No CVE scans')
       else
@@ -65,7 +67,7 @@ module HostStatus
       return :medium if scan.medium.to_i.positive?
       return :low if scan.low.to_i.positive?
 
-      :none
+      :clean
     end
   end
 end

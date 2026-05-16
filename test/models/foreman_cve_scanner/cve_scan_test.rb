@@ -18,13 +18,51 @@ module ForemanCveScanner
       assert_includes scan.errors.attribute_names, :scanned_at
     end
 
-    test 'is invalid without required scan payload attributes' do
+    test 'is invalid without required raw and summary payload attributes' do
       scan = CveScan.new
 
       assert_not scan.valid?
       assert_includes scan.errors.attribute_names, :raw
       assert_includes scan.errors.attribute_names, :summary
+    end
+
+    test 'is invalid with nil findings' do
+      scan = CveScan.new(
+        host: @host,
+        scanner: 'trivy',
+        source: 'rex',
+        scanned_at: Time.current,
+        raw: { 'dummy' => true },
+        summary: { 'worst' => 'none' },
+        findings: nil,
+        total: 0,
+        critical: 0,
+        high: 0,
+        medium: 0,
+        low: 0
+      )
+
+      assert_not scan.valid?
       assert_includes scan.errors.attribute_names, :findings
+    end
+
+    test 'is valid with empty findings' do
+      scan = CveScan.new(
+        host: @host,
+        scanner: 'trivy',
+        source: 'rex',
+        scanned_at: Time.current,
+        raw: { 'dummy' => true },
+        summary: { 'worst' => 'none' },
+        findings: [],
+        total: 0,
+        critical: 0,
+        high: 0,
+        medium: 0,
+        low: 0
+      )
+
+      assert scan.valid?
     end
 
     test 'for_host returns only scans for the given host' do

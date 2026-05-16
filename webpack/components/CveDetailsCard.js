@@ -16,7 +16,7 @@ import {
   EmptyStateBody,
   Title,
 } from '@patternfly/react-core';
-import { SearchIcon } from '@patternfly/react-icons';
+import { CheckCircleIcon, SearchIcon } from '@patternfly/react-icons';
 import { useAPI } from 'foremanReact/common/hooks/API/APIHooks';
 import { foremanUrl } from 'foremanReact/common/helpers';
 import { translate as __ } from 'foremanReact/common/I18n';
@@ -28,6 +28,8 @@ import SeverityIcon from './SeverityIcon';
 import CveFindingsModal from './CveFindingsModal';
 import useModalScan from './useModalScan';
 import {
+  noFindingsBody,
+  noFindingsTitle,
   formatScanOrigin,
   noReportsBody,
   noReportsTitle,
@@ -187,9 +189,17 @@ const CveDetailsCard = ({ hostDetails }) => {
             </div>
 
             {visibleFindings.length === 0 ? (
-              <Text component={TextVariants.small} ouiaId="cve-details-empty">
-                {__('No vulnerabilities reported')}
-              </Text>
+              <EmptyState className="cve-empty-state cve-empty-state--success">
+                <EmptyStateIcon icon={CheckCircleIcon} />
+                <Title
+                  headingLevel="h4"
+                  size="md"
+                  ouiaId="cve-details-clean-title"
+                >
+                  {noFindingsTitle()}
+                </Title>
+                <EmptyStateBody>{noFindingsBody()}</EmptyStateBody>
+              </EmptyState>
             ) : (
               <>
                 <TextContent className="cve-section-title">
