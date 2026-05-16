@@ -185,7 +185,6 @@ module Api
 
       private
 
-      # rubocop:disable Metrics/MethodLength
       def create_scan(options = {})
         defaults = {
           created_at: Time.now.utc,
@@ -214,7 +213,6 @@ module Api
           low: options[:low]
         )
       end
-      # rubocop:enable Metrics/MethodLength
 
       def set_export_findings!
         @scan_old.update!(
