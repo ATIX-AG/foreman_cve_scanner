@@ -49,6 +49,27 @@ const deltaClassName = value => {
   return 'is-flat';
 };
 
+const tooltipContentFor = scan => (
+  <div className="cve-trend-tooltip">
+    <div className="cve-trend-tooltip-line">
+      {formatScannedAt(scan.scanned_at)}
+    </div>
+    <div className="cve-trend-tooltip-line">
+      {`${__('Total')}: ${scan.total}`}
+    </div>
+    <div className="cve-trend-tooltip-line">
+      {`${__('Critical')}: ${scan.critical}`}
+    </div>
+    <div className="cve-trend-tooltip-line">
+      {`${__('High')}: ${scan.high}`}
+    </div>
+    <div className="cve-trend-tooltip-line">
+      {`${__('Medium')}: ${scan.medium}`}
+    </div>
+    <div className="cve-trend-tooltip-line">{`${__('Low')}: ${scan.low}`}</div>
+  </div>
+);
+
 const CveTrendChart = ({
   scans,
   onOpen,
@@ -159,55 +180,52 @@ const CveTrendChart = ({
       <div className="cve-trend-bars">
         {visibleScans.map(scan => (
           <div key={scan.id} className="cve-trend-bar-item">
-            <button
-              type="button"
-              className={
-                compareMode && selectedScanIds.includes(scan.id)
-                  ? 'cve-trend-bar-button is-selected'
-                  : 'cve-trend-bar-button'
-              }
-              onClick={() =>
-                compareMode ? onToggleSelection(scan.id) : onOpen(scan.id)
-              }
-              aria-label={
-                compareMode
-                  ? __('Select scan from %s for comparison').replace(
-                      '%s',
-                      formatScannedAt(scan.scanned_at)
-                    )
-                  : __('Open scan details for %s').replace(
-                      '%s',
-                      formatScannedAt(scan.scanned_at)
-                    )
-              }
-              title={`${formatScannedAt(scan.scanned_at)} | ${__('Total')}: ${
-                scan.total
-              } | ${__('Critical')}: ${scan.critical} | ${__('High')}: ${
-                scan.high
-              } | ${__('Medium')}: ${scan.medium} | ${__('Low')}: ${scan.low}`}
-            >
-              <span
+            <Tooltip content={tooltipContentFor(scan)}>
+              <button
+                type="button"
                 className={
-                  scan.total === 0
-                    ? 'cve-trend-bar-frame cve-trend-bar-frame--clean'
-                    : 'cve-trend-bar-frame'
+                  compareMode && selectedScanIds.includes(scan.id)
+                    ? 'cve-trend-bar-button is-selected'
+                    : 'cve-trend-bar-button'
+                }
+                onClick={() =>
+                  compareMode ? onToggleSelection(scan.id) : onOpen(scan.id)
+                }
+                aria-label={
+                  compareMode
+                    ? __('Select scan from %s for comparison').replace(
+                        '%s',
+                        formatScannedAt(scan.scanned_at)
+                      )
+                    : __('Open scan details for %s').replace(
+                        '%s',
+                        formatScannedAt(scan.scanned_at)
+                      )
                 }
               >
-                {STACK_ORDER.map(level => (
-                  <span
-                    key={level}
-                    className={`cve-trend-segment cve-trend-segment--${level}`}
-                    style={{
-                      height: `${((scan[level] || 0) / maxTotal) * 100}%`,
-                    }}
-                  />
-                ))}
-              </span>
-              <span className="cve-trend-bar-total">{scan.total}</span>
-              <span className="cve-trend-bar-label">
-                {shortDateLabel(scan.scanned_at)}
-              </span>
-            </button>
+                <span
+                  className={
+                    scan.total === 0
+                      ? 'cve-trend-bar-frame cve-trend-bar-frame--clean'
+                      : 'cve-trend-bar-frame'
+                  }
+                >
+                  {STACK_ORDER.map(level => (
+                    <span
+                      key={level}
+                      className={`cve-trend-segment cve-trend-segment--${level}`}
+                      style={{
+                        height: `${((scan[level] || 0) / maxTotal) * 100}%`,
+                      }}
+                    />
+                  ))}
+                </span>
+                <span className="cve-trend-bar-total">{scan.total}</span>
+                <span className="cve-trend-bar-label">
+                  {shortDateLabel(scan.scanned_at)}
+                </span>
+              </button>
+            </Tooltip>
           </div>
         ))}
       </div>
