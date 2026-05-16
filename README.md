@@ -32,7 +32,8 @@ for how to install Foreman plugins
 - Run the REX job to install Trivy and/or Grype
 - Run the REX job to scan a host
 - You can configure recurring CVE scans via `Monitor -> Jobs`
-- You can configure the default scanner for the `Run CVE scanner` template via `Administer -> Settings -> CVE Scanner -> Preferred CVE scanner`
+- You can configure the default scanner for the `Run CVE scan` template via `Administer -> Settings -> CVE Scanner -> Preferred CVE scanner`
+- The setting `Administer -> Settings -> CVE Scanner -> Run CVE scan after host profiles upload` takes effect only when Katello is installed and triggers a scan after host profiles uploads using the preferred scanner setting
 - View results in:
   - Hosts overview list column “CVE” (use 'Manage Columns' to enable)
   - Host Details card and modal

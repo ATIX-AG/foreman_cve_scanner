@@ -26,6 +26,7 @@ module ForemanCveScanner
       Host::Managed.include ForemanCveScanner::HostExtensions
       require_dependency 'host_status/cve_status'
       HostStatus.status_registry.add(HostStatus::CveStatus)
+      ForemanCveScanner::Engine.register_katello_integration
       ForemanCveScanner::Engine.register_rex_features
     end
 
@@ -40,7 +41,8 @@ module ForemanCveScanner
         :run_cve_scan,
         N_('Run CVE scan'),
         description: N_('Run CVE scan'),
-        host_action_button: true
+        host_action_button: true,
+        provided_inputs: %w[scanner]
       )
     end
 
@@ -50,7 +52,7 @@ module ForemanCveScanner
         register_global_js_file 'fills'
         apipie_documented_controllers ForemanCveScanner::Engine.documented_controllers
         extend_template_helpers ForemanCveScanner::TemplateHelpers
-        ForemanCveScanner::Engine.register_cleanup_setting(self)
+        ForemanCveScanner::Engine.register_settings(self)
         ForemanCveScanner::Engine.register_permissions(self)
         add_all_permissions_to_default_roles
       end
@@ -60,19 +62,30 @@ module ForemanCveScanner
       ["#{ForemanCveScanner::Engine.root}/app/controllers/api/v2/*.rb"]
     end
 
-    def self.register_cleanup_setting(plugin)
+    def self.register_katello_integration
+      return unless Foreman::Plugin.installed?(:katello)
+      return unless defined?(::Katello::Host::ProfilesUploader)
+      ::Katello::Host::ProfilesUploader.prepend(ForemanCveScanner::ProfilesUploader)
+    end
+
+    def self.register_settings(plugin)
       plugin.settings do
         category :foreman_cve_scanner, N_('CVE Scanner') do
           setting 'preferred_cve_scanner',
             type: :string,
             default: 'trivy',
             full_name: N_('Preferred CVE scanner'),
-            description: N_('Default scanner used by the Run CVE scanner job template.')
+            description: N_('Default scanner used by the Run CVE scan job template.')
+          setting 'run_cve_scan_after_host_profiles_upload',
+            type: :boolean,
+            default: false,
+            full_name: N_('Run CVE scan after host profiles upload'),
+            description: N_('When Katello is installed, schedule a CVE scan after a host profiles upload completes.')
           setting 'cve_scan_delete_after_days',
             type: :integer,
             default: 90,
             full_name: N_('Delete CVE scans after X days'),
-            description: = N_(
+            description: N_(
               'Delete CVE scans older than the configured number of days. ' \
               'Set to 0 to disable automatic cleanup.'
             )
