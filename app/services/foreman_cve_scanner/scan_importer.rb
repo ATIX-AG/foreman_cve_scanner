@@ -9,7 +9,7 @@ module ForemanCveScanner
 
     def import_for_host!(host)
       scan_json = format_output(@job_output)
-      return nil if scan_json.nil?
+      raise ::Foreman::Exception, _('CVE scan output did not contain JSON content') if scan_json.nil?
 
       scanner_name = ::ForemanCveScanner::CveReportScanner.detect_scanner(scan_json)
       persist_scan!(host, scanner_name, scan_json)
@@ -32,12 +32,14 @@ module ForemanCveScanner
     end
 
     def extract_json(output_source)
-      output = output_source.to_s.each_line(chomp: true)
-                            .drop_while { |line| !line.start_with?('===START') }
-                            .drop(1)
-                            .take_while { |line| !line.start_with?('===END') }
-                            .reject(&:empty?)
-                            .join
+      lines = output_source.to_s.each_line(chomp: true).to_a
+      return nil unless lines.include?('===START') && lines.include?('===END')
+
+      output = lines.drop_while { |line| !line.start_with?('===START') }
+                    .drop(1)
+                    .take_while { |line| !line.start_with?('===END') }
+                    .reject(&:empty?)
+                    .join
       output.strip
     end
 

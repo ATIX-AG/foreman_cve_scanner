@@ -69,5 +69,7 @@ exit 1
 <% else -%>
 echo "===START"
 <%= exec_command %>
+rc=$?
 echo "===END"
+exit $rc
 <% end -%>
