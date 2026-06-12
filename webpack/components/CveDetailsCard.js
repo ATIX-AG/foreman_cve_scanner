@@ -39,6 +39,13 @@ import {
 } from './cve_helpers';
 import './cve_scans.scss';
 
+const SEVERITY_COUNT_CARDS = [
+  { key: 'critical', label: __('critical') },
+  { key: 'high', label: __('high') },
+  { key: 'medium', label: __('medium') },
+  { key: 'low', label: __('low') },
+];
+
 const CveDetailsCard = ({ hostDetails }) => {
   const hostId = hostDetails?.id;
   const latestUrl = hostId
@@ -122,70 +129,25 @@ const CveDetailsCard = ({ hostDetails }) => {
                 </DescriptionListGroup>
               </DescriptionList>
               <div className="cve-counts cve-counts--compact">
-                <Button
-                  variant="plain"
-                  className="cve-count-card cve-count-card--critical"
-                  onClick={() => openModal(latest.id, 'critical')}
-                  ouiaId="cve-details-critical-button"
-                >
-                  <span className="cve-count">
-                    <span className="cve-count-label">
-                      <SeverityIcon severity="critical" />
-                      <span>{__('critical')}</span>
+                {SEVERITY_COUNT_CARDS.map(card => (
+                  <Button
+                    key={card.key}
+                    variant="plain"
+                    className={`cve-count-card cve-count-card--${card.key}`}
+                    onClick={() => openModal(latest.id, card.key)}
+                    ouiaId={`cve-details-${card.key}-button`}
+                  >
+                    <span className="cve-count">
+                      <span className="cve-count-label">
+                        <SeverityIcon severity={card.key} />
+                        <span>{card.label}</span>
+                      </span>
+                      <span className={`cve-bubble cve-bubble--${card.key}`}>
+                        {latest[card.key]}
+                      </span>
                     </span>
-                    <span className="cve-bubble cve-bubble--critical">
-                      {latest.critical}
-                    </span>
-                  </span>
-                </Button>
-                <Button
-                  variant="plain"
-                  className="cve-count-card cve-count-card--medium"
-                  onClick={() => openModal(latest.id, 'medium')}
-                  ouiaId="cve-details-medium-button"
-                >
-                  <span className="cve-count">
-                    <span className="cve-count-label">
-                      <SeverityIcon severity="medium" />
-                      <span>{__('medium')}</span>
-                    </span>
-                    <span className="cve-bubble cve-bubble--medium">
-                      {latest.medium}
-                    </span>
-                  </span>
-                </Button>
-                <Button
-                  variant="plain"
-                  className="cve-count-card cve-count-card--high"
-                  onClick={() => openModal(latest.id, 'high')}
-                  ouiaId="cve-details-high-button"
-                >
-                  <span className="cve-count">
-                    <span className="cve-count-label">
-                      <SeverityIcon severity="high" />
-                      <span>{__('high')}</span>
-                    </span>
-                    <span className="cve-bubble cve-bubble--high">
-                      {latest.high}
-                    </span>
-                  </span>
-                </Button>
-                <Button
-                  variant="plain"
-                  className="cve-count-card cve-count-card--low"
-                  onClick={() => openModal(latest.id, 'low')}
-                  ouiaId="cve-details-low-button"
-                >
-                  <span className="cve-count">
-                    <span className="cve-count-label">
-                      <SeverityIcon severity="low" />
-                      <span>{__('low')}</span>
-                    </span>
-                    <span className="cve-bubble cve-bubble--low">
-                      {latest.low}
-                    </span>
-                  </span>
-                </Button>
+                  </Button>
+                ))}
               </div>
             </div>
 
