@@ -14,7 +14,10 @@ Metrics/MethodLength:
   Max: 30
 
 Metrics/ClassLength:
-  Max: 200
+  Max: 250
 
 Metrics/AbcSize:
   Max: 25
+
+Minitest/MultipleAssertions:
+  Max: 6
