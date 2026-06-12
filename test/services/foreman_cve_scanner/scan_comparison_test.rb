@@ -39,6 +39,34 @@ module ForemanCveScanner
       assert_equal @second_scan.scanner, comparison[:current][:scanner]
     end
 
+    test 'compare keeps duplicate cve ids separate across packages' do
+      first_scan = create_scan(
+        scanned_at: 4.hours.ago,
+        findings: [
+          finding('CVE-1', 'openssl', 'HIGH', '1.0'),
+          finding('CVE-1', 'curl', 'LOW', '1.0'),
+        ]
+      )
+      second_scan = create_scan(
+        scanned_at: 3.hours.ago,
+        findings: [
+          finding('CVE-1', 'openssl', 'CRITICAL', '1.0'),
+          finding('CVE-1', 'curl', 'LOW', '1.0'),
+        ]
+      )
+
+      comparison = ScanComparison.compare(first_scan, second_scan)
+      rows = comparison[:results].to_h { |row| [row[:key], row] }
+
+      assert_equal 2, comparison[:results].size
+      assert_equal 'updated', rows['CVE-1::openssl'][:status]
+      assert_equal 'unchanged', rows['CVE-1::curl'][:status]
+      assert_equal(
+        { old: 'HIGH', new: 'CRITICAL' },
+        rows['CVE-1::openssl'][:diff]['severity']
+      )
+    end
+
     private
 
     def finding(id, name, severity, version)
