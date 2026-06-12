@@ -7,6 +7,14 @@ import { translate as __ } from 'foremanReact/common/I18n';
 import RelativeDateTime from 'foremanReact/components/common/dates/RelativeDateTime';
 import { formatScanOrigin } from './cve_helpers';
 
+const SCAN_COUNT_COLUMNS = [
+  { key: 'total', label: __('Total'), filter: 'all' },
+  { key: 'critical', label: __('Critical'), filter: 'critical' },
+  { key: 'high', label: __('High'), filter: 'high' },
+  { key: 'medium', label: __('Medium'), filter: 'medium' },
+  { key: 'low', label: __('Low'), filter: 'low' },
+];
+
 const CveScansReports = ({
   scans,
   itemCount,
@@ -73,11 +81,9 @@ const CveScansReports = ({
           <Th>{__('Select')}</Th>
           <Th>{__('Scanned at')}</Th>
           <Th>{__('Scanner')}</Th>
-          <Th>{__('Total')}</Th>
-          <Th>{__('Critical')}</Th>
-          <Th>{__('High')}</Th>
-          <Th>{__('Medium')}</Th>
-          <Th>{__('Low')}</Th>
+          {SCAN_COUNT_COLUMNS.map(column => (
+            <Th key={column.key}>{column.label}</Th>
+          ))}
           <Th>{__('Export')}</Th>
         </Tr>
       </Thead>
@@ -113,56 +119,18 @@ const CveScansReports = ({
             <Td dataLabel={__('Scanner')}>
               {formatScanOrigin(scan.scanner, scan.source)}
             </Td>
-            <Td dataLabel={__('Total')}>
-              <Button
-                variant="link"
-                className="cve-summary-link"
-                onClick={() => onOpenModal(scan.id, 'all')}
-                ouiaId={`cve-scans-total-${scan.id}`}
-              >
-                {scan.total}
-              </Button>
-            </Td>
-            <Td dataLabel={__('Critical')}>
-              <Button
-                variant="link"
-                className="cve-summary-link"
-                onClick={() => onOpenModal(scan.id, 'critical')}
-                ouiaId={`cve-scans-critical-${scan.id}`}
-              >
-                {scan.critical}
-              </Button>
-            </Td>
-            <Td dataLabel={__('High')}>
-              <Button
-                variant="link"
-                className="cve-summary-link"
-                onClick={() => onOpenModal(scan.id, 'high')}
-                ouiaId={`cve-scans-high-${scan.id}`}
-              >
-                {scan.high}
-              </Button>
-            </Td>
-            <Td dataLabel={__('Medium')}>
-              <Button
-                variant="link"
-                className="cve-summary-link"
-                onClick={() => onOpenModal(scan.id, 'medium')}
-                ouiaId={`cve-scans-medium-${scan.id}`}
-              >
-                {scan.medium}
-              </Button>
-            </Td>
-            <Td dataLabel={__('Low')}>
-              <Button
-                variant="link"
-                className="cve-summary-link"
-                onClick={() => onOpenModal(scan.id, 'low')}
-                ouiaId={`cve-scans-low-${scan.id}`}
-              >
-                {scan.low}
-              </Button>
-            </Td>
+            {SCAN_COUNT_COLUMNS.map(column => (
+              <Td key={column.key} dataLabel={column.label}>
+                <Button
+                  variant="link"
+                  className="cve-summary-link"
+                  onClick={() => onOpenModal(scan.id, column.filter)}
+                  ouiaId={`cve-scans-${column.key}-${scan.id}`}
+                >
+                  {scan[column.key]}
+                </Button>
+              </Td>
+            ))}
             <Td dataLabel={__('Export')}>
               <Button
                 component="a"
