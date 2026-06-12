@@ -22,6 +22,8 @@ import { useAPI } from 'foremanReact/common/hooks/API/APIHooks';
 import { foremanUrl } from 'foremanReact/common/helpers';
 import { translate as __ } from 'foremanReact/common/I18n';
 import { STATUS } from 'foremanReact/constants';
+import CveLink from './CveLink';
+import useSortBy from './useSortBy';
 import {
   comparisonDiffEntries,
   comparisonColumns,
@@ -39,10 +41,6 @@ import './cve_scans.scss';
 const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState({
-    direction: SortByDirection.desc,
-    column: 'status',
-  });
   const previousScanId = scanIds[0];
   const currentScanId = scanIds[1];
   const compareUrl =
@@ -62,7 +60,7 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
       direction: SortByDirection.desc,
       column: 'status',
     });
-  }, [currentScanId, isOpen, previousScanId]);
+  }, [currentScanId, isOpen, previousScanId, setSortBy]);
 
   const comparison = compareRequest.response || {};
   const previousScan = comparison.previous || {};
@@ -88,15 +86,11 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
     if (!normalizedSearch) return rows;
     return rows.filter(row => comparisonMatchesSearch(row, normalizedSearch));
   }, [comparisonRows, filter, normalizedSearch]);
-  const sortedRows = useMemo(() => {
-    const rows = [...filteredRows];
-    const sorter = comparisonSorters[sortBy.column] || comparisonSorters.status;
-    rows.sort((a, b) => {
-      const result = sorter(a, b);
-      return sortBy.direction === SortByDirection.asc ? result : -result;
-    });
-    return rows;
-  }, [filteredRows, sortBy]);
+  const { onSort, sortedItems: sortedRows, setSortBy } = useSortBy(
+    'status',
+    comparisonSorters,
+    filteredRows
+  );
   const status = compareRequest.status || STATUS.PENDING;
   const subtitle =
     previousScan.scanned_at && currentScan.scanned_at
@@ -105,13 +99,6 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
         )}`
       : __('Compare CVE reports');
 
-  const onSort = column => {
-    const nextDirection =
-      sortBy.column === column && sortBy.direction === SortByDirection.asc
-        ? SortByDirection.desc
-        : SortByDirection.asc;
-    setSortBy({ column, direction: nextDirection });
-  };
   const onSearchChange = (value, event) => {
     setSearch(normalizeSearchInputValue(value, event));
   };
@@ -254,13 +241,7 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
                         {comparisonStatusLabels[row.status]}
                       </Td>
                       <Td dataLabel={__('CVE')}>
-                        {row.url ? (
-                          <a href={row.url} target="_blank" rel="noreferrer">
-                            {row.id}
-                          </a>
-                        ) : (
-                          row.id
-                        )}
+                        <CveLink id={row.id} url={row.url} />
                       </Td>
                       <Td dataLabel={__('Package')}>{row.name}</Td>
                       <Td dataLabel={__('Severity')}>{row.severity}</Td>

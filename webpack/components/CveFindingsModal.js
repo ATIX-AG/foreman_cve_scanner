@@ -24,6 +24,8 @@ import { foremanUrl } from 'foremanReact/common/helpers';
 import { translate as __ } from 'foremanReact/common/I18n';
 import { STATUS } from 'foremanReact/constants';
 import SeverityIcon from './SeverityIcon';
+import CveLink from './CveLink';
+import useSortBy from './useSortBy';
 import {
   findingIdentity,
   findingMatchesSearch,
@@ -56,10 +58,6 @@ const CveFindingsModal = ({
 }) => {
   const [filter, setFilter] = useState(initialFilter || 'all');
   const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState({
-    direction: SortByDirection.desc,
-    column: 'severity',
-  });
   const normalizedScanId =
     scanId !== null && scanId !== undefined && String(scanId).trim() !== ''
       ? scanId
@@ -96,24 +94,11 @@ const CveFindingsModal = ({
       findingMatchesSearch(finding, normalizedSearch)
     );
   }, [filteredFindings, normalizedSearch]);
-  const sortedFindings = useMemo(() => {
-    const list = [...visibleFindings];
-    const sortKey = sortBy.column || 'severity';
-    const sorter = findingSorters[sortKey] || findingSorters.severity;
-    list.sort((a, b) => {
-      const result = sorter(a, b);
-      return sortBy.direction === SortByDirection.asc ? result : -result;
-    });
-    return list;
-  }, [visibleFindings, sortBy]);
-
-  const onSort = column => {
-    const nextDirection =
-      sortBy.column === column && sortBy.direction === SortByDirection.asc
-        ? SortByDirection.desc
-        : SortByDirection.asc;
-    setSortBy({ column, direction: nextDirection });
-  };
+  const { sortBy, onSort, sortedItems: sortedFindings } = useSortBy(
+    'severity',
+    findingSorters,
+    visibleFindings
+  );
   const onSearchChange = (value, event) => {
     setSearch(normalizeSearchInputValue(value, event));
   };
@@ -256,17 +241,7 @@ const CveFindingsModal = ({
                         {finding.status || __('open')}
                       </Td>
                       <Td dataLabel={__('CVE')}>
-                        {finding.url ? (
-                          <a
-                            href={finding.url}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {finding.id}
-                          </a>
-                        ) : (
-                          finding.id
-                        )}
+                        <CveLink id={finding.id} url={finding.url} />
                       </Td>
                       <Td dataLabel={__('Title')} title={finding.title}>
                         <span className="cve-truncate">{finding.title}</span>
