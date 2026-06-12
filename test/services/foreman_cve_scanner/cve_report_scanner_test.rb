@@ -22,7 +22,7 @@ module ForemanCveScanner
       data = JSON.parse(File.read(File.join(ForemanCveScanner::Engine.root, 'test/fixtures/trivy.json')))
       scanner = ForemanCveScanner::CveReportScanner.new('scan' => data)
       scanner.generate
-      assert_equal(10, scanner.logs.count)
+      assert_equal(trivy_vulnerability_count(data), scanner.logs.count)
       assert_equal('info', scanner.logs[0]['log']['level'])
       expected_message = [
         'CVE-2020-12762: json-c, libfastjson: integer overflow and out-of-',
@@ -36,7 +36,7 @@ module ForemanCveScanner
       data = JSON.parse(File.read(File.join(ForemanCveScanner::Engine.root, 'test/fixtures/grype.json')))
       scanner = ForemanCveScanner::CveReportScanner.new('scan' => data)
       scanner.generate
-      assert_equal(18, scanner.logs.count)
+      assert_equal(Array(data['matches']).size, scanner.logs.count)
       first_severity = data.dig('matches', 0, 'vulnerability', 'severity')
       expected_level = expected_level_for(first_severity)
       assert_equal scanner.logs[0]['log']['level'], expected_level
@@ -56,7 +56,91 @@ module ForemanCveScanner
       assert_equal 'unknown', ForemanCveScanner::CveReportScanner.detect_scanner('foo' => 'bar')
     end
 
+    test 'trivy scan keeps duplicate cves for different packages' do
+      data = {
+        'Results' => [
+          {
+            'Vulnerabilities' => [
+              {
+                'VulnerabilityID' => 'CVE-2026-0001',
+                'PkgName' => 'openssl',
+                'InstalledVersion' => '1.0',
+                'Title' => 'openssl issue',
+                'Severity' => 'HIGH',
+                'PrimaryURL' => 'https://example.com/openssl',
+              },
+              {
+                'VulnerabilityID' => 'CVE-2026-0001',
+                'PkgName' => 'curl',
+                'InstalledVersion' => '2.0',
+                'Title' => 'curl issue',
+                'Severity' => 'MEDIUM',
+                'PrimaryURL' => 'https://example.com/curl',
+              },
+            ],
+          },
+        ],
+      }
+
+      scanner = ForemanCveScanner::CveReportScanner.new('scan' => data)
+      finding_names = scanner.unified_vulnerabilities.map { |finding| finding['name'] }
+
+      assert_equal 2, scanner.unified_vulnerabilities.size
+      assert_equal %w[openssl curl], finding_names
+
+      scanner.generate
+
+      assert_equal 2, scanner.logs.count
+      assert_equal 1, scanner.metrics['high']
+      assert_equal 1, scanner.metrics['medium']
+      assert_equal 2, scanner.metrics['total']
+    end
+
+    test 'grype scan keeps duplicate cves for different packages' do
+      data = {
+        'matches' => [
+          {
+            'artifact' => { 'name' => 'openssl', 'version' => '1.0' },
+            'vulnerability' => {
+              'id' => 'CVE-2026-0002',
+              'description' => 'openssl issue',
+              'severity' => 'HIGH',
+              'dataSource' => 'https://example.com/openssl',
+            },
+          },
+          {
+            'artifact' => { 'name' => 'curl', 'version' => '2.0' },
+            'vulnerability' => {
+              'id' => 'CVE-2026-0002',
+              'description' => 'curl issue',
+              'severity' => 'LOW',
+              'dataSource' => 'https://example.com/curl',
+            },
+          },
+        ],
+      }
+
+      scanner = ForemanCveScanner::CveReportScanner.new('scan' => data)
+      finding_names = scanner.unified_vulnerabilities.map { |finding| finding['name'] }
+
+      assert_equal 2, scanner.unified_vulnerabilities.size
+      assert_equal %w[openssl curl], finding_names
+
+      scanner.generate
+
+      assert_equal 2, scanner.logs.count
+      assert_equal 1, scanner.metrics['high']
+      assert_equal 1, scanner.metrics['low']
+      assert_equal 2, scanner.metrics['total']
+    end
+
     private
+
+    def trivy_vulnerability_count(data)
+      Array(data['Results']).sum do |result|
+        Array(result['Vulnerabilities']).size
+      end
+    end
 
     def expected_level_for(severity)
       map = {

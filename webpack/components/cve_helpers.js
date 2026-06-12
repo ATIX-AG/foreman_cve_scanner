@@ -95,6 +95,9 @@ export const findingMatchesSearch = (finding, query) =>
       .includes(query)
   );
 
+export const findingIdentity = finding =>
+  [finding.id, finding.name].map(value => value || '').join('::');
+
 export const findingSorters = {
   published: (a, b) => new Date(a.published || 0) - new Date(b.published || 0),
   name: (a, b) => compareStrings(a.name, b.name),

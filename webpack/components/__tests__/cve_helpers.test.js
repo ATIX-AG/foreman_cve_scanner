@@ -1,5 +1,6 @@
 /* eslint-disable import/no-unresolved */
 import {
+  findingIdentity,
   severityRank,
   riskLevelFromWorst,
   formatDateTime,
@@ -56,5 +57,11 @@ describe('cve_helpers', () => {
   it('hides rex source and keeps external source visible', () => {
     expect(visibleScanSource('rex')).toBe('');
     expect(visibleScanSource('external')).toBe('external');
+  });
+
+  it('builds finding identity from cve and package', () => {
+    expect(findingIdentity({ id: 'CVE-2026-0001', name: 'openssl' })).toBe(
+      'CVE-2026-0001::openssl'
+    );
   });
 });

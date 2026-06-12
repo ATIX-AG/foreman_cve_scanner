@@ -25,6 +25,7 @@ import { translate as __ } from 'foremanReact/common/I18n';
 import { STATUS } from 'foremanReact/constants';
 import SeverityIcon from './SeverityIcon';
 import {
+  findingIdentity,
   findingMatchesSearch,
   formatDateTime,
   formatScanOrigin,
@@ -226,7 +227,10 @@ const CveFindingsModal = ({
                 </Thead>
                 <Tbody>
                   {sortedFindings.map((finding, index) => (
-                    <Tr key={finding.id} ouiaId={`cve-findings-row-${index}`}>
+                    <Tr
+                      key={findingIdentity(finding)}
+                      ouiaId={`cve-findings-row-${index}`}
+                    >
                       <Td dataLabel={__('Severity')}>
                         <span
                           className="cve-summary cve-summary--icon-only"
