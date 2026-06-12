@@ -6,6 +6,7 @@ Rails.application.routes.draw do
                      defaults: { apiv: 'v2' },
                      apiv: /v1|v2/,
                      constraints: ApiConstraints.new(version: 2, default: true) do
+      get 'cve_scans/latest_by_hosts', to: 'cve_scans#latest_by_hosts'
       constraints(host_id: %r{[^/]+}) do
         resources :hosts, only: [] do
           resources :cve_scans, only: %i[index show destroy] do

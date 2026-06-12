@@ -96,7 +96,7 @@ module ForemanCveScanner
     def self.register_permissions(plugin)
       plugin.security_block :foreman_cve_scanner do
         permission :view_cve_scans,
-          { 'api/v2/cve_scans': %i[index latest show export compare] },
+          { 'api/v2/cve_scans': %i[index latest latest_by_hosts show export compare] },
           resource_type: 'Host'
         permission :import_cve_scans,
           { 'api/v2/cve_scans': %i[import] },

@@ -26,6 +26,63 @@ module Api
         assert_equal @scan_new.id, body['id']
       end
 
+      test 'latest_by_hosts returns latest scan summary for each requested host' do
+        other_host = FactoryBot.create(:host)
+        other_scan = create_scan(
+          host: other_host,
+          created_at: 30.minutes.ago,
+          scanned_at: 30.minutes.ago,
+          total: 3,
+          medium: 3
+        )
+
+        get :latest_by_hosts, params: { host_ids: [@host.id, other_host.id] }
+
+        assert_response :success
+        body = ActiveSupport::JSON.decode(@response.body)
+        results = body['results'].index_by { |row| row['host_id'] }
+
+        assert_equal @scan_new.id, results[@host.id]['id']
+        assert_equal other_scan.id, results[other_host.id]['id']
+        assert_equal 2, results[@host.id]['total']
+        assert_equal 3, results[other_host.id]['total']
+      end
+
+      test 'latest_by_hosts ignores duplicate and unknown host ids' do
+        get :latest_by_hosts, params: { host_ids: [@host.id, @host.id, 'nope', 999_999] }
+
+        assert_response :success
+        body = ActiveSupport::JSON.decode(@response.body)
+
+        assert_equal 1, body['results'].size
+        assert_equal @host.id, body['results'][0]['host_id']
+        assert_equal @scan_new.id, body['results'][0]['id']
+      end
+
+      test 'latest_by_hosts omits requested hosts that have no scans' do
+        host_without_scan = FactoryBot.create(:host)
+
+        get :latest_by_hosts, params: { host_ids: [@host.id, host_without_scan.id] }
+
+        assert_response :success
+        body = ActiveSupport::JSON.decode(@response.body)
+
+        assert_equal 1, body['results'].size
+        assert_equal @host.id, body['results'][0]['host_id']
+        assert_equal @scan_new.id, body['results'][0]['id']
+      end
+
+      test 'latest_by_hosts returns empty results when requested hosts have no scans' do
+        ForemanCveScanner::CveScan.delete_all
+
+        get :latest_by_hosts, params: { host_ids: [@host.id] }
+
+        assert_response :success
+        body = ActiveSupport::JSON.decode(@response.body)
+
+        assert_empty body['results']
+      end
+
       test 'show returns scan by id' do
         get :show, params: { host_id: @host.id, id: @scan_old.id }
         assert_response :success
