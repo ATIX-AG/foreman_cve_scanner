@@ -6,7 +6,7 @@ module Api
   module V2
     # API controller for CVE scans per host.
     class CveScansController < V2::BaseController
-      before_action :find_host
+      before_action :find_host, except: :latest_by_hosts
 
       def resource_class
         ::ForemanCveScanner::CveScan
@@ -27,6 +27,18 @@ module Api
       def latest
         @cve_scan = cve_scans_index_scope.first
         head :no_content if @cve_scan.nil?
+      end
+
+      api :GET, '/cve_scans/latest_by_hosts', N_('Get latest CVE scan summaries for multiple hosts')
+      description N_('Returns the most recent CVE scan summary for each requested host.')
+      param :host_ids, Array, of: Integer, required: true
+      def latest_by_hosts
+        results = ::ForemanCveScanner::LatestScanSummaries.new(
+          host_scope: ::Host::Base.authorized(host_permission),
+          host_ids: params[:host_ids]
+        ).call
+
+        render json: { results: results }
       end
 
       api :GET, '/hosts/:host_id/cve_scans/:id', N_('Show CVE scan for a host')

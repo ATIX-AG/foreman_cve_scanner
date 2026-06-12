@@ -1,33 +1,45 @@
 /* eslint-disable import/no-unresolved */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Spinner } from '@patternfly/react-core';
-import { useAPI } from 'foremanReact/common/hooks/API/APIHooks';
-import { foremanUrl } from 'foremanReact/common/helpers';
 import { translate as __ } from 'foremanReact/common/I18n';
-import { STATUS } from 'foremanReact/constants';
 import SeverityIcon from './SeverityIcon';
 import CveFindingsModal from './CveFindingsModal';
+import {
+  getCachedCveSummary,
+  subscribeToCveSummary,
+} from './cve_summary_store';
 import './cve_scans.scss';
 
 const CveSummaryCell = ({ hostId, hostName }) => {
-  const url = hostId
-    ? foremanUrl(`/api/v2/hosts/${hostId}/cve_scans/latest`)
-    : null;
-  const { response, status } = useAPI('get', url, {
-    key: `CVE_SUMMARY_${hostId}`,
-  });
-
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [response, setResponse] = useState(
+    hostId ? getCachedCveSummary(hostId) : null
+  );
+  const [isLoaded, setIsLoaded] = useState(
+    hostId ? getCachedCveSummary(hostId) !== undefined : true
+  );
+
+  useEffect(() => {
+    if (!hostId) {
+      setResponse(null);
+      setIsLoaded(true);
+      return undefined;
+    }
+
+    const cached = getCachedCveSummary(hostId);
+    setResponse(cached);
+    setIsLoaded(cached !== undefined);
+
+    return subscribeToCveSummary(hostId, value => {
+      setResponse(value);
+      setIsLoaded(true);
+    });
+  }, [hostId]);
+
   if (!hostId) return <span className="cve-summary-empty">--</span>;
-  if (status === STATUS.PENDING) {
-    return (
-      <Spinner
-        size="sm"
-        aria-label={__('Loading CVE findings')}
-        ouiaId="cve-summary-loading"
-      />
-    );
+  if (!isLoaded) {
+    return <Spinner size="sm" aria-label={__('Loading CVE findings')} />;
   }
 
   if (!response) return <span className="cve-summary-empty">--</span>;
