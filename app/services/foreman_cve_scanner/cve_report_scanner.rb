@@ -21,8 +21,8 @@ module ForemanCveScanner
     def generate
       @status = {}
       @logs = []
-      @cve_report_data.each do |id, cve|
-        @logs << generate_log_from_unified(id, cve)
+      @cve_report_data.each do |cve|
+        @logs << generate_log_from_unified(cve['id'], cve)
       end
       @logs
     end
@@ -77,6 +77,7 @@ module ForemanCveScanner
 
     def generate_grype_entry(entry)
       {
+        'id' => entry['vulnerability']['id'],
         'name' => entry['artifact']['name'],
         'version' => entry['artifact']['version'],
         'title' => entry['vulnerability']['description'].to_s.gsub(/[\[\]"\\]/, ''),
@@ -87,6 +88,7 @@ module ForemanCveScanner
 
     def generate_trivy_entry(entry)
       unified = {
+        'id' => entry['VulnerabilityID'],
         'name' => entry['PkgName'],
         'version' => entry['InstalledVersion'],
         'title' => entry['Title'].to_s.gsub(/[\[\]"\\]/, ''),
@@ -99,22 +101,22 @@ module ForemanCveScanner
       unified
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     def generate_unified_vuls
       raise ::Foreman::Exception, _('Invalid CVE scanner report') unless @raw_data.key?('scan')
 
       j = @raw_data['scan']
-      vuls = {}
+      vuls = []
       if j.key?('matches') # Grype
         j['matches'].each do |vul|
-          vuls[vul['vulnerability']['id']] = generate_grype_entry(vul)
+          vuls << generate_grype_entry(vul)
         end
       elsif j.key?('Results') # Trivy
         j['Results'].each do |r|
           next unless r.key? 'Vulnerabilities'
 
           r['Vulnerabilities'].each do |vul|
-            vuls[vul['VulnerabilityID']] = generate_trivy_entry(vul)
+            vuls << generate_trivy_entry(vul)
           end
         end
       else
@@ -124,6 +126,6 @@ module ForemanCveScanner
 
       vuls
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   end
 end

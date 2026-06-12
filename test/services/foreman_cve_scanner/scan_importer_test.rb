@@ -58,6 +58,24 @@ module ForemanCveScanner
       assert_operator scan.total, :>, 0
     end
 
+    test 'import_for_host! ignores noise outside markers' do
+      output = [
+        'stderr noise before',
+        '===START',
+        load_fixture('trivy.json'),
+        '===END',
+        'stderr noise after',
+      ].join("\n")
+      importer = ForemanCveScanner::ScanImporter.new(output)
+
+      scan = importer.import_for_host!(@host)
+
+      assert_not_nil scan
+      assert_equal 'trivy', scan.scanner
+      assert_operator scan.total, :>, 0
+      assert_equal scan.total, scan.findings.count
+    end
+
     test 'import_for_host! raises when no json markers' do
       importer = ForemanCveScanner::ScanImporter.new('no markers here')
 
@@ -128,6 +146,43 @@ module ForemanCveScanner
       assert_empty scan.findings
       assert_equal 0, scan.total
       assert_equal 'none', scan.summary['worst']
+    end
+
+    test 'import_for_host! persists duplicate cves for different packages' do
+      output = wrap_output(
+        {
+          'Results' => [
+            {
+              'Vulnerabilities' => [
+                {
+                  'VulnerabilityID' => 'CVE-2026-0001',
+                  'PkgName' => 'openssl',
+                  'InstalledVersion' => '1.0',
+                  'Title' => 'openssl issue',
+                  'Severity' => 'HIGH',
+                  'PrimaryURL' => 'https://example.com/openssl',
+                },
+                {
+                  'VulnerabilityID' => 'CVE-2026-0001',
+                  'PkgName' => 'curl',
+                  'InstalledVersion' => '2.0',
+                  'Title' => 'curl issue',
+                  'Severity' => 'MEDIUM',
+                  'PrimaryURL' => 'https://example.com/curl',
+                },
+              ],
+            },
+          ],
+        }.to_json
+      )
+      importer = ForemanCveScanner::ScanImporter.new(output)
+
+      scan = importer.import_for_host!(@host)
+      findings = scan.findings.map { |finding| [finding['id'], finding['name']] }
+
+      assert_equal 2, scan.findings.size
+      assert_equal [%w[CVE-2026-0001 openssl], %w[CVE-2026-0001 curl]], findings
+      assert_equal [2, 1, 1], [scan.total, scan.high, scan.medium]
     end
 
     private

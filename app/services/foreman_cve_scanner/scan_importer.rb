@@ -95,9 +95,7 @@ module ForemanCveScanner
     end
 
     def build_findings(scanner)
-      scanner.unified_vulnerabilities.map do |id, entry|
-        entry.merge('id' => id)
-      end
+      scanner.unified_vulnerabilities.map(&:dup)
     end
 
     def cleanup_old_scans(host)

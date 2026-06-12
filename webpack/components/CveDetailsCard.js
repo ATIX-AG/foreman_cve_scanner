@@ -28,6 +28,7 @@ import SeverityIcon from './SeverityIcon';
 import CveFindingsModal from './CveFindingsModal';
 import useModalScan from './useModalScan';
 import {
+  findingIdentity,
   noFindingsBody,
   noFindingsTitle,
   formatScanOrigin,
@@ -225,7 +226,7 @@ const CveDetailsCard = ({ hostDetails }) => {
                   <Tbody>
                     {visibleFindings.map((finding, index) => (
                       <Tr
-                        key={finding.id}
+                        key={findingIdentity(finding)}
                         ouiaId={`cve-details-finding-row-${index}`}
                       >
                         <Td dataLabel={__('Severity')}>
