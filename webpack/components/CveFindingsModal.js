@@ -69,7 +69,7 @@ const CveFindingsModal = ({
     : foremanUrl(`/api/v2/hosts/${hostId}/cve_scans/latest`);
 
   const { response, status } = useAPI(isOpen ? 'get' : null, url, {
-    key: `CVE_SCAN_${normalizedScanId || 'latest'}`,
+    key: `CVE_SCAN_${hostId}_${normalizedScanId || 'latest'}`,
   });
 
   useEffect(() => {
