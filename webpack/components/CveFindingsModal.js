@@ -1,53 +1,12 @@
 /* eslint-disable import/no-unresolved */
-/* eslint-disable camelcase */
-import React, { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Modal,
-  Button,
-  Text,
-  TextVariants,
-  FormGroup,
-  SearchInput,
-} from '@patternfly/react-core';
-import {
-  Table,
-  Tbody,
-  Tr,
-  Th,
-  Thead,
-  Td,
-  SortByDirection,
-} from '@patternfly/react-table';
+import { Modal, Button } from '@patternfly/react-core';
 import { useAPI } from 'foremanReact/common/hooks/API/APIHooks';
 import { foremanUrl } from 'foremanReact/common/helpers';
 import { translate as __ } from 'foremanReact/common/I18n';
-import { STATUS } from 'foremanReact/constants';
-import SeverityIcon from './SeverityIcon';
-import CveLink from './CveLink';
-import useSortBy from './useSortBy';
-import {
-  findingIdentity,
-  findingMatchesSearch,
-  formatDateTime,
-  formatScanOrigin,
-  formatScannedAt,
-  findingSorters,
-  normalizeSearchInputValue,
-} from './cve_helpers';
+import CveFindingsView from './CveFindingsView';
 import './cve_scans.scss';
-
-const SEVERITY_OPTIONS = ['all', 'critical', 'high', 'medium', 'low'];
-const COLUMNS = [
-  { key: 'severity', label: __('Severity') },
-  { key: 'published', label: __('Published') },
-  { key: 'name', label: __('Package') },
-  { key: 'version', label: __('Affected version') },
-  { key: 'fixed', label: __('Fixed version') },
-  { key: 'status', label: __('Status') },
-  { key: 'id', label: __('CVE') },
-  { key: 'title', label: __('Title') },
-];
 
 const CveFindingsModal = ({
   isOpen,
@@ -56,8 +15,6 @@ const CveFindingsModal = ({
   scanId,
   initialFilter,
 }) => {
-  const [filter, setFilter] = useState(initialFilter || 'all');
-  const [search, setSearch] = useState('');
   const normalizedScanId =
     scanId !== null && scanId !== undefined && String(scanId).trim() !== ''
       ? scanId
@@ -70,48 +27,9 @@ const CveFindingsModal = ({
     key: `CVE_SCAN_${hostId}_${normalizedScanId || 'latest'}`,
   });
 
-  useEffect(() => {
-    if (!isOpen) return;
-    setFilter(initialFilter || 'all');
-    setSearch('');
-  }, [initialFilter, isOpen, scanId]);
-
-  const payload = response || {};
-  const findings = Array.isArray(payload.findings) ? payload.findings : [];
-  const origin = formatScanOrigin(payload.scanner, payload.source);
-
-  const normalizedFilter = (filter || 'all').toLowerCase();
-  const filteredFindings = useMemo(() => {
-    if (normalizedFilter === 'all') return findings;
-    return findings.filter(
-      f => (f.severity || '').toLowerCase() === normalizedFilter
-    );
-  }, [normalizedFilter, findings]);
-  const normalizedSearch = search.trim().toLowerCase();
-  const visibleFindings = useMemo(() => {
-    if (!normalizedSearch) return filteredFindings;
-    return filteredFindings.filter(finding =>
-      findingMatchesSearch(finding, normalizedSearch)
-    );
-  }, [filteredFindings, normalizedSearch]);
-  const { sortBy, onSort, sortedItems: sortedFindings } = useSortBy(
-    'severity',
-    findingSorters,
-    visibleFindings
-  );
-  const onSearchChange = (value, event) => {
-    setSearch(normalizeSearchInputValue(value, event));
-  };
-
   return (
     <Modal
-      title={
-        payload?.scanned_at && typeof payload?.total !== 'undefined'
-          ? `${__('Report from')} ${formatScannedAt(
-              payload.scanned_at
-            )} - ${origin} - ${__('Total')}: ${payload.total}`
-          : __('CVE findings')
-      }
+      title={__('CVE findings')}
       isOpen={isOpen}
       onClose={onClose}
       width="70%"
@@ -128,135 +46,15 @@ const CveFindingsModal = ({
         </Button>,
       ]}
     >
-      {status === STATUS.PENDING ? (
-        <Text component={TextVariants.small} ouiaId="cve-findings-loading">
-          {__('Loading...')}
-        </Text>
-      ) : (
-        <div className="cve-modal-body">
-          <div className="cve-modal-filters">
-            <FormGroup fieldId="cve-search" className="cve-modal-search">
-              <SearchInput
-                id="cve-search"
-                value={search}
-                onChange={onSearchChange}
-                onClear={() => setSearch('')}
-                onSearch={onSearchChange}
-                placeholder={__('Search CVE, package, status, title...')}
-                aria-label={__('Search CVE report')}
-              />
-            </FormGroup>
-            <FormGroup fieldId="cve-filter" className="cve-modal-quick-filters">
-              <div className="cve-filter-buttons">
-                {SEVERITY_OPTIONS.map(opt => (
-                  <button
-                    key={opt}
-                    type="button"
-                    aria-pressed={filter === opt}
-                    className={
-                      filter === opt
-                        ? 'cve-filter-button is-active'
-                        : 'cve-filter-button'
-                    }
-                    onClick={() => setFilter(opt)}
-                  >
-                    {__(opt)}
-                  </button>
-                ))}
-              </div>
-            </FormGroup>
-          </div>
-
-          <div className="cve-modal-results">
-            {response?.error && (
-              <Text component={TextVariants.small} ouiaId="cve-findings-error">
-                {response.error.message}
-              </Text>
-            )}
-            {sortedFindings.length === 0 && !response?.error ? (
-              <Text component={TextVariants.small} ouiaId="cve-findings-empty">
-                {__('No findings for selected filter')}
-              </Text>
-            ) : (
-              <Table
-                variant="compact"
-                aria-label="CVE findings table"
-                ouiaId="cve-findings-table"
-              >
-                <Thead>
-                  <Tr ouiaId="cve-findings-header">
-                    {COLUMNS.map(col => (
-                      <Th
-                        key={col.key}
-                        className={`cve-col-${col.key} cve-sortable`}
-                        aria-label={
-                          col.key === 'severity' ? __('Severity') : undefined
-                        }
-                        onClick={() => onSort(col.key)}
-                      >
-                        {col.key === 'severity' ? (
-                          <SeverityIcon severity="high" />
-                        ) : (
-                          col.label
-                        )}
-                        {sortBy.column === col.key && (
-                          <span className="cve-sort-indicator">
-                            {sortBy.direction === SortByDirection.asc
-                              ? ' ▲'
-                              : ' ▼'}
-                          </span>
-                        )}
-                      </Th>
-                    ))}
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {sortedFindings.map((finding, index) => (
-                    <Tr
-                      key={findingIdentity(finding)}
-                      ouiaId={`cve-findings-row-${index}`}
-                    >
-                      <Td dataLabel={__('Severity')}>
-                        <span
-                          className="cve-summary cve-summary--icon-only"
-                          title={finding.severity}
-                          aria-label={finding.severity}
-                        >
-                          <SeverityIcon
-                            severity={(finding.severity || '').toLowerCase()}
-                          />
-                        </span>
-                      </Td>
-                      <Td dataLabel={__('Published')}>
-                        {formatDateTime(finding.published)}
-                      </Td>
-                      <Td dataLabel={__('Package')}>{finding.name}</Td>
-                      <Td dataLabel={__('Affected version')}>
-                        {finding.version}
-                      </Td>
-                      <Td dataLabel={__('Fixed version')} title={finding.fixed}>
-                        <span className="cve-truncate">{finding.fixed}</span>
-                      </Td>
-                      <Td dataLabel={__('Status')}>
-                        {finding.status || __('open')}
-                      </Td>
-                      <Td dataLabel={__('CVE')}>
-                        <CveLink id={finding.id} url={finding.url} />
-                      </Td>
-                      <Td dataLabel={__('Title')} title={finding.title}>
-                        <span className="cve-truncate">{finding.title}</span>
-                      </Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-            )}
-          </div>
-        </div>
-      )}
+      <CveFindingsView
+        scan={response}
+        status={status}
+        initialFilter={initialFilter}
+      />
     </Modal>
   );
 };
+
 CveFindingsModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
