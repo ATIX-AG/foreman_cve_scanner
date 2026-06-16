@@ -17,6 +17,7 @@ import { translate as __ } from 'foremanReact/common/I18n';
 import SkeletonLoader from 'foremanReact/components/common/SkeletonLoader';
 import { STATUS } from 'foremanReact/constants';
 import CveTrendChart from './CveTrendChart';
+import CveFindingsView from './CveFindingsView';
 import CveScansReports from './CveScansReports';
 import CveFindingsModal from './CveFindingsModal';
 import CveCompareModal from './CveCompareModal';
@@ -25,8 +26,9 @@ import { noReportsBody, noReportsTitle } from './cve_helpers';
 import './cve_scans.scss';
 
 const DEFAULT_PER_PAGE = 20;
-const OVERVIEW_TAB = 0;
-const REPORTS_TAB = 1;
+const LATEST_SCAN_TAB = 0;
+const TRENDS_TAB = 1;
+const HISTORY_TAB = 2;
 
 const CveScansTab = ({ response }) => {
   const hostId = response?.id;
@@ -35,7 +37,7 @@ const CveScansTab = ({ response }) => {
   const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [selectedScanIds, setSelectedScanIds] = useState([]);
   const [isTrendCompareMode, setIsTrendCompareMode] = useState(false);
-  const [activeTabKey, setActiveTabKey] = useState(OVERVIEW_TAB);
+  const [activeTabKey, setActiveTabKey] = useState(LATEST_SCAN_TAB);
   const { isOpen, scanId, filter, openModal, closeModal } = useModalScan();
 
   const historyUrl = hostId
@@ -43,11 +45,22 @@ const CveScansTab = ({ response }) => {
         `/api/v2/hosts/${hostId}/cve_scans?page=${page}&per_page=${perPage}`
       )
     : null;
+  const latestUrl = hostId
+    ? foremanUrl(`/api/v2/hosts/${hostId}/cve_scans/latest`)
+    : null;
   const { response: apiResponse, status } = useAPI('get', historyUrl, {
     key: `CVE_SCANS_TAB_${hostId}_${page}_${perPage}`,
   });
+  const { response: latestResponse, status: latestStatus } = useAPI(
+    'get',
+    latestUrl,
+    {
+      key: `CVE_SCANS_TAB_LATEST_${hostId}`,
+    }
+  );
 
   const scans = useMemo(() => apiResponse?.results || [], [apiResponse]);
+  const latestScan = latestResponse?.id ? latestResponse : null;
   const selectedScans = useMemo(
     () => scans.filter(scan => selectedScanIds.includes(scan.id)),
     [scans, selectedScanIds]
@@ -123,9 +136,25 @@ const CveScansTab = ({ response }) => {
             ouiaId="cve-scans-subtabs"
           >
             <Tab
-              eventKey={OVERVIEW_TAB}
-              title={<TabTitleText>{__('Overview')}</TabTitleText>}
-              ouiaId="cve-scans-overview-tab"
+              eventKey={LATEST_SCAN_TAB}
+              title={<TabTitleText>{__('Latest Scan')}</TabTitleText>}
+              ouiaId="cve-scans-latest-tab"
+            >
+              <section
+                className="cve-scans-section"
+                aria-label="Latest CVE scan"
+              >
+                <CveFindingsView
+                  scan={latestScan}
+                  status={latestStatus}
+                  initialFilter="all"
+                />
+              </section>
+            </Tab>
+            <Tab
+              eventKey={TRENDS_TAB}
+              title={<TabTitleText>{__('Trends')}</TabTitleText>}
+              ouiaId="cve-scans-trends-tab"
             >
               <section
                 className="cve-scans-section"
@@ -142,9 +171,9 @@ const CveScansTab = ({ response }) => {
               </section>
             </Tab>
             <Tab
-              eventKey={REPORTS_TAB}
-              title={<TabTitleText>{__('Reports')}</TabTitleText>}
-              ouiaId="cve-scans-reports-tab"
+              eventKey={HISTORY_TAB}
+              title={<TabTitleText>{__('History')}</TabTitleText>}
+              ouiaId="cve-scans-history-tab"
             >
               <CveScansReports
                 scans={scans}

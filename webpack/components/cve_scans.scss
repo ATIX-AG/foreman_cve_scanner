@@ -520,6 +520,11 @@ button.cve-summary {
   min-height: 26rem;
 }
 
+.cve-findings-meta {
+  margin-bottom: 0.75rem;
+  text-align: right;
+}
+
 .cve-modal-filters {
   flex: 0 0 auto;
   align-items: flex-end;

@@ -1,7 +1,7 @@
 /* eslint-disable import/no-unresolved */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Checkbox, Pagination, Title } from '@patternfly/react-core';
+import { Button, Checkbox, Pagination } from '@patternfly/react-core';
 import { Table, Thead, Tbody, Tr, Th, Td } from '@patternfly/react-table';
 import { translate as __ } from 'foremanReact/common/I18n';
 import RelativeDateTime from 'foremanReact/components/common/dates/RelativeDateTime';
@@ -30,13 +30,8 @@ const CveScansReports = ({
   onOpenModal,
   exportUrlFor,
 }) => (
-  <section className="cve-scans-section" aria-label="CVE scan reports">
+  <section className="cve-scans-section" aria-label="CVE scan history">
     <div className="cve-scans-section-header">
-      <div className="cve-scans-section-title">
-        <Title headingLevel="h3" size="lg" ouiaId="cve-scans-reports-title">
-          {__('Reports')}
-        </Title>
-      </div>
       <Pagination
         itemCount={itemCount}
         perPage={perPage}

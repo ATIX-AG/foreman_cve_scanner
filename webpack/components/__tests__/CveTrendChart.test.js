@@ -4,7 +4,7 @@ import { mount } from 'enzyme';
 import CveTrendChart from '../CveTrendChart';
 
 describe('CveTrendChart', () => {
-  it('renders the last scan summary and legend', () => {
+  it('renders the scan summary and legend', () => {
     const wrapper = mount(
       <CveTrendChart
         scans={[
@@ -30,8 +30,6 @@ describe('CveTrendChart', () => {
       />
     );
 
-    expect(wrapper.text()).toContain('Trend');
-    expect(wrapper.text()).toContain('Last 2 scans');
     expect(wrapper.text()).toContain('Latest total');
     expect(wrapper.text()).toContain('18');
     expect(wrapper.text()).toContain('Critical');

@@ -23,81 +23,116 @@ jest.mock('../CveCompareModal', () => ({ isOpen, scanIds }) =>
 const { useAPI } = require('foremanReact/common/hooks/API/APIHooks');
 
 describe('CveScansTab', () => {
+  const historyResponse = {
+    results: [
+      {
+        id: 1,
+        scanned_at: '2026-02-20',
+        scanner: 'trivy',
+        source: 'rex',
+        total: 10,
+        critical: 1,
+        high: 2,
+        medium: 3,
+        low: 4,
+      },
+      {
+        id: 2,
+        scanned_at: '2026-02-21',
+        scanner: 'grype',
+        source: 'external',
+        total: 5,
+        critical: 0,
+        high: 1,
+        medium: 1,
+        low: 3,
+      },
+    ],
+    total: 2,
+  };
+  const latestResponse = {
+    id: 2,
+    scanned_at: '2026-02-21',
+    scanner: 'grype',
+    source: 'external',
+    total: 5,
+    findings: [
+      {
+        id: 'CVE-2026-0001',
+        name: 'openssl',
+        version: '1.0',
+        fixed: '1.1',
+        status: 'open',
+        severity: 'HIGH',
+        title: 'OpenSSL issue',
+        published: '2026-02-11T00:00:00Z',
+        url: 'https://example.test/CVE-2026-0001',
+      },
+    ],
+  };
+
+  const mockScanApis = ({
+    latest = latestResponse,
+    history = historyResponse,
+    latestStatus = 'RESOLVED',
+    historyStatus = 'RESOLVED',
+  } = {}) => {
+    useAPI.mockImplementation((_method, url) => {
+      if (url && url.includes('/cve_scans/latest')) {
+        return { response: latest, status: latestStatus };
+      }
+      return { response: history, status: historyStatus };
+    });
+  };
+
   beforeEach(() => {
     useAPI.mockReset();
   });
 
-  it('renders overview and reports sub-tabs', () => {
-    const scansResponse = {
-      results: [
-        {
-          id: 1,
-          scanned_at: '2026-02-20',
-          scanner: 'trivy',
-          source: 'rex',
-          total: 10,
-          critical: 1,
-          high: 2,
-          medium: 3,
-          low: 4,
-        },
-        {
-          id: 2,
-          scanned_at: '2026-02-21',
-          scanner: 'grype',
-          source: 'external',
-          total: 5,
-          critical: 0,
-          high: 1,
-          medium: 1,
-          low: 3,
-        },
-      ],
-      total: 2,
-    };
-
-    useAPI.mockReturnValue({ response: scansResponse, status: 'RESOLVED' });
+  it('renders latest scan, trends and history tabs', () => {
+    mockScanApis();
 
     const wrapper = mount(<CveScansTab response={{ id: 1 }} />);
 
-    expect(wrapper.text()).toContain('Overview');
-    expect(wrapper.text()).toContain('Reports');
-    expect(wrapper.text()).toContain('Trend');
-    expect(wrapper.text()).toContain('Latest total');
+    expect(wrapper.text()).toContain('Latest Scan');
+    expect(wrapper.text()).toContain('Trends');
+    expect(wrapper.text()).toContain('History');
+    expect(wrapper.text()).toContain('Report from');
+    expect(wrapper.text()).toContain('grype / external');
+    expect(wrapper.text()).toContain('openssl');
   });
 
-  it('opens compare modal from overview trend selection', () => {
-    const scansResponse = {
-      results: [
-        {
-          id: 1,
-          scanned_at: '2026-02-20',
-          scanner: 'trivy',
-          source: 'rex',
-          total: 10,
-          critical: 1,
-          high: 2,
-          medium: 3,
-          low: 4,
-        },
-        {
-          id: 2,
-          scanned_at: '2026-02-21',
-          scanner: 'grype',
-          source: 'external',
-          total: 5,
-          critical: 0,
-          high: 1,
-          medium: 1,
-          low: 3,
-        },
-      ],
-      total: 2,
-    };
-
-    useAPI.mockReturnValue({ response: scansResponse, status: 'RESOLVED' });
+  it('renders a success state when the latest scan has no findings', () => {
+    mockScanApis({
+      latest: {
+        id: 2,
+        scanned_at: '2026-02-21',
+        scanner: 'grype',
+        source: 'external',
+        total: 0,
+        findings: [],
+      },
+    });
 
     const wrapper = mount(<CveScansTab response={{ id: 1 }} />);
+
+    expect(wrapper.text()).toContain('No CVEs found');
+    expect(wrapper.text()).toContain(
+      'The latest CVE scan found no vulnerabilities for this host.'
+    );
+  });
+
+  it('opens compare modal from trends selection', () => {
+    mockScanApis();
+
+    const wrapper = mount(<CveScansTab response={{ id: 1 }} />);
+
+    wrapper
+      .find('[role="tab"]')
+      .filterWhere(node => node.text() === 'Trends')
+      .first()
+      .simulate('click');
+    wrapper.update();
 
     wrapper
       .find('button')
@@ -113,42 +148,14 @@ describe('CveScansTab', () => {
     expect(wrapper.find('[data-test="compare-modal"]').text()).toBe('1,2');
   });
 
-  it('renders scan rows in the reports sub-tab', () => {
-    const scansResponse = {
-      results: [
-        {
-          id: 1,
-          scanned_at: '2026-02-20',
-          scanner: 'trivy',
-          source: 'rex',
-          total: 10,
-          critical: 1,
-          high: 2,
-          medium: 3,
-          low: 4,
-        },
-        {
-          id: 2,
-          scanned_at: '2026-02-21',
-          scanner: 'grype',
-          source: 'external',
-          total: 5,
-          critical: 0,
-          high: 1,
-          medium: 1,
-          low: 3,
-        },
-      ],
-      total: 2,
-    };
-
-    useAPI.mockReturnValue({ response: scansResponse, status: 'RESOLVED' });
+  it('renders scan rows in the history tab', () => {
+    mockScanApis();
 
     const wrapper = mount(<CveScansTab response={{ id: 1 }} />);
 
     wrapper
       .find('[role="tab"]')
-      .filterWhere(node => node.text() === 'Reports')
+      .filterWhere(node => node.text() === 'History')
       .first()
       .simulate('click');
     wrapper.update();
@@ -161,41 +168,13 @@ describe('CveScansTab', () => {
   });
 
   it('opens compare modal when two scans are selected', () => {
-    const scansResponse = {
-      results: [
-        {
-          id: 1,
-          scanned_at: '2026-02-20',
-          scanner: 'trivy',
-          source: 'rex',
-          total: 10,
-          critical: 1,
-          high: 2,
-          medium: 3,
-          low: 4,
-        },
-        {
-          id: 2,
-          scanned_at: '2026-02-21',
-          scanner: 'grype',
-          source: 'external',
-          total: 5,
-          critical: 0,
-          high: 1,
-          medium: 1,
-          low: 3,
-        },
-      ],
-      total: 2,
-    };
-
-    useAPI.mockReturnValue({ response: scansResponse, status: 'RESOLVED' });
+    mockScanApis();
 
     const wrapper = mount(<CveScansTab response={{ id: 1 }} />);
 
     wrapper
       .find('[role="tab"]')
-      .filterWhere(node => node.text() === 'Reports')
+      .filterWhere(node => node.text() === 'History')
       .first()
       .simulate('click');
     wrapper.update();
@@ -215,40 +194,55 @@ describe('CveScansTab', () => {
   });
 
   it('renders empty state with no scans', () => {
-    useAPI.mockReturnValue({ response: { results: [] }, status: 'RESOLVED' });
+    mockScanApis({ latest: null, history: { results: [] } });
 
     const wrapper = mount(<CveScansTab response={{ id: 1 }} />);
     expect(wrapper.text()).toContain('No CVE reports for this host');
   });
 
-  it('renders trend overview when recent scans have no cves', () => {
-    const scansResponse = {
-      results: [
-        {
-          id: 1,
-          scanned_at: '2026-02-20',
-          scanner: 'trivy',
-          source: 'rex',
-          total: 0,
-          critical: 0,
-          high: 0,
-          medium: 0,
-          low: 0,
-        },
-      ],
-      total: 1,
-    };
-
-    useAPI.mockReturnValue({ response: scansResponse, status: 'RESOLVED' });
+  it('renders trend content in the trends tab when recent scans have no cves', () => {
+    mockScanApis({
+      latest: {
+        id: 1,
+        scanned_at: '2026-02-20',
+        scanner: 'trivy',
+        source: 'rex',
+        total: 0,
+        findings: [],
+      },
+      history: {
+        results: [
+          {
+            id: 1,
+            scanned_at: '2026-02-20',
+            scanner: 'trivy',
+            source: 'rex',
+            total: 0,
+            critical: 0,
+            high: 0,
+            medium: 0,
+            low: 0,
+          },
+        ],
+        total: 1,
+      },
+    });
 
     const wrapper = mount(<CveScansTab response={{ id: 1 }} />);
-    expect(wrapper.text()).toContain('Trend');
+
+    wrapper
+      .find('[role="tab"]')
+      .filterWhere(node => node.text() === 'Trends')
+      .first()
+      .simulate('click');
+    wrapper.update();
+
     expect(wrapper.text()).toContain('Latest total');
     expect(wrapper.text()).toContain('0');
   });
 
   it('does not render when host id is missing', () => {
-    useAPI.mockReturnValue({ response: { results: [] }, status: 'RESOLVED' });
+    mockScanApis({ latest: null, history: { results: [] } });
 
     const wrapper = mount(<CveScansTab response={{}} />);
     expect(wrapper.isEmptyRender()).toBe(true);

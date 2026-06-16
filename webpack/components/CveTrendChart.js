@@ -1,13 +1,7 @@
 /* eslint-disable import/no-unresolved */
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Button,
-  Text,
-  TextContent,
-  TextVariants,
-  Tooltip,
-} from '@patternfly/react-core';
+import { Button, Tooltip } from '@patternfly/react-core';
 import { translate as __ } from 'foremanReact/common/I18n';
 import { formatScannedAt } from './cve_helpers';
 
@@ -97,15 +91,6 @@ const CveTrendChart = ({
 
   return (
     <section className="cve-trend" aria-label="CVE trend chart">
-      <TextContent className="cve-section-title">
-        <Text component={TextVariants.h4} ouiaId="cve-trend-title">
-          {__('Trend')}
-        </Text>
-        <Text component={TextVariants.small} ouiaId="cve-trend-subtitle">
-          {__('Last %s scans').replace('%s', visibleScans.length)}
-        </Text>
-      </TextContent>
-
       <div className="cve-trend-summary">
         <div className="cve-trend-card">
           <span className="cve-trend-card-label">{__('Latest total')}</span>

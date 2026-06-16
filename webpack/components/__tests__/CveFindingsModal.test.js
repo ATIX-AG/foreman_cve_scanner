@@ -55,7 +55,7 @@ describe('CveFindingsModal', () => {
     expect(wrapper.text()).not.toContain('CVE-1');
   });
 
-  it('shows empty state when no findings', () => {
+  it('shows success state when no findings', () => {
     useAPI.mockReturnValue({
       response: {
         id: 1,
@@ -78,7 +78,10 @@ describe('CveFindingsModal', () => {
       />
     );
 
-    expect(wrapper.text()).toContain('No findings for selected filter');
+    expect(wrapper.text()).toContain('No CVEs found');
+    expect(wrapper.text()).toContain(
+      'The latest CVE scan found no vulnerabilities for this host.'
+    );
   });
 
   it('filters findings by search text', () => {
