@@ -53,6 +53,10 @@ module HostStatus
       end
     end
 
+    def relevant?(_options = {})
+      persisted?
+    end
+
     private
 
     def latest_scan
