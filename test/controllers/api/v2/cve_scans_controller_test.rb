@@ -90,6 +90,14 @@ module Api
         assert_equal @scan_old.id, body['id']
       end
 
+      test 'show does not include fix availability data' do
+        get :show, params: { host_id: @host.id, id: @scan_old.id }
+
+        assert_response :success
+        body = ActiveSupport::JSON.decode(@response.body)
+        assert_not body['findings'].first.key?('katello_fix')
+      end
+
       test 'import imports external scan for host' do
         assert_difference('ForemanCveScanner::CveScan.count', 1) do
           post :import, params: {

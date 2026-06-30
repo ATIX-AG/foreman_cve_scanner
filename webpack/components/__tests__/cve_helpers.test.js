@@ -8,6 +8,12 @@ import {
   formatScannedAt,
   compareStrings,
   visibleScanSource,
+  katelloFixLabel,
+  katelloFixTitle,
+  katelloFixCounts,
+  katelloFixErrataSearch,
+  katelloFixInstallUrl,
+  shouldShowKatelloFixColumn,
 } from '../cve_helpers';
 
 describe('cve_helpers', () => {
@@ -63,5 +69,76 @@ describe('cve_helpers', () => {
     expect(findingIdentity({ id: 'CVE-2026-0001', name: 'openssl' })).toBe(
       'CVE-2026-0001::openssl'
     );
+  });
+
+  it('formats fix availability status labels and titles', () => {
+    const fix = {
+      status: 'installable',
+      errata: [{ errata_id: 'RHSA-2026:0001' }],
+    };
+
+    expect(katelloFixLabel(fix)).toBe('Installable');
+    expect(katelloFixTitle(fix)).toContain('RHSA-2026:0001');
+  });
+
+  it('hides fix availability column when findings are not enriched', () => {
+    expect(
+      shouldShowKatelloFixColumn([
+        {
+          id: 'CVE-2026-0001',
+        },
+      ])
+    ).toBe(false);
+
+    expect(
+      shouldShowKatelloFixColumn([
+        {
+          katello_fix: {
+            status: 'applicable',
+            reason: null,
+          },
+        },
+      ])
+    ).toBe(true);
+  });
+
+  it('counts fix availability statuses', () => {
+    expect(
+      katelloFixCounts([
+        { katello_fix: { status: 'installable' } },
+        { katello_fix: { status: 'installable' } },
+        { katello_fix: { status: 'applicable' } },
+        { katello_fix: { status: 'unavailable' } },
+      ])
+    ).toEqual({ installable: 2, applicable: 1 });
+  });
+
+  it('builds errata install remote execution urls for installable fixes', () => {
+    const fix = {
+      status: 'installable',
+      errata: [{ errata_id: 'RHSA-2026:0001' }],
+    };
+    const url = katelloFixInstallUrl({ hostName: 'host.example.com', fix });
+    const params = new URL(url, 'http://example.test').searchParams;
+
+    expect(katelloFixErrataSearch(fix)).toBe('errata_id = RHSA-2026:0001');
+    expect(url).toContain('/job_invocations/new?');
+    expect(params.get('feature')).toBe('katello_errata_install_by_search');
+    expect(params.get('search')).toBe('name ^ (host.example.com)');
+    expect(params.get('inputs[Errata search query]')).toBe(
+      'errata_id = RHSA-2026:0001'
+    );
+  });
+
+  it('does not build install urls for non-installable fixes', () => {
+    expect(
+      katelloFixInstallUrl({
+        hostName: 'host.example.com',
+        fix: {
+          status: 'applicable',
+          errata: [{ errata_id: 'RHSA-2026:0001' }],
+        },
+      })
+    ).toBe('');
   });
 });

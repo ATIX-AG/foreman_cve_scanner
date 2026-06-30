@@ -71,26 +71,35 @@ module ForemanCveScanner
     def self.register_settings(plugin)
       plugin.settings do
         category :foreman_cve_scanner, N_('CVE Scanner') do
-          setting 'preferred_cve_scanner',
-            type: :string,
-            default: 'trivy',
-            full_name: N_('Preferred CVE scanner'),
-            description: N_('Default scanner used by the Run CVE scan job template.')
-          setting 'run_cve_scan_after_host_profiles_upload',
-            type: :boolean,
-            default: false,
-            full_name: N_('Run CVE scan after host profiles upload'),
-            description: N_('When Katello is installed, schedule a CVE scan after a host profiles upload completes.')
-          setting 'cve_scan_delete_after_days',
-            type: :integer,
-            default: 90,
-            full_name: N_('Delete CVE scans after X days'),
-            description: N_(
-              'Delete CVE scans older than the configured number of days. ' \
-              'Set to 0 to disable automatic cleanup.'
-            )
+          ForemanCveScanner::Engine.register_cve_scanner_settings(self)
         end
       end
+    end
+
+    def self.register_cve_scanner_settings(settings)
+      settings.setting 'preferred_cve_scanner',
+        type: :string,
+        default: 'trivy',
+        full_name: N_('Preferred CVE scanner'),
+        description: N_('Default scanner used by the Run CVE scan job template.')
+      settings.setting 'run_cve_scan_after_host_profiles_upload',
+        type: :boolean,
+        default: false,
+        full_name: N_('Run CVE scan after host profiles upload'),
+        description: N_('When Katello is installed, schedule a CVE scan after a host profiles upload completes.')
+      settings.setting 'enable_katello_cve_fix_availability',
+        type: :boolean,
+        default: true,
+        full_name: N_('Show CVE fix availability from content'),
+        description: N_('When Katello is installed, enrich the latest CVE scan with managed errata fix availability.')
+      settings.setting 'cve_scan_delete_after_days',
+        type: :integer,
+        default: 90,
+        full_name: N_('Delete CVE scans after X days'),
+        description: N_(
+          'Delete CVE scans older than the configured number of days. ' \
+          'Set to 0 to disable automatic cleanup.'
+        )
     end
 
     def self.register_permissions(plugin)

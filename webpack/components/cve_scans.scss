@@ -209,6 +209,50 @@ button.cve-summary {
   cursor: pointer;
 }
 
+.cve-katello-fix {
+  border: 1px solid var(--pf-v5-global--BorderColor--100);
+  border-radius: 2px;
+  display: inline-flex;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.3;
+  padding: 0.1rem 0.35rem;
+  white-space: nowrap;
+}
+
+.cve-katello-fix[href] {
+  text-decoration: none;
+}
+
+.cve-katello-fix[href]:hover,
+.cve-katello-fix[href]:focus {
+  text-decoration: underline;
+}
+
+.cve-katello-fix--installable {
+  background: #edf8ef;
+  border-color: var(--pf-v5-global--success-color--100);
+  color: var(--pf-v5-global--success-color--200);
+}
+
+.cve-katello-fix--applicable {
+  background: #fff7db;
+  border-color: var(--pf-v5-global--warning-color--100);
+  color: #795600;
+}
+
+.cve-katello-fix--unavailable,
+.cve-katello-fix--unknown {
+  background: var(--pf-v5-global--BackgroundColor--200);
+  color: var(--pf-v5-global--Color--200);
+}
+
+.cve-katello-summary {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
 .cve-filter-button.is-active {
   box-shadow: 0 0 0 2px var(--pf-v5-global--primary-color--100) inset;
 }

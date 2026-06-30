@@ -12,6 +12,7 @@ const CveFindingsModal = ({
   isOpen,
   onClose,
   hostId,
+  hostName,
   scanId,
   initialFilter,
 }) => {
@@ -50,6 +51,7 @@ const CveFindingsModal = ({
         scan={response}
         status={status}
         initialFilter={initialFilter}
+        hostName={hostName}
       />
     </Modal>
   );
@@ -59,11 +61,13 @@ CveFindingsModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   hostId: PropTypes.number.isRequired,
+  hostName: PropTypes.string,
   scanId: PropTypes.number,
   initialFilter: PropTypes.string,
 };
 
 CveFindingsModal.defaultProps = {
+  hostName: undefined,
   scanId: undefined,
   initialFilter: 'all',
 };
