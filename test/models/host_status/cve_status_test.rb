@@ -13,6 +13,7 @@ module HostStatus
       assert_equal 'No CVE scans', status.to_label
       assert_equal HostStatus::Global::WARN, status.to_global
       assert_equal 0, status.to_status
+      assert_not status.relevant?
     end
 
     test 'critical or high scan returns error status' do
@@ -49,6 +50,13 @@ module HostStatus
 
     test 'status is registered in registry' do
       assert_includes HostStatus.status_registry, HostStatus::CveStatus
+    end
+
+    test 'persisted status is relevant without looking up latest scan' do
+      status = HostStatus::CveStatus.create!(host: @host, status: 0)
+      status.expects(:latest_scan).never
+
+      assert status.relevant?
     end
 
     private
