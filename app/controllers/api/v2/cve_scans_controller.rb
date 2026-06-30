@@ -27,6 +27,7 @@ module Api
       def latest
         @cve_scan = cve_scans_index_scope.first
         head :no_content if @cve_scan.nil?
+        enrich_cve_scan_findings if @cve_scan
       end
 
       api :GET, '/cve_scans/latest_by_hosts', N_('Get latest CVE scan summaries for multiple hosts')
@@ -241,6 +242,10 @@ module Api
         return :destroy_cve_scans if action_name == 'destroy'
 
         :view_cve_scans
+      end
+
+      def enrich_cve_scan_findings
+        @cve_scan_findings = ::ForemanCveScanner::KatelloFixAvailability.new(@host, @cve_scan.findings).call
       end
     end
   end

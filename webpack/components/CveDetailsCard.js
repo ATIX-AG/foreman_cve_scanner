@@ -32,10 +32,12 @@ import {
   noFindingsBody,
   noFindingsTitle,
   formatScanOrigin,
+  katelloFixCounts,
   noReportsBody,
   noReportsTitle,
   riskLevelFromWorst,
   severityRank,
+  shouldShowKatelloFixColumn,
 } from './cve_helpers';
 import './cve_scans.scss';
 
@@ -48,6 +50,7 @@ const SEVERITY_COUNT_CARDS = [
 
 const CveDetailsCard = ({ hostDetails }) => {
   const hostId = hostDetails?.id;
+  const hostName = hostDetails?.name;
   const latestUrl = hostId
     ? foremanUrl(`/api/v2/hosts/${hostId}/cve_scans/latest`)
     : null;
@@ -79,6 +82,8 @@ const CveDetailsCard = ({ hostDetails }) => {
   const worst = latest?.summary?.worst || 'none';
   const riskLevel = riskLevelFromWorst(worst);
   const origin = formatScanOrigin(latest?.scanner, latest?.source);
+  const showKatelloFixSummary = shouldShowKatelloFixColumn(findings);
+  const fixCounts = katelloFixCounts(findings);
   return (
     <CardTemplate header={__('CVE scan details')} expandable masonryLayout>
       <SkeletonLoader status={latestStatus || STATUS.PENDING}>
@@ -127,6 +132,23 @@ const CveDetailsCard = ({ hostDetails }) => {
                     </span>
                   </DescriptionListDescription>
                 </DescriptionListGroup>
+                {showKatelloFixSummary && (
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>
+                      {__('Fix availability')}
+                    </DescriptionListTerm>
+                    <DescriptionListDescription>
+                      <span className="cve-katello-summary">
+                        <span className="cve-katello-fix cve-katello-fix--installable">
+                          {`${__('Fixable')}: ${fixCounts.installable}`}
+                        </span>
+                        <span className="cve-katello-fix cve-katello-fix--applicable">
+                          {`${__('Applicable')}: ${fixCounts.applicable}`}
+                        </span>
+                      </span>
+                    </DescriptionListDescription>
+                  </DescriptionListGroup>
+                )}
               </DescriptionList>
               <div className="cve-counts cve-counts--compact">
                 {SEVERITY_COUNT_CARDS.map(card => (
@@ -226,6 +248,7 @@ const CveDetailsCard = ({ hostDetails }) => {
         isOpen={isOpen}
         onClose={closeModal}
         hostId={hostId}
+        hostName={hostName}
         scanId={scanId}
         initialFilter={filter}
       />
@@ -233,7 +256,10 @@ const CveDetailsCard = ({ hostDetails }) => {
   );
 };
 CveDetailsCard.propTypes = {
-  hostDetails: PropTypes.shape({ id: PropTypes.number }),
+  hostDetails: PropTypes.shape({
+    id: PropTypes.number,
+    name: PropTypes.string,
+  }),
 };
 CveDetailsCard.defaultProps = {
   hostDetails: undefined,

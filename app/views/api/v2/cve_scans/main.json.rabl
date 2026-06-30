@@ -4,4 +4,6 @@ object @cve_scan
 
 extends 'api/v2/cve_scans/base'
 
-attributes :findings, :updated_at
+attributes :updated_at
+
+node(:findings) { |scan| @cve_scan_findings || scan.findings }

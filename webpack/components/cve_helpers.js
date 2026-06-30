@@ -13,6 +13,14 @@ const COMPARE_STATUS_RANK = {
   updated: 2,
   unchanged: 1,
 };
+const KATELLO_FIX_RANK = {
+  installable: 3,
+  applicable: 2,
+  unavailable: 1,
+  unknown: 0,
+};
+const KATELLO_ERRATA_INSTALL_FEATURE = 'katello_errata_install_by_search';
+const ERRATA_SEARCH_INPUT = 'Errata search query';
 const COMPARISON_DIFF_LABELS = {
   severity: __('Severity'),
   version: __('Version'),
@@ -88,6 +96,8 @@ export const findingMatchesSearch = (finding, query) =>
     finding.title,
     finding.url,
     finding.severity,
+    katelloFixLabel(finding.katello_fix),
+    katelloFixTitle(finding.katello_fix),
   ].some(value =>
     (value || '')
       .toString()
@@ -103,6 +113,8 @@ export const findingSorters = {
   name: (a, b) => compareStrings(a.name, b.name),
   version: (a, b) => compareStrings(a.version, b.version),
   fixed: (a, b) => compareStrings(a.fixed, b.fixed),
+  katello_fix: (a, b) =>
+    katelloFixRank(a.katello_fix) - katelloFixRank(b.katello_fix),
   id: (a, b) => compareStrings(a.id, b.id),
   status: (a, b) => compareStrings(a.status, b.status),
   title: (a, b) => compareStrings(a.title, b.title),
@@ -175,3 +187,102 @@ export const formatScanOrigin = (scanner, source, fallback = __('Unknown')) => {
 };
 export const formatScannedAt = value =>
   formatDateTime(value) || __('Unknown time');
+
+export const katelloFixRank = fix =>
+  KATELLO_FIX_RANK[(fix?.status || '').toLowerCase()] ?? 0;
+
+export const katelloFixLabel = fix => {
+  switch ((fix?.status || '').toLowerCase()) {
+    case 'installable':
+      return __('Installable');
+    case 'applicable':
+      return __('Applicable');
+    case 'unavailable':
+      return __('No managed fix');
+    case 'unknown':
+      return __('Unknown');
+    default:
+      return '';
+  }
+};
+
+export const katelloFixTitle = fix => {
+  const errataIds = (fix?.errata || [])
+    .map(erratum => erratum.errata_id)
+    .filter(Boolean)
+    .join(', ');
+
+  switch ((fix?.status || '').toLowerCase()) {
+    case 'installable':
+      return errataIds
+        ? `${__(
+            'A matching erratum is installable for this host'
+          )}: ${errataIds}`
+        : __('A matching erratum is installable for this host');
+    case 'applicable':
+      return errataIds
+        ? `${__(
+            'A matching erratum applies to this host, but is not installable in the current content'
+          )}: ${errataIds}`
+        : __(
+            'A matching erratum applies to this host, but is not installable in the current content'
+          );
+    case 'unavailable':
+      return __(
+        'No matching managed erratum was found for this CVE and package'
+      );
+    case 'unknown':
+      if (fix?.reason === 'missing_cve') {
+        return __('This finding has no CVE identifier');
+      }
+      if (fix?.reason === 'query_failed') {
+        return __('Fix availability could not be calculated');
+      }
+      return __('Fix availability is unknown');
+    default:
+      return '';
+  }
+};
+
+export const shouldShowKatelloFixColumn = findings =>
+  (findings || []).some(finding => finding.katello_fix);
+
+export const katelloFixCounts = findings =>
+  (findings || []).reduce(
+    (counts, finding) => {
+      const status = (finding.katello_fix?.status || '').toLowerCase();
+      if (status === 'installable') counts.installable += 1;
+      if (status === 'applicable') counts.applicable += 1;
+      return counts;
+    },
+    { installable: 0, applicable: 0 }
+  );
+
+export const katelloFixErrataIds = fix =>
+  (fix?.errata || []).map(erratum => erratum.errata_id).filter(Boolean);
+
+export const katelloFixErrataSearch = fix => {
+  const errataIds = katelloFixErrataIds(fix);
+  if (errataIds.length === 0) return '';
+  if (errataIds.length === 1) return `errata_id = ${errataIds[0]}`;
+  return `errata_id ^ (${errataIds.join(',')})`;
+};
+
+export const katelloFixInstallUrl = ({ hostName, fix }) => {
+  if ((fix?.status || '').toLowerCase() !== 'installable') return '';
+  const errataSearch = katelloFixErrataSearch(fix);
+  if (!hostName || !errataSearch) return '';
+
+  const params = new URLSearchParams();
+  params.set('feature', KATELLO_ERRATA_INSTALL_FEATURE);
+  params.set('search', `name ^ (${hostName})`);
+  params.set(`inputs[${ERRATA_SEARCH_INPUT}]`, errataSearch);
+  return `/job_invocations/new?${params.toString()}`;
+};
+
+export const katelloFixDetailsUrl = fix => {
+  const erratumId = (fix?.errata || [])
+    .map(erratum => erratum.id)
+    .find(Boolean);
+  return erratumId ? `/errata/${erratumId}` : '';
+};

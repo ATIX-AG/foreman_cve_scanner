@@ -91,4 +91,63 @@ describe('CveFindingsView', () => {
     expect(wrapper.text()).toContain('CVE-1');
     expect(wrapper.text()).not.toContain('CVE-2');
   });
+
+  it('renders fix availability when present', () => {
+    const wrapper = mount(
+      <CveFindingsView
+        scan={{
+          id: 1,
+          scanned_at: '2026-02-22T10:00:00Z',
+          scanner: 'trivy',
+          source: 'rex',
+          total: 2,
+          findings: [
+            {
+              id: 'CVE-1',
+              severity: 'HIGH',
+              name: 'openssl',
+              version: '1.1',
+              title: 'OpenSSL issue',
+              katello_fix: {
+                status: 'installable',
+                errata: [{ errata_id: 'RHSA-2026:0001' }],
+              },
+            },
+            {
+              id: 'CVE-2',
+              severity: 'LOW',
+              name: 'curl',
+              version: '8.0',
+              title: 'Curl issue',
+              katello_fix: {
+                status: 'applicable',
+                errata: [{ id: 1, errata_id: 'RHSA-2026:0002' }],
+              },
+            },
+          ],
+        }}
+        status="RESOLVED"
+        initialFilter="all"
+        hostName="host.example.com"
+      />
+    );
+
+    expect(wrapper.text()).toContain('Fix availability');
+    expect(wrapper.text()).toContain('Installable');
+    expect(wrapper.text()).toContain('Applicable');
+    const installLink = wrapper
+      .find('a')
+      .filterWhere(node => node.text() === 'Installable')
+      .first();
+    const applicableLink = wrapper
+      .find('a')
+      .filterWhere(node => node.text() === 'Applicable')
+      .first();
+
+    expect(installLink.prop('href')).toContain('/job_invocations/new?');
+    expect(installLink.prop('href')).toContain(
+      'katello_errata_install_by_search'
+    );
+    expect(applicableLink.prop('href')).toBe('/errata/1');
+  });
 });

@@ -1,4 +1,4 @@
-/* eslint-disable import/no-unresolved */
+/* eslint-disable import/no-unresolved, react/prop-types */
 import React from 'react';
 import { mount } from 'enzyme';
 import CveDetailsCard from '../CveDetailsCard';
@@ -7,17 +7,20 @@ jest.mock('foremanReact/common/hooks/API/APIHooks', () => ({
   useAPI: jest.fn(),
 }));
 
-jest.mock('foremanReact/components/HostDetails/Templates/CardItem/CardTemplate', () => (
-  { children }
-) => <div>{children}</div>);
+jest.mock(
+  'foremanReact/components/HostDetails/Templates/CardItem/CardTemplate',
+  () => ({ children }) => <div>{children}</div>
+);
 
-jest.mock('foremanReact/components/common/SkeletonLoader', () => (
-  { children }
-) => <div>{children}</div>);
+jest.mock(
+  'foremanReact/components/common/SkeletonLoader',
+  () => ({ children }) => <div>{children}</div>
+);
 
-jest.mock('foremanReact/components/common/dates/RelativeDateTime', () => (
-  { date, defaultValue }
-) => <span>{date || defaultValue}</span>);
+jest.mock(
+  'foremanReact/components/common/dates/RelativeDateTime',
+  () => ({ date, defaultValue }) => <span>{date || defaultValue}</span>
+);
 
 jest.mock('../CveFindingsModal', () => () => <div data-test="modal" />);
 
@@ -32,9 +35,27 @@ describe('CveDetailsCard', () => {
     const hostDetails = { id: 1 };
     const historyResponse = {
       results: [
-        { id: 1, scanned_at: '2026-02-20', scanner: 'trivy', source: 'rex', total: 10 },
-        { id: 2, scanned_at: '2026-02-21', scanner: 'trivy', source: 'rex', total: 12 },
-        { id: 3, scanned_at: '2026-02-22', scanner: 'grype', source: 'external', total: 8 },
+        {
+          id: 1,
+          scanned_at: '2026-02-20',
+          scanner: 'trivy',
+          source: 'rex',
+          total: 10,
+        },
+        {
+          id: 2,
+          scanned_at: '2026-02-21',
+          scanner: 'trivy',
+          source: 'rex',
+          total: 12,
+        },
+        {
+          id: 3,
+          scanned_at: '2026-02-22',
+          scanner: 'grype',
+          source: 'external',
+          total: 8,
+        },
       ],
     };
     const latestResponse = {
@@ -73,6 +94,46 @@ describe('CveDetailsCard', () => {
     expect(wrapper.text()).toContain('pkg');
   });
 
+  it('renders fix availability summary when latest scan is enriched', () => {
+    const hostDetails = { id: 1 };
+    const latestResponse = {
+      id: 3,
+      scanned_at: '2026-02-22',
+      scanner: 'grype',
+      source: 'external',
+      total: 3,
+      summary: { worst: 'high' },
+      critical: 0,
+      high: 1,
+      medium: 1,
+      low: 1,
+      findings: [
+        {
+          id: 'CVE-1',
+          name: 'openssl',
+          version: '1.0',
+          severity: 'HIGH',
+          katello_fix: { status: 'installable' },
+        },
+        {
+          id: 'CVE-2',
+          name: 'curl',
+          version: '8.0',
+          severity: 'MEDIUM',
+          katello_fix: { status: 'applicable' },
+        },
+      ],
+    };
+
+    useAPI.mockReturnValue({ response: latestResponse, status: 'RESOLVED' });
+
+    const wrapper = mount(<CveDetailsCard hostDetails={hostDetails} />);
+
+    expect(wrapper.text()).toContain('Fix availability');
+    expect(wrapper.text()).toContain('Fixable: 1');
+    expect(wrapper.text()).toContain('Applicable: 1');
+  });
+
   it('renders empty state when latest is empty', () => {
     const hostDetails = { id: 1 };
     useAPI.mockReturnValue({ response: {}, status: 'RESOLVED' });
@@ -84,7 +145,15 @@ describe('CveDetailsCard', () => {
   it('prefers latest when present', () => {
     const hostDetails = { id: 1 };
     const historyResponse = {
-      results: [{ id: 1, scanned_at: '2026-02-20', scanner: 'trivy', source: 'rex', total: 10 }],
+      results: [
+        {
+          id: 1,
+          scanned_at: '2026-02-20',
+          scanner: 'trivy',
+          source: 'rex',
+          total: 10,
+        },
+      ],
     };
     const latestResponse = {
       id: 2,

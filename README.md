@@ -20,6 +20,7 @@ Plugin to:
 - Host Details tab “CVE scans” for full history
 - Hosts overview list column “CVE” with quick summary and modal
 - Integrated in the Host Status
+- Optional Katello integration for managed errata fix availability
 - Export scan results as CSV
 
 ## Installation
@@ -34,10 +35,24 @@ for how to install Foreman plugins
 - You can configure recurring CVE scans via `Monitor -> Jobs`
 - You can configure the default scanner for the `Run CVE scan` template via `Administer -> Settings -> CVE Scanner -> Preferred CVE scanner`
 - The setting `Administer -> Settings -> CVE Scanner -> Run CVE scan after host profiles upload` takes effect only when Katello is installed and triggers a scan after host profiles uploads using the preferred scanner setting
+- The setting `Administer -> Settings -> CVE Scanner -> Show CVE fix availability from content` is enabled by default. When Katello is installed, the latest scan view can show whether a matching managed erratum is installable for the host or only applicable.
 - View results in:
   - Hosts overview list column “CVE” (use 'Manage Columns' to enable)
   - Host Details card and modal
   - Host Details tab “CVE scans”
+
+## Katello fix availability
+
+When Katello is installed and `Show CVE fix availability from content` is enabled, the latest CVE scan is enriched with matching security errata from the host content facet.
+
+The latest scan can show:
+
+- `Installable`: a matching erratum is applicable and available in the host's assigned content view environments. The badge links to Foreman's customized Remote Execution flow for `katello_errata_install_by_search`.
+- `Applicable`: a matching erratum applies to the host, but is not currently installable from the assigned content view environments. The badge links to the erratum details page.
+- `No managed fix`: no matching managed erratum was found for the CVE/package.
+- `Unknown`: fix availability could not be calculated.
+
+If Katello is not installed, no fix availability data or UI is shown.
 
 ## External Push API
 

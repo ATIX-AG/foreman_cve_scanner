@@ -32,6 +32,7 @@ const HISTORY_TAB = 2;
 
 const CveScansTab = ({ response }) => {
   const hostId = response?.id;
+  const hostName = response?.name;
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(DEFAULT_PER_PAGE);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
@@ -148,6 +149,7 @@ const CveScansTab = ({ response }) => {
                   scan={latestScan}
                   status={latestStatus}
                   initialFilter="all"
+                  hostName={hostName}
                 />
               </section>
             </Tab>
@@ -198,6 +200,7 @@ const CveScansTab = ({ response }) => {
         isOpen={isOpen}
         onClose={closeModal}
         hostId={hostId}
+        hostName={hostName}
         scanId={scanId}
         initialFilter={filter}
       />
@@ -214,6 +217,7 @@ const CveScansTab = ({ response }) => {
 CveScansTab.propTypes = {
   response: PropTypes.shape({
     id: PropTypes.number,
+    name: PropTypes.string,
   }),
 };
 

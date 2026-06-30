@@ -27,6 +27,7 @@ import { translate as __ } from 'foremanReact/common/I18n';
 import { STATUS } from 'foremanReact/constants';
 import SeverityIcon from './SeverityIcon';
 import CveLink from './CveLink';
+import CveKatelloFixLink from './CveKatelloFixLink';
 import useSortBy from './useSortBy';
 import {
   findingIdentity,
@@ -35,11 +36,13 @@ import {
   formatDateTime,
   formatScanOrigin,
   formatScannedAt,
+  katelloFixTitle,
   noFindingsBody,
   noFindingsTitle,
   noReportsBody,
   noReportsTitle,
   normalizeSearchInputValue,
+  shouldShowKatelloFixColumn,
 } from './cve_helpers';
 import './cve_scans.scss';
 
@@ -50,16 +53,25 @@ const COLUMNS = [
   { key: 'name', label: __('Package') },
   { key: 'version', label: __('Affected version') },
   { key: 'fixed', label: __('Fixed version') },
+  { key: 'katello_fix', label: __('Fix availability') },
   { key: 'status', label: __('Status') },
   { key: 'id', label: __('CVE') },
   { key: 'title', label: __('Title') },
 ];
 
-const CveFindingsView = ({ scan, status, initialFilter }) => {
+const CveFindingsView = ({ scan, status, initialFilter, hostName }) => {
   const [filter, setFilter] = useState(initialFilter || 'all');
   const [search, setSearch] = useState('');
   const scanId = scan?.id;
-  const findings = Array.isArray(scan?.findings) ? scan.findings : [];
+  const scanFindings = scan?.findings;
+  const findings = useMemo(
+    () => (Array.isArray(scanFindings) ? scanFindings : []),
+    [scanFindings]
+  );
+  const showKatelloFixColumn = shouldShowKatelloFixColumn(findings);
+  const columns = showKatelloFixColumn
+    ? COLUMNS
+    : COLUMNS.filter(column => column.key !== 'katello_fix');
   const origin = formatScanOrigin(scan?.scanner, scan?.source);
   const normalizedFilter = (filter || 'all').toLowerCase();
   const filteredFindings =
@@ -184,7 +196,7 @@ const CveFindingsView = ({ scan, status, initialFilter }) => {
               >
                 <Thead>
                   <Tr ouiaId="cve-findings-header">
-                    {COLUMNS.map(col => (
+                    {columns.map(col => (
                       <Th
                         key={col.key}
                         className={`cve-col-${col.key} cve-sortable`}
@@ -236,6 +248,17 @@ const CveFindingsView = ({ scan, status, initialFilter }) => {
                       <Td dataLabel={__('Fixed version')} title={finding.fixed}>
                         <span className="cve-truncate">{finding.fixed}</span>
                       </Td>
+                      {showKatelloFixColumn && (
+                        <Td
+                          dataLabel={__('Fix availability')}
+                          title={katelloFixTitle(finding.katello_fix)}
+                        >
+                          <CveKatelloFixLink
+                            fix={finding.katello_fix}
+                            hostName={hostName}
+                          />
+                        </Td>
+                      )}
                       <Td dataLabel={__('Status')}>
                         {finding.status || __('open')}
                       </Td>
@@ -271,12 +294,14 @@ CveFindingsView.propTypes = {
   }),
   status: PropTypes.string,
   initialFilter: PropTypes.string,
+  hostName: PropTypes.string,
 };
 
 CveFindingsView.defaultProps = {
   scan: undefined,
   status: undefined,
   initialFilter: 'all',
+  hostName: undefined,
 };
 
 export default CveFindingsView;
