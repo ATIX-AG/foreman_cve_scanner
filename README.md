@@ -41,6 +41,12 @@ for how to install Foreman plugins
   - Host Details card and modal
   - Host Details tab “CVE scans”
 
+## Scanner installation
+
+The `Install CVE scanners` Remote Execution job installs scanner packages from the host's enabled repositories by default. For Katello-managed hosts, this means `trivy` and `grype` can be delivered through the assigned content view/environment.
+
+Set the job parameter `install_from_github` to `true` to install the scanner release packages directly from GitHub instead. The `trivy_version` and `grype_version` parameters are only used for the GitHub install path.
+
 ## Katello fix availability
 
 When Katello is installed and `Show CVE fix availability from content` is enabled, the latest CVE scan is enriched with matching security errata from the host content facet.
@@ -149,10 +155,6 @@ Manual cleanup task:
 Override the configured retention for one run:
 
 - `bundle exec rake foreman_cve_scanner:cleanup_scans DAYS=30`
-
-## TODO
-
-- Deliver Trivy/Grype via Katello
 
 ## Contributing
 
