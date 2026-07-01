@@ -5,80 +5,117 @@ description_format: 'Install CVE scanners on a host'
 model: JobTemplate
 job_category: Security
 provider_type: script
+foreign_input_sets:
+- template: Package Action - Script Default
+  exclude: action,package
 template_inputs:
+- name: install_from_github
+  description: 'Install scanner release packages directly from GitHub'
+  required: false
+  input_type: user
+  advanced: false
+  value_type: plain
+  hidden_value: false
+  default: "false"
+  options: "true\r\nfalse"
 - name: trivy_version
-  description: 'Trivy version to install'
-  required: true
+  description: 'Trivy version to install from GitHub'
+  required: false
   input_type: user
-  advanced: false
-  default: 0.53.0
+  advanced: true
+  value_type: plain
+  hidden_value: false
+  default: "0.71.2"
 - name: grype_version
-  description: 'Grype version to install'
-  required: true
+  description: 'Grype version to install from GitHub'
+  required: false
   input_type: user
-  advanced: false
-  default: 0.79.3
+  advanced: true
+  value_type: plain
+  hidden_value: false
+  default: "0.115.0"
 - name: scanner_to_install
   description: 'Choose which scanner to install (Default: both)'
   required: false
   input_type: user
   advanced: false
-  default: both
+  value_type: plain
+  hidden_value: false
+  default: "both"
   options: "both\r\ntrivy\r\ngrype"
 %>
-# Install CVE scanners from github
 <%
-trivy_version = input('trivy_version')
-grype_version = input('grype_version')
+install_from_github = input('install_from_github') == 'true'
+scanner_to_install = input('scanner_to_install').present? ? input('scanner_to_install') : 'both'
+trivy_version = input('trivy_version').present? ? input('trivy_version') : '0.71.2'
+grype_version = input('grype_version').present? ? input('grype_version') : '0.115.0'
+os_family = @host.operatingsystem.family
 
-case @host.operatingsystem.family.to_s
-when 'Debian'
-  pkg = 'deb'
-when 'Redhat', 'Suse'
-  pkg = 'rpm'
-else
-  raise("OS '#{@host.operatingsystem.family}' not supported by template #{template_name}")
-end
+selected_scanners = case scanner_to_install
+                    when 'trivy'
+                      ['trivy']
+                    when 'grype'
+                      ['grype']
+                    else
+                      %w[trivy grype]
+                    end
+package_list = selected_scanners.join(' ')
 
-case @host.architecture.to_s
-when 'x86_64'
-  trivy_arch = 'Linux-64bit'
-  grype_arch = 'linux_amd64'
-when 'ppc64le'
-  trivy_arch = 'Linux-PPC64LE'
-  grype_arch = 'linux_ppc64le'
-when 'aarch64'
-  trivy_arch = 'Linux-ARM64'
-  grype_arch = 'linux_arm64'
-else
-  raise("Architecture '#{@host.architecture}' not supported by template #{template_name}")
-end
+if install_from_github
+  case os_family
+  when 'Debian'
+    pkg = 'deb'
+  when 'Redhat', 'Suse'
+    pkg = 'rpm'
+  else
+    raise("OS '#{@host.operatingsystem.family}' not supported by template #{template_name}")
+  end
 
-trivy_url = "https://github.com/aquasecurity/trivy/releases/download/v#{trivy_version}/trivy_#{trivy_version}_#{trivy_arch}.#{pkg}"
-grype_url = "https://github.com/anchore/grype/releases/download/v#{grype_version}/grype_#{grype_version}_#{grype_arch}.#{pkg}"
+  case @host.architecture.name
+  when 'x86_64'
+    trivy_arch = 'Linux-64bit'
+    grype_arch = 'linux_amd64'
+  when 'ppc64le'
+    trivy_arch = 'Linux-PPC64LE'
+    grype_arch = 'linux_ppc64le'
+  when 'aarch64'
+    trivy_arch = 'Linux-ARM64'
+    grype_arch = 'linux_arm64'
+  else
+    raise("Architecture '#{@host.architecture}' not supported by template #{template_name}")
+  end
 
-case @host.operatingsystem.family
-when 'Debian'
-  trivy_download_cmd = "wget -O /tmp/trivy.deb \"#{trivy_url}\""
-  grype_download_cmd = "wget -O /tmp/grype.deb \"#{grype_url}\""
-  trivy_install_cmd = "dpkg -i /tmp/trivy.deb"
-  grype_install_cmd = "dpkg -i /tmp/grype.deb"
-  trivy_cleanup_cmd = "rm -f /tmp/trivy.deb"
-  grype_cleanup_cmd = "rm -f /tmp/grype.deb"
-when 'Redhat', 'Suse'
-  trivy_install_cmd = "rpm -ivh \"#{trivy_url}\""
-  grype_install_cmd = "rpm -ivh \"#{grype_url}\""
+  trivy_url = "https://github.com/aquasecurity/trivy/releases/download/v#{trivy_version}/trivy_#{trivy_version}_#{trivy_arch}.#{pkg}"
+  grype_url = "https://github.com/anchore/grype/releases/download/v#{grype_version}/grype_#{grype_version}_#{grype_arch}.#{pkg}"
+
+  case os_family
+  when 'Debian'
+    install_steps = {
+      'trivy' => [
+        "wget -O /tmp/trivy.deb \"#{trivy_url}\"",
+        'dpkg -i /tmp/trivy.deb',
+        'rm -f /tmp/trivy.deb'
+      ],
+      'grype' => [
+        "wget -O /tmp/grype.deb \"#{grype_url}\"",
+        'dpkg -i /tmp/grype.deb',
+        'rm -f /tmp/grype.deb'
+      ]
+    }
+  when 'Redhat', 'Suse'
+    install_steps = {
+      'trivy' => ["rpm -ivh \"#{trivy_url}\""],
+      'grype' => ["rpm -ivh \"#{grype_url}\""]
+    }
+  end
 end
 -%>
-
-<% if input('scanner_to_install') == 'both' || input('scanner_to_install') == 'trivy' -%>
-<%= trivy_download_cmd unless trivy_install_cmd.nil? %>
-<%= trivy_install_cmd %>
-<%= trivy_cleanup_cmd unless trivy_cleanup_cmd.nil? %>
+<% unless install_from_github -%>
+<%= render_template('Package Action - Script Default', :action => 'install', :package => package_list) %>
+<% else -%>
+<% selected_scanners.each do |scanner| -%>
+<% install_steps[scanner].each do |step| -%>
+<%= step %>
 <% end -%>
-
-<% if input('scanner_to_install') == 'both' || input('scanner_to_install') == 'grype' -%>
-<%= grype_download_cmd unless grype_download_cmd.nil? %>
-<%= grype_install_cmd %>
-<%= grype_cleanup_cmd unless grype_cleanup_cmd.nil? %>
-<% end %>
+<% end -%>
+<% end -%>
