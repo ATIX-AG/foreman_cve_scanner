@@ -40,6 +40,7 @@ for how to install Foreman plugins
   - Hosts overview list column “CVE” (use 'Manage Columns' to enable)
   - Host Details card and modal
   - Host Details tab “CVE scans”
+- Filter hosts by latest CVE scan data with `cve_scanned`, `cve_total`, `cve_critical`, `cve_high`, `cve_medium`, `cve_low`, `cve_scanner`, `cve_source`, and `cve_scanned_at`
 
 ## Scanner installation
 
