@@ -64,16 +64,8 @@ module ForemanCveScanner
       scan = ::ForemanCveScanner::CveScan.create!(
         build_scan_attributes(host, scanner_name, scan_json, metrics, scanner)
       )
-      refresh_host_status(host)
-      cleanup_old_scans(host)
+      ::ForemanCveScanner::ScanPostProcessor.new(host).call
       scan
-    end
-
-    def refresh_host_status(host)
-      status = ::HostStatus::CveStatus.find_or_initialize_by(host: host)
-      status.refresh!
-    rescue StandardError => e
-      Rails.logger.error("CVE status refresh failed for host_id=#{host.id}: #{e}")
     end
 
     def build_scan_attributes(host, scanner_name, scan_json, metrics, scanner)
@@ -96,10 +88,6 @@ module ForemanCveScanner
 
     def build_findings(scanner)
       scanner.unified_vulnerabilities.map(&:dup)
-    end
-
-    def cleanup_old_scans(host)
-      ::ForemanCveScanner::ScanCleanup.new(scope: host.cve_scans).cleanup!
     end
   end
 end

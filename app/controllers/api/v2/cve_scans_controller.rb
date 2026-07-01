@@ -73,6 +73,7 @@ module Api
         @cve_scan = resource_class.new(build_import_attributes)
 
         if @cve_scan.save
+          post_process_scan_import
           render 'api/v2/cve_scans/show', status: :created
         else
           render(
@@ -246,6 +247,10 @@ module Api
 
       def enrich_cve_scan_findings
         @cve_scan_findings = ::ForemanCveScanner::KatelloFixAvailability.new(@host, @cve_scan.findings).call
+      end
+
+      def post_process_scan_import
+        ::ForemanCveScanner::ScanPostProcessor.new(@host).call
       end
     end
   end

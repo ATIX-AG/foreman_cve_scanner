@@ -7,8 +7,13 @@ module Api
     class CveScansControllerTest < ActionController::TestCase
       def setup
         @host = FactoryBot.create(:host)
+        @previous_retention = Setting[:cve_scan_delete_after_days]
         @scan_old = create_scan(created_at: 2.hours.ago, scanned_at: 2.hours.ago, total: 1, low: 1)
         @scan_new = create_scan(created_at: 1.hour.ago, scanned_at: 1.hour.ago, total: 2, high: 2)
+      end
+
+      def teardown
+        Setting[:cve_scan_delete_after_days] = @previous_retention
       end
 
       test 'index returns scans for host' do
@@ -110,6 +115,32 @@ module Api
         body = ActiveSupport::JSON.decode(@response.body)
         assert_equal 'external', body['source']
         assert_equal 1, body['critical']
+      end
+
+      test 'import refreshes cve host status' do
+        assert_difference('HostStatus::CveStatus.count', 1) do
+          post :import, params: {
+            host_id: @host.id,
+            cve_scan: create_payload,
+          }
+        end
+
+        assert_response :created
+        status = HostStatus::CveStatus.find_by(host: @host)
+        assert_equal HostStatus::CveStatus::CVE_SCANNER_STATUS_CRITICAL_HIGH, status.status
+      end
+
+      test 'import cleans up old scans for host using retention setting' do
+        Setting[:cve_scan_delete_after_days] = 1
+        old_scan = create_scan(scanned_at: 3.days.ago, created_at: 3.days.ago)
+
+        post :import, params: {
+          host_id: @host.id,
+          cve_scan: create_payload,
+        }
+
+        assert_response :created
+        assert_not ForemanCveScanner::CveScan.exists?(old_scan.id)
       end
 
       test 'import rejects scan without scanned_at' do
