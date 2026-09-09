@@ -332,7 +332,7 @@ module Api
         {
           scanner: 'custom-scanner',
           source: 'external',
-          scanned_at: '2026-05-14T08:00:00Z',
+          scanned_at: Time.current.iso8601,
           findings: [external_finding],
         }
       end
