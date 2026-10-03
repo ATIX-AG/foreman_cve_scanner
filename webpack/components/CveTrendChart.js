@@ -6,6 +6,7 @@ import { translate as __ } from 'foremanReact/common/I18n';
 import { formatScannedAt } from './cve_helpers';
 
 const TREND_LIMIT = 10;
+const PERCENT_SCALE = 100;
 const STACK_ORDER = ['low', 'medium', 'high', 'critical'];
 const TREND_LEGEND = [
   { key: 'critical', label: __('Critical') },
@@ -200,7 +201,8 @@ const CveTrendChart = ({
                       key={level}
                       className={`cve-trend-segment cve-trend-segment--${level}`}
                       style={{
-                        height: `${((scan[level] || 0) / maxTotal) * 100}%`,
+                        height: `${((scan[level] || 0) / maxTotal) *
+                          PERCENT_SCALE}%`,
                       }}
                     />
                   ))}

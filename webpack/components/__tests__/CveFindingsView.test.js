@@ -3,6 +3,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import CveFindingsView from '../CveFindingsView';
+import SeverityIcon from '../SeverityIcon';
 
 describe('CveFindingsView', () => {
   it('renders no reports state when scan is missing', () => {
@@ -90,6 +91,41 @@ describe('CveFindingsView', () => {
 
     expect(wrapper.text()).toContain('CVE-1');
     expect(wrapper.text()).not.toContain('CVE-2');
+  });
+
+  it('renders the severity column header as text, not a fixed icon', () => {
+    const wrapper = mount(
+      <CveFindingsView
+        scan={{
+          id: 1,
+          scanned_at: '2026-02-22T10:00:00Z',
+          scanner: 'trivy',
+          source: 'rex',
+          total: 1,
+          findings: [
+            {
+              id: 'CVE-1',
+              severity: 'LOW',
+              name: 'openssl',
+              version: '1.1',
+              title: 'OpenSSL issue',
+            },
+          ],
+        }}
+        status="RESOLVED"
+        initialFilter="all"
+      />
+    );
+
+    const severityHeader = wrapper
+      .find('Th')
+      .filterWhere(node =>
+        (node.prop('className') || '').includes('cve-col-severity')
+      );
+
+    expect(severityHeader.text()).toContain('Severity');
+    expect(severityHeader.find(SeverityIcon)).toHaveLength(0);
+    expect(wrapper.find('Tbody').find(SeverityIcon)).toHaveLength(1);
   });
 
   it('renders fix availability when present', () => {
