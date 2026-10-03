@@ -92,20 +92,20 @@ if install_from_github
   when 'Debian'
     install_steps = {
       'trivy' => [
-        "wget -O /tmp/trivy.deb \"#{trivy_url}\"",
+        "wget -O /tmp/trivy.deb #{shell_escape(trivy_url)}",
         'dpkg -i /tmp/trivy.deb',
         'rm -f /tmp/trivy.deb'
       ],
       'grype' => [
-        "wget -O /tmp/grype.deb \"#{grype_url}\"",
+        "wget -O /tmp/grype.deb #{shell_escape(grype_url)}",
         'dpkg -i /tmp/grype.deb',
         'rm -f /tmp/grype.deb'
       ]
     }
   when 'Redhat', 'Suse'
     install_steps = {
-      'trivy' => ["rpm -ivh \"#{trivy_url}\""],
-      'grype' => ["rpm -ivh \"#{grype_url}\""]
+      'trivy' => ["rpm -ivh #{shell_escape(trivy_url)}"],
+      'grype' => ["rpm -ivh #{shell_escape(grype_url)}"]
     }
   end
 end
