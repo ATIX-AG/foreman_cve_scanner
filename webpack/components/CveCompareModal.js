@@ -52,15 +52,6 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
   const compareRequest = useAPI(isOpen ? 'get' : null, compareUrl, {
     key: `CVE_COMPARE_${previousScanId}_${currentScanId}`,
   });
-  useEffect(() => {
-    if (!isOpen) return;
-    setFilter('all');
-    setSearch('');
-    setSortBy({
-      direction: SortByDirection.desc,
-      column: 'status',
-    });
-  }, [currentScanId, isOpen, previousScanId, setSortBy]);
 
   const comparison = compareRequest.response || {};
   const previousScan = comparison.previous || {};
@@ -91,6 +82,16 @@ const CveCompareModal = ({ hostId, isOpen, onClose, scanIds }) => {
     comparisonSorters,
     filteredRows
   );
+  useEffect(() => {
+    if (!isOpen) return;
+    setFilter('all');
+    setSearch('');
+    setSortBy({
+      direction: SortByDirection.desc,
+      column: 'status',
+    });
+  }, [currentScanId, isOpen, previousScanId, setSortBy]);
+
   const status = compareRequest.status || STATUS.PENDING;
   const subtitle =
     previousScan.scanned_at && currentScan.scanned_at

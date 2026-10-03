@@ -205,11 +205,7 @@ const CveFindingsView = ({ scan, status, initialFilter, hostName }) => {
                         }
                         onClick={() => onSort(col.key)}
                       >
-                        {col.key === 'severity' ? (
-                          <SeverityIcon severity="high" />
-                        ) : (
-                          col.label
-                        )}
+                        {col.label}
                         {sortBy.column === col.key && (
                           <span className="cve-sort-indicator">
                             {sortBy.direction === SortByDirection.asc

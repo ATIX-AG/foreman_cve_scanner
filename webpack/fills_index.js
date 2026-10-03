@@ -7,18 +7,21 @@ import CveDetailsCard from './components/CveDetailsCard';
 import CveScansTab from './components/CveScansTab';
 import CveSummaryCell from './components/CveSummaryCell';
 
+const DETAILS_CARD_WEIGHT = 2200;
+const SCANS_TAB_WEIGHT = 450;
+
 addGlobalFill(
   'host-tab-details-cards',
   'foreman-cve-scanner-details-card',
   <CveDetailsCard key="foreman-cve-scanner-details-card" />,
-  2200
+  DETAILS_CARD_WEIGHT
 );
 
 addGlobalFill(
   'host-details-page-tabs',
   'CVE scans',
   <CveScansTab key="foreman-cve-scanner-scans-tab" />,
-  450,
+  SCANS_TAB_WEIGHT,
   { title: __('CVE scans') }
 );
 
